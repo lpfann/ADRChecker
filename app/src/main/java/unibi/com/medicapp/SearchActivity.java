@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.FilterQueryProvider;
 import android.widget.SimpleCursorAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,6 +25,8 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 public class SearchActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
+    @InjectView(R.id.wirkstoffAutoComplete1)
+    AutoCompleteTextView autocompleteWirkstoffView;
     private QueryDatabase db;
     private Drawer.Result result = null;
 
@@ -62,14 +65,44 @@ public class SearchActivity extends AppCompatActivity {
                 })
                 .build();
 
-
         db = new QueryDatabase(this);
         Cursor substances = db.getSubstances();
+        initializeDescription(substances);
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.wirkstoffAutoComplete1);
         SimpleCursorAdapter mCursor;
 
+
     }
 
+    private void initializeDescription(final Cursor cursor) {
+
+        final int[] to = new int[]{android.R.id.text1};
+        final String[] from = new String[]{"name"};
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_dropdown_item_1line,
+                cursor,
+                from,
+                to,
+                0);
+
+        // This will provide the labels for the choices to be displayed in the AutoCompleteTextView
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            @Override
+            public CharSequence convertToString(Cursor cursor) {
+                final int colIndex = cursor.getColumnIndexOrThrow("name");
+                return cursor.getString(colIndex);
+            }
+        });
+
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence name) {
+                return db.getSubstancesLike((String) name);
+            }
+        });
+
+        autocompleteWirkstoffView.setAdapter(adapter);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

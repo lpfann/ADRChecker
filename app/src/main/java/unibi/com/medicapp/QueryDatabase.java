@@ -43,4 +43,18 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
 
     }
+
+    public Cursor getSubstancesLike(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
+        String[] sqlSelect = {"0 _id", "name"};
+
+        qb.setTables(SUBSTANZEN);
+        Cursor c = qb.query(db, sqlSelect, "name like '" + name + "%'", null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+
+    }
 }
