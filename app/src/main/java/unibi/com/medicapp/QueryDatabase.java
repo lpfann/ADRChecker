@@ -13,7 +13,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
  */
 public class QueryDatabase extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "converted.sqlite";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String BEMERKUNGEN = "p450_bemerkungen";
     private static final String INTERATKIONEN = "p450_interaktionen";
@@ -26,14 +26,16 @@ public class QueryDatabase extends SQLiteAssetHelper {
 
     public QueryDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        setForcedUpgrade();
 
     }
+
 
     public Cursor getSubstances() {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        String[] sqlSelect = {"0 _id", "name"};
+        String[] sqlSelect = {"_id", "name"};
 
         qb.setTables(SUBSTANZEN);
         Cursor c = qb.query(db, sqlSelect, null, null,
@@ -48,7 +50,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        String[] sqlSelect = {"0 _id", "name"};
+        String[] sqlSelect = {"_id", "name"};
 
         qb.setTables(SUBSTANZEN);
         Cursor c = qb.query(db, sqlSelect, "name like '" + name + "%'", null,

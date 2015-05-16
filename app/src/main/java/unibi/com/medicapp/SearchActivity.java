@@ -3,6 +3,8 @@ package unibi.com.medicapp;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,15 +22,27 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.software.shell.fab.ActionButton;
+
+import java.util.LinkedList;
 
 
 public class SearchActivity extends AppCompatActivity {
+
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.wirkstoffAutoComplete1)
     AutoCompleteTextView autocompleteWirkstoffView;
+    @InjectView(R.id.wirkstoffListe)
+    RecyclerView wirkstoffListeView;
+    @InjectView(R.id.search_button)
+    ActionButton searchButton;
+
+    private LinkedList<Substance> selectedSubstances;
     private QueryDatabase db;
     private Drawer.Result result = null;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +50,36 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
+        db = new QueryDatabase(this);
 
+        // init Gui Elements
+        initDrawer();
+        initList();
+        initializeAutoComplete();
+
+        searchButton.setButtonColor(getResources().getColor(R.color.primary));
+        searchButton.setRippleEffectEnabled(true);
+        searchButton.setButtonColorPressed(getResources().getColor(R.color.primary_dark));
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Start search);
+            }
+        });
+
+
+    }
+
+    private void initList() {
+        selectedSubstances = new LinkedList<>();
+        mLayoutManager = new LinearLayoutManager(this);
+        wirkstoffListeView.setLayoutManager(mLayoutManager);
+        wirkstoffListeView.setHasFixedSize(true);
+        mAdapter = new SubstanceListAdapter(selectedSubstances);
+        wirkstoffListeView.setAdapter(mAdapter);
+    }
+
+    private void initDrawer() {
         AccountHeader.Result headerResult = new AccountHeader()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
@@ -64,23 +107,15 @@ public class SearchActivity extends AppCompatActivity {
 
                 })
                 .build();
-
-        db = new QueryDatabase(this);
-        Cursor substances = db.getSubstances();
-        initializeDescription(substances);
-        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.wirkstoffAutoComplete1);
-        SimpleCursorAdapter mCursor;
-
-
     }
 
-    private void initializeDescription(final Cursor cursor) {
+    private void initializeAutoComplete() {
 
         final int[] to = new int[]{android.R.id.text1};
         final String[] from = new String[]{"name"};
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+        final SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_dropdown_item_1line,
-                cursor,
+                null,
                 from,
                 to,
                 0);
@@ -100,8 +135,18 @@ public class SearchActivity extends AppCompatActivity {
                 return db.getSubstancesLike((String) name);
             }
         });
-
         autocompleteWirkstoffView.setAdapter(adapter);
+        autocompleteWirkstoffView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String name = adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow("name"));
+                Substance selSubstance = new Substance(id, name);
+                selectedSubstances.add(selSubstance);
+                mAdapter.notifyItemInserted(selectedSubstances.size() - 1);
+                autocompleteWirkstoffView.setText("");
+            }
+        });
+
     }
 
     @Override
