@@ -23,7 +23,6 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.software.shell.fab.ActionButton;
 
 import java.util.LinkedList;
 
@@ -36,8 +35,8 @@ public class SearchActivity extends AppCompatActivity {
     AutoCompleteTextView autocompleteWirkstoffView;
     @InjectView(R.id.wirkstoffListe)
     RecyclerView wirkstoffListeView;
-    @InjectView(R.id.search_button)
-    ActionButton searchButton;
+//    @InjectView(R.id.search_button)
+//    ActionButton searchButton;
 
     private LinkedList<Substance> selectedSubstances;
     private QueryDatabase db;
@@ -51,6 +50,7 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
+        toolbar.setTitle(getResources().getString(R.string.search));
 
         db = new QueryDatabase(this);
 
@@ -59,15 +59,15 @@ public class SearchActivity extends AppCompatActivity {
         initList();
         initializeAutoComplete();
 
-        searchButton.setButtonColor(getResources().getColor(R.color.accent));
-        searchButton.setRippleEffectEnabled(true);
-        searchButton.setImageDrawable(new IconicsDrawable(this, FontAwesome.Icon.faw_search).color(getResources().getColor(R.color.icons)).sizeDp(50));
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Start search);
-            }
-        });
+//        searchButton.setButtonColor(getResources().getColor(R.color.accent));
+//        searchButton.setRippleEffectEnabled(true);
+//        searchButton.setImageDrawable(new IconicsDrawable(this, FontAwesome.Icon.faw_search).color(getResources().getColor(R.color.icons)).sizeDp(50));
+//        searchButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // TODO Start search);
+//            }
+//        });
 
 
     }
@@ -155,7 +155,9 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_search, menu);
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        MenuItem searchbutton = menu.findItem(R.id.action_search);
+        searchbutton.setIcon(new IconicsDrawable(this, FontAwesome.Icon.faw_search).sizeDp(24).color(getResources().getColor(R.color.icons)));
         return true;
     }
 
@@ -167,7 +169,7 @@ public class SearchActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
             return true;
         }
 

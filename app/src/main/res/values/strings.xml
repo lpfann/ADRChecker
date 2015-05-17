@@ -9,4 +9,5 @@
     <string name="enzyme_interaction">Enzym-Wechselwirkungen</string>
     <string name="substance">Substanz</string>
     <string name="introTextEE">Search for interactions by entering the substances one by one.</string>
+    <string name="search">Search</string>
 </resources>
