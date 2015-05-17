@@ -1,18 +1,16 @@
 package unibi.com.medicapp;
 
-import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.FilterQueryProvider;
-import android.widget.SimpleCursorAdapter;
+import android.widget.FrameLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -27,22 +25,17 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import java.util.LinkedList;
 
 
-public class SearchActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-    @InjectView(R.id.wirkstoffAutoComplete1)
-    AutoCompleteTextView autocompleteWirkstoffView;
-    @InjectView(R.id.wirkstoffListe)
-    RecyclerView wirkstoffListeView;
-//    @InjectView(R.id.search_button)
-//    ActionButton searchButton;
+    @InjectView(R.id.contentLayout)
+    FrameLayout contentFrame;
+
 
     private LinkedList<Substance> selectedSubstances;
     private QueryDatabase db;
     private Drawer.Result result = null;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +45,13 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getResources().getString(R.string.search));
 
-        db = new QueryDatabase(this);
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        Fragment mainSearchFragment = MainSearchFragment.newInstance(null, null);
+        supportFragmentManager.beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
 
         // init Gui Elements
         initDrawer();
-        initList();
-        initializeAutoComplete();
+
 
 //        searchButton.setButtonColor(getResources().getColor(R.color.accent));
 //        searchButton.setRippleEffectEnabled(true);
@@ -72,15 +66,6 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void initList() {
-        selectedSubstances = new LinkedList<>();
-        mLayoutManager = new LinearLayoutManager(this);
-        wirkstoffListeView.setLayoutManager(mLayoutManager);
-        wirkstoffListeView.setHasFixedSize(true);
-        wirkstoffListeView.addItemDecoration(new DividerItemDecoration(this, 1));
-        mAdapter = new SubstanceListAdapter(selectedSubstances);
-        wirkstoffListeView.setAdapter(mAdapter);
-    }
 
     private void initDrawer() {
         AccountHeader.Result headerResult = new AccountHeader()
@@ -112,45 +97,7 @@ public class SearchActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void initializeAutoComplete() {
 
-        final int[] to = new int[]{android.R.id.text1};
-        final String[] from = new String[]{"name"};
-        final SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_dropdown_item_1line,
-                null,
-                from,
-                to,
-                0);
-
-        // This will provide the labels for the choices to be displayed in the AutoCompleteTextView
-        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
-            @Override
-            public CharSequence convertToString(Cursor cursor) {
-                final int colIndex = cursor.getColumnIndexOrThrow("name");
-                return cursor.getString(colIndex);
-            }
-        });
-
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
-            @Override
-            public Cursor runQuery(CharSequence name) {
-                return db.getSubstancesLike((String) name);
-            }
-        });
-        autocompleteWirkstoffView.setAdapter(adapter);
-        autocompleteWirkstoffView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow("name"));
-                Substance selSubstance = new Substance(id, name);
-                selectedSubstances.add(selSubstance);
-                mAdapter.notifyItemInserted(selectedSubstances.size() - 1);
-                autocompleteWirkstoffView.setText("");
-            }
-        });
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,5 +121,10 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
