@@ -5,20 +5,21 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:textSize="25sp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/textView"
-        />
+        android:layout_centerVertical="true"/>
 
 
     <ImageButton
+        android:background="?android:attr/selectableItemBackground"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/removeButton"
-        android:layout_width="32dp"
-        android:layout_height="32dp"/>
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
 
 </RelativeLayout>

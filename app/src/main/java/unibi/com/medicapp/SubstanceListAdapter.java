@@ -32,7 +32,7 @@ public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdap
 
         ViewHolder vh = new ViewHolder(v);
         ImageButton button = (ImageButton) v.findViewById(R.id.removeButton);
-        button.setImageDrawable(new IconicsDrawable(viewGroup.getContext(), FontAwesome.Icon.faw_trash).color(R.color.accent).sizeDp(32));
+        button.setImageDrawable(new IconicsDrawable(viewGroup.getContext(), FontAwesome.Icon.faw_minus_square).color(R.color.accent).sizeDp(24));
         v.findViewById(R.id.removeButton).setOnClickListener(vh);
         return vh;
     }

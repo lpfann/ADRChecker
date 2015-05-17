@@ -51,6 +51,7 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
+
         db = new QueryDatabase(this);
 
         // init Gui Elements
@@ -58,10 +59,9 @@ public class SearchActivity extends AppCompatActivity {
         initList();
         initializeAutoComplete();
 
-        searchButton.setButtonColor(getResources().getColor(R.color.primary));
+        searchButton.setButtonColor(getResources().getColor(R.color.accent));
         searchButton.setRippleEffectEnabled(true);
-        searchButton.setImageDrawable(new IconicsDrawable(this, FontAwesome.Icon.faw_search).color(R.color.accent).sizeDp(50));
-        searchButton.setButtonColorPressed(getResources().getColor(R.color.primary_dark));
+        searchButton.setImageDrawable(new IconicsDrawable(this, FontAwesome.Icon.faw_search).color(getResources().getColor(R.color.icons)).sizeDp(50));
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +77,7 @@ public class SearchActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         wirkstoffListeView.setLayoutManager(mLayoutManager);
         wirkstoffListeView.setHasFixedSize(true);
+        wirkstoffListeView.addItemDecoration(new DividerItemDecoration(this, 1));
         mAdapter = new SubstanceListAdapter(selectedSubstances);
         wirkstoffListeView.setAdapter(mAdapter);
     }
