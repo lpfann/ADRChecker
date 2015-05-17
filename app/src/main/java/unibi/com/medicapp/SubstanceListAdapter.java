@@ -4,8 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.FontAwesome;
 
 import java.util.LinkedList;
 
@@ -29,6 +31,8 @@ public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdap
                 .inflate(R.layout.substancelisteditable, viewGroup, false);
 
         ViewHolder vh = new ViewHolder(v);
+        ImageButton button = (ImageButton) v.findViewById(R.id.removeButton);
+        button.setImageDrawable(new IconicsDrawable(viewGroup.getContext(), FontAwesome.Icon.faw_trash).color(R.color.accent).sizeDp(32));
         v.findViewById(R.id.removeButton).setOnClickListener(vh);
         return vh;
     }
@@ -54,12 +58,12 @@ public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTextView;
-        public Button mButton;
+        public ImageButton mButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.textView);
-            mButton = (Button) itemView.findViewById(R.id.removeButton);
+            mButton = (ImageButton) itemView.findViewById(R.id.removeButton);
         }
 
 
