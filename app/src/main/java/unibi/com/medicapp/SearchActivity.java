@@ -15,6 +15,7 @@ import android.widget.FilterQueryProvider;
 import android.widget.SimpleCursorAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
@@ -59,6 +60,7 @@ public class SearchActivity extends AppCompatActivity {
 
         searchButton.setButtonColor(getResources().getColor(R.color.primary));
         searchButton.setRippleEffectEnabled(true);
+        searchButton.setImageDrawable(new IconicsDrawable(this, FontAwesome.Icon.faw_search).color(R.color.accent).sizeDp(50));
         searchButton.setButtonColorPressed(getResources().getColor(R.color.primary_dark));
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
