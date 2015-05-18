@@ -1,38 +1,36 @@
 package unibi.com.medicapp;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-
-import com.squareup.otto.Bus;
-
+import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.squareup.otto.Bus;
+
+import java.util.ArrayList;
 
 
 public class MainSearchFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private OnFragmentInteractionListener mListener;
     Bus mBus;
-
-
-    @OnClick(R.id.add_substanceButton) void addSubstanceButtonClick(){
-    mBus.post(new ButtonClickedEvent(1));
-    }
-
+    SimpleCursorAdapter adapter;
+    ArrayList<Integer> selectedEnzymeIDs;
+    @InjectView(R.id.enzymeListView)
+    ListView enzymeListView;
+    @InjectView(R.id.textView3)
+    TextView test;
+    private OnFragmentInteractionListener mListener;
+    private QueryDatabase db;
     public MainSearchFragment() {
         // Required empty public constructor
     }
@@ -49,22 +47,36 @@ public class MainSearchFragment extends Fragment {
     public static MainSearchFragment newInstance(String param1, String param2) {
         MainSearchFragment fragment = new MainSearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
     @OnClick(R.id.add_substanceButton)
-    void addSubstanceDialog() {
+    void addSubstanceButtonClick() {
+        getCheckedItems();
+        mBus.post(new ButtonClickedEvent(1));
+    }
+
+    private void getCheckedItems() {
+        SparseBooleanArray checked = enzymeListView.getCheckedItemPositions();
+        selectedEnzymeIDs = new ArrayList<>();
+        for (int i = 0; i < checked.size(); i++) {
+            // Item position in adapter
+            int position = checked.keyAt(i);
+            Cursor c = adapter.getCursor();
+            if (checked.valueAt(i)) {
+                c.moveToPosition(i);
+                selectedEnzymeIDs.add(c.getInt(1));
+            }
+        }
+
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -74,6 +86,7 @@ public class MainSearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_main_search, container, false);
         ButterKnife.inject(this, v);
+        initEnzymeList();
         return v;
     }
 
@@ -87,6 +100,7 @@ public class MainSearchFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -94,7 +108,23 @@ public class MainSearchFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
         mBus = BusProvider.getInstance();
+        db = QueryDatabase.getInstance(getActivity());
+
     }
+
+    private void initEnzymeList() {
+        Cursor enzymeCursor = db.getEnzymes();
+        final int[] to = new int[]{android.R.id.text1};
+        final String[] from = new String[]{"name"};
+        adapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_list_item_multiple_choice,
+                enzymeCursor,
+                from,
+                to,
+                0);
+        enzymeListView.setAdapter(adapter);
+    }
+
 
 
     @Override

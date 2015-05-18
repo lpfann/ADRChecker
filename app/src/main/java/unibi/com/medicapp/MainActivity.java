@@ -33,14 +33,11 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     Toolbar toolbar;
     @InjectView(R.id.contentLayout)
     FrameLayout contentFrame;
-
-
-    private LinkedList<Substance> selectedSubstances;
-    private QueryDatabase db;
-    private Drawer.Result result = null;
-    private Bus bus;
     FragmentManager supportFragmentManager;
     Fragment mainSearchFragment;
+    private LinkedList<Substance> selectedSubstances;
+    private Drawer.Result result = null;
+    private Bus bus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +50,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         setSupportActionBar(toolbar);
         toolbar.setTitle(getResources().getString(R.string.search));
 
+        // Create  for ContentLayout
         supportFragmentManager = getSupportFragmentManager();
         mainSearchFragment = MainSearchFragment.newInstance(null, null);
-        supportFragmentManager.beginTransaction().replace(R.id.contentLayout, mainSearchFragment).commit();
+        supportFragmentManager.beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
 
         // init Gui Elements
         initDrawer();
@@ -77,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
    @Subscribe public void addSubstanceButtonClicked(ButtonClickedEvent event) {
        if (event.eventtype == 1) {
         SearchSubstanceFragment searchSubstanceFragment  = SearchSubstanceFragment.newInstance(null);
-           supportFragmentManager.beginTransaction().add(R.id.contentLayout,searchSubstanceFragment).commit();
+           supportFragmentManager.beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment).addToBackStack(null).commit();
        }
 
    }

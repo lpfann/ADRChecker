@@ -62,7 +62,7 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
         if (getArguments() != null) {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        db = new QueryDatabase(getActivity());
+
 
     }
 
@@ -144,7 +144,7 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
+        db = QueryDatabase.getInstance(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {

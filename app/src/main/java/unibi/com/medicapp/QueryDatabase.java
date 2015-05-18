@@ -24,15 +24,26 @@ public class QueryDatabase extends SQLiteAssetHelper {
     private static final String SUBSTANZ_WIRKSTOFF_MAPPING = "p450_substanz_wirkstoff_mapping";
     private static final String THERAPEUTISCHE_KLASSIFIKATION = "p450_therapeutische_klassifikation";
 
-    public QueryDatabase(Context context) {
+    private static QueryDatabase sInstance;
+    private SQLiteDatabase db;
+
+    private QueryDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         setForcedUpgrade();
+        db = getReadableDatabase();
 
     }
 
+    public static synchronized QueryDatabase getInstance(Context context) {
+
+        if (sInstance == null) {
+            sInstance = new QueryDatabase(context.getApplicationContext());
+
+        }
+        return sInstance;
+    }
 
     public Cursor getSubstances() {
-        SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         String[] sqlSelect = {"_id", "name"};
@@ -47,7 +58,6 @@ public class QueryDatabase extends SQLiteAssetHelper {
     }
 
     public Cursor getSubstancesLike(String name) {
-        SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         String[] sqlSelect = {"_id", "name"};
@@ -58,5 +68,16 @@ public class QueryDatabase extends SQLiteAssetHelper {
         c.moveToFirst();
         return c;
 
+    }
+
+    public Cursor getEnzymes() {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {"0 _id", "id", "name"};
+
+        qb.setTables(ISOENZYME);
+        Cursor c = qb.query(db, sqlSelect, null, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
     }
 }
