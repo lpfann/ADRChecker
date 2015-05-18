@@ -21,6 +21,8 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.LinkedList;
 
@@ -36,18 +38,24 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private LinkedList<Substance> selectedSubstances;
     private QueryDatabase db;
     private Drawer.Result result = null;
+    private Bus bus;
+    FragmentManager supportFragmentManager;
+    Fragment mainSearchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.inject(this);
+        bus = BusProvider.getInstance();
+        bus.register(this);
+
         setSupportActionBar(toolbar);
         toolbar.setTitle(getResources().getString(R.string.search));
 
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        Fragment mainSearchFragment = MainSearchFragment.newInstance(null, null);
-        supportFragmentManager.beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
+        supportFragmentManager = getSupportFragmentManager();
+        mainSearchFragment = MainSearchFragment.newInstance(null, null);
+        supportFragmentManager.beginTransaction().replace(R.id.contentLayout, mainSearchFragment).commit();
 
         // init Gui Elements
         initDrawer();
@@ -66,6 +74,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     }
 
+   @Subscribe public void addSubstanceButtonClicked(ButtonClickedEvent event) {
+       if (event.eventtype == 1) {
+        SearchSubstanceFragment searchSubstanceFragment  = SearchSubstanceFragment.newInstance(null);
+           supportFragmentManager.beginTransaction().add(R.id.contentLayout,searchSubstanceFragment).commit();
+       }
+
+   }
 
     private void initDrawer() {
         AccountHeader.Result headerResult = new AccountHeader()

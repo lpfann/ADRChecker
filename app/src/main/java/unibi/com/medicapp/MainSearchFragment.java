@@ -7,7 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.squareup.otto.Bus;
+
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 
@@ -21,6 +26,12 @@ public class MainSearchFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
+    Bus mBus;
+
+
+    @OnClick(R.id.add_substanceButton) void addSubstanceButtonClick(){
+    mBus.post(new ButtonClickedEvent(1));
+    }
 
     public MainSearchFragment() {
         // Required empty public constructor
@@ -82,7 +93,9 @@ public class MainSearchFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        mBus = BusProvider.getInstance();
     }
+
 
     @Override
     public void onDetach() {
