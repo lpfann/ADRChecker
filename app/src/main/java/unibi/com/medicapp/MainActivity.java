@@ -23,6 +23,7 @@ import com.mikepenz.materialdrawer.util.KeyboardUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import butterknife.ButterKnife;
@@ -31,16 +32,17 @@ import butterknife.InjectView;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
 
+
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.contentLayout)
     FrameLayout contentFrame;
-
     FragmentManager supportFragmentManager;
     MainSearchFragment mainSearchFragment;
     SearchSubstanceFragment searchSubstanceFragment;
-    private LinkedList<Substance> selectedSubstances;
+    ArrayList<Integer> checkedEnzymes;
     private Drawer.Result result = null;
+    private LinkedList<Substance> selectedSubstances;
     private Bus bus;
 
     @Override
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         bus.register(this);
 
         setSupportActionBar(toolbar);
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().setTitle(getResources().getString(R.string.search));
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         // Create  for ContentLayout
         supportFragmentManager = getSupportFragmentManager();
-        mainSearchFragment = MainSearchFragment.newInstance(null, null);
+        mainSearchFragment = MainSearchFragment.newInstance();
         supportFragmentManager.beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
 
         // init Gui Elements
@@ -74,16 +77,16 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public void addSubstanceButtonClicked(ButtonClickedEvent event) {
         switch (event.eventtype) {
             case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
-                searchSubstanceFragment = SearchSubstanceFragment.newInstance(null);
+                searchSubstanceFragment = SearchSubstanceFragment.newInstance();
                 if (selectedSubstances != null) {
                     searchSubstanceFragment.setSubstances(selectedSubstances);
                 }
                 supportFragmentManager.beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment).addToBackStack(null).commit();
                 result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+                assert getSupportActionBar() != null;
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 return;
             default:
-                return;
         }
 
     }
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public void shouldDisplayHomeUp() {
         //Enable Up button only  if there are entries in the back stack
         boolean canback = getSupportFragmentManager().getBackStackEntryCount() > 0;
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
     }
 
@@ -167,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_search:
-                return true;
+                checkedEnzymes = mainSearchFragment.getCheckedItems();
             case R.id.action_commit_selection:
                 selectedSubstances = searchSubstanceFragment.getSubstances();
                 mainSearchFragment.setSubstances(selectedSubstances);

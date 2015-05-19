@@ -2,12 +2,10 @@ package unibi.com.medicapp;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,12 +30,11 @@ public class MainSearchFragment extends Fragment {
     @InjectView(R.id.enzymeListView)
     ListView enzymeListView;
     @InjectView(R.id.selectedSubstanceList)
-    RecyclerView substanceListView;
+    android.support.v7.widget.RecyclerView substanceListView;
     Cursor enzymeCursor;
     SparseBooleanArray selectedItemsInList;
     private QueryDatabase db;
     private LinkedList<Substance> selectedSubstances;
-    private OnFragmentInteractionListener mListener;
     private SubstanceListAdapter substanceadapter;
 
 
@@ -45,16 +42,7 @@ public class MainSearchFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MainSearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MainSearchFragment newInstance(String param1, String param2) {
+    public static MainSearchFragment newInstance() {
         MainSearchFragment fragment = new MainSearchFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -67,7 +55,7 @@ public class MainSearchFragment extends Fragment {
         mBus.post(new ButtonClickedEvent(ButtonClickedEvent.ADD_SUBSTANCE_BUTTON));
     }
 
-    private void getCheckedItems() {
+    public ArrayList<Integer> getCheckedItems() {
         SparseBooleanArray checked = enzymeListView.getCheckedItemPositions();
         selectedEnzymeIDs = new ArrayList<>();
         for (int i = 0; i < checked.size(); i++) {
@@ -79,7 +67,7 @@ public class MainSearchFragment extends Fragment {
                 selectedEnzymeIDs.add(c.getInt(1));
             }
         }
-
+        return selectedEnzymeIDs;
 
     }
 
@@ -112,23 +100,11 @@ public class MainSearchFragment extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
         mBus = BusProvider.getInstance();
         db = QueryDatabase.getInstance(getActivity());
 
@@ -175,7 +151,6 @@ public class MainSearchFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override

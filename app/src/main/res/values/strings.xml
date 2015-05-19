@@ -11,8 +11,6 @@
     <string name="introTextEE">Search for interactions by entering the substances one by one.</string>
     <string name="search">Search</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="substances">Substances</string>
     <string name="defectiveEnzymes">Defective Enzymes</string>
     <string name="add_substance">Add Substance</string>

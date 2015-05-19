@@ -3,10 +3,8 @@ package unibi.com.medicapp;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,11 +31,9 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     @InjectView(R.id.wirkstoffAutoComplete1)
     AutoCompleteTextView autocompleteWirkstoffView;
     @InjectView(R.id.wirkstoffListe)
-    RecyclerView wirkstoffListeView;
-    // TODO: Rename and change types of parameters
+    android.support.v7.widget.RecyclerView wirkstoffListeView;
+
     private LinkedList<Substance> mSubstances;
-    private String mParam2;
-    private OnFragmentInteractionListener mListener;
     private QueryDatabase db;
     private SubstanceListAdapter mAdapter;
     private Bus mBus;
@@ -47,15 +43,7 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchSubstanceFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchSubstanceFragment newInstance(String param2) {
+    public static SearchSubstanceFragment newInstance() {
         SearchSubstanceFragment fragment = new SearchSubstanceFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -137,12 +125,6 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -157,19 +139,11 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
         super.onAttach(activity);
         db = QueryDatabase.getInstance(activity);
 
-
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
