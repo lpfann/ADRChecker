@@ -6,18 +6,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 public class MainSearchFragment extends Fragment {
@@ -27,10 +31,16 @@ public class MainSearchFragment extends Fragment {
     ArrayList<Integer> selectedEnzymeIDs;
     @InjectView(R.id.enzymeListView)
     ListView enzymeListView;
-    @InjectView(R.id.textView3)
-    TextView test;
-    private OnFragmentInteractionListener mListener;
+    @InjectView(R.id.selectedSubstanceList)
+    RecyclerView substanceListView;
+    Cursor enzymeCursor;
+    SparseBooleanArray selectedItemsInList;
     private QueryDatabase db;
+    private LinkedList<Substance> selectedSubstances;
+    private OnFragmentInteractionListener mListener;
+    private SubstanceListAdapter substanceadapter;
+
+
     public MainSearchFragment() {
         // Required empty public constructor
     }
@@ -53,8 +63,8 @@ public class MainSearchFragment extends Fragment {
 
     @OnClick(R.id.add_substanceButton)
     void addSubstanceButtonClick() {
-        getCheckedItems();
-        mBus.post(new ButtonClickedEvent(1));
+        //getCheckedItems();
+        mBus.post(new ButtonClickedEvent(ButtonClickedEvent.ADD_SUBSTANCE_BUTTON));
     }
 
     private void getCheckedItems() {
@@ -76,8 +86,7 @@ public class MainSearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+        selectedSubstances = new LinkedList<>();
     }
 
     @Override
@@ -87,7 +96,20 @@ public class MainSearchFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_main_search, container, false);
         ButterKnife.inject(this, v);
         initEnzymeList();
+        initSubstanceList();
         return v;
+    }
+
+    private void initSubstanceList() {
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        substanceListView.setLayoutManager(mLayoutManager);
+        substanceListView.setHasFixedSize(true);
+        // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
+//        substanceListView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
+        substanceadapter = new SubstanceListAdapter(selectedSubstances);
+        substanceListView.setAdapter(substanceadapter);
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -112,8 +134,17 @@ public class MainSearchFragment extends Fragment {
 
     }
 
+    @Override
+    public void onPause() {
+        selectedItemsInList = enzymeListView.getCheckedItemPositions();
+        super.onPause();
+    }
+
     private void initEnzymeList() {
-        Cursor enzymeCursor = db.getEnzymes();
+        if (enzymeCursor == null) {
+            enzymeCursor = db.getEnzymes();
+        }
+
         final int[] to = new int[]{android.R.id.text1};
         final String[] from = new String[]{"name"};
         adapter = new SimpleCursorAdapter(getActivity(),
@@ -122,10 +153,24 @@ public class MainSearchFragment extends Fragment {
                 from,
                 to,
                 0);
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            @Override
+            public CharSequence convertToString(Cursor cursor) {
+                final int colIndex = cursor.getColumnIndexOrThrow("name");
+                return cursor.getString(colIndex);
+            }
+        });
+
+
         enzymeListView.setAdapter(adapter);
+
+
     }
 
+    public void setSubstances(LinkedList<Substance> substances) {
+        selectedSubstances = substances;
 
+    }
 
     @Override
     public void onDetach() {
@@ -133,5 +178,10 @@ public class MainSearchFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+    }
 
 }

@@ -15,4 +15,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="substances">Substances</string>
     <string name="defectiveEnzymes">Defective Enzymes</string>
+    <string name="add_substance">Add Substance</string>
+    <string name="complete_selection">Complete Selection</string>
 </resources>

@@ -6,31 +6,30 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/wirkstoffListe"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:theme="@style/Base.Widget.AppCompat.ListView"
-        android:layout_below="@+id/introTextEnzymeEnzyme"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"/>
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        android:theme="@style/Base.Widget.AppCompat.ListView" />
 
     <AutoCompleteTextView
 
+        android:id="@+id/wirkstoffAutoComplete1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/wirkstoffAutoComplete1"
-        android:hint="@string/substance"
-        android:inputType="textAutoComplete"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/wirkstoffListe"
+        android:layout_marginTop="35dp"
         android:dropDownHeight="150dp"
         android:elegantTextHeight="false"
-        android:layout_below="@+id/wirkstoffListe"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="35dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+        android:focusable="true"
+        android:hint="@string/substance"
+        android:inputType="textAutoComplete" />
 </RelativeLayout>

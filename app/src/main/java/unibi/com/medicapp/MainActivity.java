@@ -2,7 +2,6 @@ package unibi.com.medicapp;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,8 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
@@ -21,20 +19,26 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.util.KeyboardUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.LinkedList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
-public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
+
+public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.contentLayout)
     FrameLayout contentFrame;
+
     FragmentManager supportFragmentManager;
-    Fragment mainSearchFragment;
+    MainSearchFragment mainSearchFragment;
+    SearchSubstanceFragment searchSubstanceFragment;
     private LinkedList<Substance> selectedSubstances;
     private Drawer.Result result = null;
     private Bus bus;
@@ -48,7 +52,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         bus.register(this);
 
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getResources().getString(R.string.search));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setTitle(getResources().getString(R.string.search));
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        shouldDisplayHomeUp();
+
 
         // Create  for ContentLayout
         supportFragmentManager = getSupportFragmentManager();
@@ -56,31 +65,36 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         supportFragmentManager.beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
 
         // init Gui Elements
-        initDrawer();
-
-
-//        searchButton.setButtonColor(getResources().getColor(R.color.accent));
-//        searchButton.setRippleEffectEnabled(true);
-//        searchButton.setImageDrawable(new IconicsDrawable(this, FontAwesome.Icon.faw_search).color(getResources().getColor(R.color.icons)).sizeDp(50));
-//        searchButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Start search);
-//            }
-//        });
+        initDrawer(savedInstanceState);
 
 
     }
 
-   @Subscribe public void addSubstanceButtonClicked(ButtonClickedEvent event) {
-       if (event.eventtype == 1) {
-        SearchSubstanceFragment searchSubstanceFragment  = SearchSubstanceFragment.newInstance(null);
-           supportFragmentManager.beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment).addToBackStack(null).commit();
-       }
+    @Subscribe
+    public void addSubstanceButtonClicked(ButtonClickedEvent event) {
+        switch (event.eventtype) {
+            case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
+                searchSubstanceFragment = SearchSubstanceFragment.newInstance(null);
+                if (selectedSubstances != null) {
+                    searchSubstanceFragment.setSubstances(selectedSubstances);
+                }
+                supportFragmentManager.beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment).addToBackStack(null).commit();
+                result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                return;
+            default:
+                return;
+        }
 
-   }
+    }
 
-    private void initDrawer() {
+    public void shouldDisplayHomeUp() {
+        //Enable Up button only  if there are entries in the back stack
+        boolean canback = getSupportFragmentManager().getBackStackEntryCount() > 0;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
+    }
+
+    private void initDrawer(Bundle savedInstance) {
         AccountHeader.Result headerResult = new AccountHeader()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
@@ -103,13 +117,39 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l, IDrawerItem iDrawerItem) {
-                        //TODO Menu Switcher Logik
+
                     }
 
                 })
+                .withOnDrawerNavigationListener(new Drawer.OnDrawerNavigationListener() {
+                    @Override
+                    public boolean onNavigationClickListener(View clickedView) {
+                        // Only called when back button is shown - handlers back action inside fragment
+                        getSupportFragmentManager().popBackStack();
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                        result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+                        return true;
+                    }
+                })
+                .withOnDrawerListener(new Drawer.OnDrawerListener() {
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        KeyboardUtil.hideKeyboard(MainActivity.this);
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+
+                    }
+
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
+
+                    }
+                })
+                .withSavedInstance(savedInstance)
                 .build();
     }
-
 
 
     @Override
@@ -118,26 +158,57 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         getMenuInflater().inflate(R.menu.menu_search, menu);
         MenuItem searchbutton = menu.findItem(R.id.action_search);
         searchbutton.setIcon(new IconicsDrawable(this, FontAwesome.Icon.faw_search).sizeDp(24).color(getResources().getColor(R.color.icons)));
+        searchbutton.setTitle(getResources().getString(R.string.search));
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                return true;
+            case R.id.action_commit_selection:
+                selectedSubstances = searchSubstanceFragment.getSubstances();
+                mainSearchFragment.setSubstances(selectedSubstances);
+                supportFragmentManager.popBackStack();
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-            return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        //This method is called when the up button is pressed. Just the pop back stack.
+        getSupportFragmentManager().popBackStack();
+        return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState = result.saveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        shouldDisplayHomeUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //handle the back press :D close the drawer first and if the drawer is closed close the activity
+        if (result != null && result.isDrawerOpen()) {
+            result.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 }

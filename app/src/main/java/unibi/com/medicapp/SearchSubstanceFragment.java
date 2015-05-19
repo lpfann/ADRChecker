@@ -8,22 +8,28 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
 import android.widget.SimpleCursorAdapter;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.squareup.otto.Bus;
 
 import java.util.LinkedList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 
 public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM2 = "param2";
+
     @InjectView(R.id.wirkstoffAutoComplete1)
     AutoCompleteTextView autocompleteWirkstoffView;
     @InjectView(R.id.wirkstoffListe)
@@ -34,6 +40,7 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     private OnFragmentInteractionListener mListener;
     private QueryDatabase db;
     private SubstanceListAdapter mAdapter;
+    private Bus mBus;
 
 
     public SearchSubstanceFragment() {
@@ -51,7 +58,6 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     public static SearchSubstanceFragment newInstance(String param2) {
         SearchSubstanceFragment fragment = new SearchSubstanceFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,10 +65,9 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
+        mBus = BusProvider.getInstance();
+        setHasOptionsMenu(true);
 
     }
 
@@ -79,9 +84,6 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
         wirkstoffListeView.setAdapter(mAdapter);
     }
 
-    public void setData(LinkedList<Substance> substances) {
-        mSubstances = substances;
-    }
 
     private void initializeAutoComplete(Context c) {
 
@@ -131,6 +133,7 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
         ButterKnife.inject(this, v);
         initList(v);
         initializeAutoComplete(getActivity());
+        autocompleteWirkstoffView.requestFocus();
         return v;
     }
 
@@ -142,9 +145,19 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_substance_search, menu);
+        menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_commit_selection).setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_save).sizeDp(24).color(getResources().getColor(R.color.icons)));
+
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         db = QueryDatabase.getInstance(activity);
+
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -159,5 +172,19 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_commit_selection) {
+            mBus.post(new ButtonClickedEvent(ButtonClickedEvent.GET_DATA_SEARCH_SUBSTANCE_FRAGMENT));
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    public LinkedList<Substance> getSubstances() {
+        return (LinkedList<Substance>) mSubstances.clone();
+    }
+
+    public void setSubstances(LinkedList<Substance> substances) {
+        this.mSubstances = (LinkedList<Substance>) substances.clone();
+    }
 }
