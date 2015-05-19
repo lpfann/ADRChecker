@@ -8,10 +8,15 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.FontAwesome;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
@@ -74,6 +79,7 @@ public class MainSearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         selectedSubstances = new LinkedList<>();
     }
 
@@ -83,6 +89,7 @@ public class MainSearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_main_search, container, false);
         ButterKnife.inject(this, v);
+
         initEnzymeList();
         initSubstanceList();
         return v;
@@ -159,4 +166,11 @@ public class MainSearchFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem searchbutton = menu.findItem(R.id.action_search);
+        searchbutton.setIcon(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_search).sizeDp(24).color(getResources().getColor(R.color.icons)));
+        searchbutton.setTitle(getResources().getString(R.string.search));
+    }
 }

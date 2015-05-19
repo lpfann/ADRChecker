@@ -1,23 +1,15 @@
 package unibi.com.medicapp;
 
 import android.app.Activity;
-import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.FilterQueryProvider;
-import android.widget.SimpleCursorAdapter;
+import android.widget.FrameLayout;
 
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.squareup.otto.Bus;
 
 import java.util.LinkedList;
@@ -26,12 +18,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
+public class ResultListFragment extends android.support.v4.app.Fragment {
 
-    @InjectView(R.id.wirkstoffAutoComplete1)
-    AutoCompleteTextView autocompleteWirkstoffView;
-    @InjectView(R.id.wirkstoffListe)
-    android.support.v7.widget.RecyclerView wirkstoffListeView;
+    @InjectView(R.id.enzymecard)
+    FrameLayout enzymecardView;
+    @InjectView(R.id.drugcard)
+    FrameLayout drugcardView;
 
     private LinkedList<Substance> mSubstances;
     private QueryDatabase db;
@@ -39,12 +31,12 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     private Bus mBus;
 
 
-    public SearchSubstanceFragment() {
+    public ResultListFragment() {
         // Required empty public constructor
     }
 
-    public static SearchSubstanceFragment newInstance() {
-        SearchSubstanceFragment fragment = new SearchSubstanceFragment();
+    public static ResultListFragment newInstance() {
+        ResultListFragment fragment = new ResultListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -59,19 +51,8 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
 
     }
 
-    private void initList(View v) {
-        if (mSubstances == null) {
-            mSubstances = new LinkedList<>();
-        }
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
-        wirkstoffListeView.setLayoutManager(mLayoutManager);
-        wirkstoffListeView.setHasFixedSize(true);
-        // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
-//        wirkstoffListeView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
-        mAdapter = new SubstanceListAdapter(mSubstances);
-        wirkstoffListeView.setAdapter(mAdapter);
-    }
 
+/*
 
     private void initializeAutoComplete(Context c) {
 
@@ -113,15 +94,28 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
 
     }
 
+
+    private void initList(View v) {
+        if (mSubstances == null) {
+            mSubstances = new LinkedList<>();
+        }
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
+        wirkstoffListeView.setLayoutManager(mLayoutManager);
+        wirkstoffListeView.setHasFixedSize(true);
+        // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
+//        wirkstoffListeView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
+        mAdapter = new SubstanceListAdapter(mSubstances);
+        wirkstoffListeView.setAdapter(mAdapter);
+    }
+*/
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_search_substance, container, false);
+        View v = inflater.inflate(R.layout.result_list_layout, container, false);
         ButterKnife.inject(this, v);
-        initList(v);
-        initializeAutoComplete(getActivity());
-        autocompleteWirkstoffView.requestFocus();
+
         return v;
     }
 
@@ -129,7 +123,8 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_substance_search, menu);
-        menu.findItem(R.id.action_commit_selection).setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_save).sizeDp(24).color(getResources().getColor(R.color.icons)));
+        //menu.findItem(R.id.action_search).setVisible(false);
+        //menu.findItem(R.id.action_commit_selection).setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_save).sizeDp(24).color(getResources().getColor(R.color.icons)));
 
     }
 
@@ -159,5 +154,10 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
 
     public void setSubstances(LinkedList<Substance> substances) {
         this.mSubstances = (LinkedList<Substance>) substances.clone();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

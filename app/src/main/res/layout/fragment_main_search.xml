@@ -1,8 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="unibi.com.medicapp.MainSearchFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="unibi.com.medicapp.MainSearchFragment">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:tools="http://schemas.android.com/tools"
@@ -23,15 +23,16 @@
             android:layout_below="@+id/textView2"
             android:layout_margin="5dp" />
 
-        <com.gc.materialdesign.views.ButtonRectangle
+        <Button
             android:id="@+id/add_substanceButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/selectedSubstanceList"
-            android:background="@color/accent"
-            android:text="ENTER" />
+            android:background="@color/primary"
+            android:text="ENTER SUBSTANCES"
+            android:textColor="@color/icons" />
 
         <TextView
             android:id="@+id/textView2"
@@ -70,10 +71,11 @@
         <ListView
             android:id="@+id/enzymeListView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentStart="false"
             android:layout_below="@+id/textView3"
             android:layout_marginTop="10dp"
             android:choiceMode="multipleChoice" />

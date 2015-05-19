@@ -1,17 +1,14 @@
 package unibi.com.medicapp;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
@@ -30,7 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, FragmentManager.OnBackStackChangedListener {
+public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
 
     @InjectView(R.id.toolbar)
@@ -44,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private Drawer.Result result = null;
     private LinkedList<Substance> selectedSubstances;
     private Bus bus;
+    private ResultListFragment resultListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public void addSubstanceButtonClicked(ButtonClickedEvent event) {
         switch (event.eventtype) {
             case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
+                // Open Search Fragment
                 searchSubstanceFragment = SearchSubstanceFragment.newInstance();
                 if (selectedSubstances != null) {
                     searchSubstanceFragment.setSubstances(selectedSubstances);
@@ -85,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle(getString(R.string.add_substances));
                 return;
             default:
         }
@@ -156,26 +156,26 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        MenuItem searchbutton = menu.findItem(R.id.action_search);
-        searchbutton.setIcon(new IconicsDrawable(this, FontAwesome.Icon.faw_search).sizeDp(24).color(getResources().getColor(R.color.icons)));
-        searchbutton.setTitle(getResources().getString(R.string.search));
-        return true;
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_search:
+                // Open Result Fragment
                 checkedEnzymes = mainSearchFragment.getCheckedItems();
+                resultListFragment = ResultListFragment.newInstance();
+                supportFragmentManager.beginTransaction().replace(R.id.contentLayout, resultListFragment).addToBackStack(null).commit();
+                getSupportActionBar().setTitle(R.string.results);
+                return true;
             case R.id.action_commit_selection:
+                // Come back from Search Fragment
                 selectedSubstances = searchSubstanceFragment.getSubstances();
                 mainSearchFragment.setSubstances(selectedSubstances);
                 supportFragmentManager.popBackStack();
+                getSupportActionBar().setTitle(R.string.search);
+
                 return true;
 
             default:
@@ -183,9 +183,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         }
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-    }
+
 
     @Override
     public boolean onSupportNavigateUp() {

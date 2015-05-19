@@ -6,8 +6,8 @@
     <string name="drawer_item_home">Home</string>
     <string name="drawer_item_settings">Settings</string>
     <string name="info">Info</string>
-    <string name="enzyme_interaction">Enzym-Wechselwirkungen</string>
-    <string name="substance">Substanz</string>
+    <string name="enzyme_interaction">Drug-Enzyme-Metabolism</string>
+    <string name="substance">Substance</string>
     <string name="introTextEE">Search for interactions by entering the substances one by one.</string>
     <string name="search">Search</string>
 
@@ -15,4 +15,7 @@
     <string name="defectiveEnzymes">Defective Enzymes</string>
     <string name="add_substance">Add Substance</string>
     <string name="complete_selection">Complete Selection</string>
+    <string name="drugdruginteractions">Drug-Drug-Interactions</string>
+    <string name="results">Results</string>
+    <string name="add_substances">Add substances</string>
 </resources>
