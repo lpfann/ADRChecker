@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -81,21 +82,12 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     searchSubstanceFragment.setSubstances(selectedSubstances);
                 }
                 supportFragmentManager.beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment).addToBackStack(null).commit();
-                result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
                 assert getSupportActionBar() != null;
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setTitle(getString(R.string.add_substances));
                 return;
             default:
         }
 
-    }
-
-    public void shouldDisplayHomeUp() {
-        //Enable Up button only  if there are entries in the back stack
-        boolean canback = getSupportFragmentManager().getBackStackEntryCount() > 0;
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
     }
 
     private void initDrawer(Bundle savedInstance) {
@@ -121,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l, IDrawerItem iDrawerItem) {
-
+                        System.out.println();
                     }
 
                 })
@@ -130,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     public boolean onNavigationClickListener(View clickedView) {
                         // Only called when back button is shown - handlers back action inside fragment
                         getSupportFragmentManager().popBackStack();
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                        result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
                         return true;
                     }
                 })
@@ -154,9 +144,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 .withSavedInstance(savedInstance)
                 .build();
     }
-
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -185,17 +172,30 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
 
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        //This method is called when the up button is pressed. Just the pop back stack.
-        getSupportFragmentManager().popBackStack();
-        return true;
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState = result.saveInstanceState(outState);
         super.onSaveInstanceState(outState);
+    }
+
+
+    public void shouldDisplayHomeUp() {
+        //Enable Up button only  if there are entries in the back stack
+        int canback = getSupportFragmentManager().getBackStackEntryCount();
+        assert getSupportActionBar() != null;
+        if (result != null) {
+            if (canback > 0) {
+                result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            } else {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+            }
+
+        }
+
+        Log.e("BACKSTACK", String.valueOf(canback));
     }
 
     @Override

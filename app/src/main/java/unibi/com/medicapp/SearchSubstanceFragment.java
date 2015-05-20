@@ -147,9 +147,9 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_commit_selection) {
-            mBus.post(new ButtonClickedEvent(ButtonClickedEvent.GET_DATA_SEARCH_SUBSTANCE_FRAGMENT));
-        }
+//        if (item.getItemId() == R.id.action_commit_selection) {
+//            mBus.post(new ButtonClickedEvent(ButtonClickedEvent.GET_DATA_SEARCH_SUBSTANCE_FRAGMENT));
+//        }
         return super.onOptionsItemSelected(item);
     }
 

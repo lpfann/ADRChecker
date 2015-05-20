@@ -3,6 +3,12 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
+        config {
+            keyAlias 'AndroidKey'
+            keyPassword 'REDACTED'
+            storeFile file('C:/Users/mirek_000/Documents/Dropbox/Shared App Data/android-keystore.jks')
+            storePassword 'REDACTED'
+        }
     }
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
@@ -26,6 +32,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+    productFlavors {
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
