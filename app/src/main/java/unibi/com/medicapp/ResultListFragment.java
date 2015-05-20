@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.squareup.otto.Bus;
 
@@ -16,6 +17,7 @@ import java.util.LinkedList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 public class ResultListFragment extends android.support.v4.app.Fragment {
@@ -24,13 +26,10 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
     FrameLayout enzymecardView;
     @InjectView(R.id.drugcard)
     FrameLayout drugcardView;
-
     private LinkedList<Substance> mSubstances;
     private QueryDatabase db;
     private SubstanceListAdapter mAdapter;
     private Bus mBus;
-
-
     public ResultListFragment() {
         // Required empty public constructor
     }
@@ -40,6 +39,16 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @OnClick(R.id.enzymecard)
+    void showEnzymeResults() {
+        Toast.makeText(getActivity(), "Results", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.drugcard)
+    void showDrugResults() {
+
     }
 
     @Override
@@ -52,62 +61,6 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
     }
 
 
-/*
-
-    private void initializeAutoComplete(Context c) {
-
-        final int[] to = new int[]{android.R.id.text1};
-        final String[] from = new String[]{"name"};
-        final SimpleCursorAdapter adapter = new SimpleCursorAdapter(c,
-                android.R.layout.simple_dropdown_item_1line,
-                null,
-                from,
-                to,
-                0);
-
-        // This will provide the labels for the choices to be displayed in the AutoCompleteTextView
-        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
-            @Override
-            public CharSequence convertToString(Cursor cursor) {
-                final int colIndex = cursor.getColumnIndexOrThrow("name");
-                return cursor.getString(colIndex);
-            }
-        });
-
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
-            @Override
-            public Cursor runQuery(CharSequence name) {
-                return db.getSubstancesLike((String) name);
-            }
-        });
-        autocompleteWirkstoffView.setAdapter(adapter);
-        autocompleteWirkstoffView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow("name"));
-                Substance selSubstance = new Substance(id, name);
-                mSubstances.add(selSubstance);
-                mAdapter.notifyItemInserted(mSubstances.size() - 1);
-                autocompleteWirkstoffView.setText("");
-            }
-        });
-
-    }
-
-
-    private void initList(View v) {
-        if (mSubstances == null) {
-            mSubstances = new LinkedList<>();
-        }
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
-        wirkstoffListeView.setLayoutManager(mLayoutManager);
-        wirkstoffListeView.setHasFixedSize(true);
-        // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
-//        wirkstoffListeView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
-        mAdapter = new SubstanceListAdapter(mSubstances);
-        wirkstoffListeView.setAdapter(mAdapter);
-    }
-*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
