@@ -33,3 +33,9 @@
              @com.squareup.otto.Produce public *;
          }
          -keep class org.lucasr.twowayview.** { *; }
+         -dontwarn icepick.**
+         -keep class **$$Icicle { *; }
+         -keepnames class * { @icepick.Icicle *;}
+         -keepclasseswithmembernames class * {
+             @icepick.* <fields>;
+         }

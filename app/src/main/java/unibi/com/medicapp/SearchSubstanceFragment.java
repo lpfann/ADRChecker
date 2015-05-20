@@ -24,6 +24,8 @@ import java.util.LinkedList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 
 
 public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
@@ -33,7 +35,8 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     @InjectView(R.id.wirkstoffListe)
     android.support.v7.widget.RecyclerView wirkstoffListeView;
 
-    private LinkedList<Substance> mSubstances;
+    @Icicle
+    LinkedList<Substance> mSubstances;
     private QueryDatabase db;
     private SubstanceListAdapter mAdapter;
     private Bus mBus;
@@ -53,10 +56,8 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        Icepick.restoreInstanceState(this, savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     private void initList(View v) {
@@ -160,6 +161,12 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
 
     public void setSubstances(LinkedList<Substance> substances) {
         this.mSubstances = (LinkedList<Substance>) substances.clone();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
 }

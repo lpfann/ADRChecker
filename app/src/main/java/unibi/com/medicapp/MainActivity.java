@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
@@ -25,6 +24,8 @@ import java.util.LinkedList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
@@ -32,43 +33,48 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-    @InjectView(R.id.contentLayout)
-    FrameLayout contentFrame;
 
-    private FragmentManager supportFragmentManager;
-    private MainSearchFragment mainSearchFragment;
-    private SearchSubstanceFragment searchSubstanceFragment;
-    private ArrayList<Integer> checkedEnzymes;
-    private Drawer.Result result = null;
-    private LinkedList<Substance> selectedSubstances;
-    private Bus bus;
+    MainSearchFragment mainSearchFragment;
+    SearchSubstanceFragment searchSubstanceFragment;
+    @Icicle
+    ArrayList<Integer> checkedEnzymes;
+    @Icicle
+    LinkedList<Substance> selectedSubstances = new LinkedList<>();
+    Drawer.Result result = null;
+    AccountHeader.Result headerResult;
     private ResultListFragment resultListFragment;
-    private boolean custom_menu_enabled = false;
+    private Bus bus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.inject(this);
-        bus = BusProvider.getInstance();
-        bus.register(this);
 
-        setSupportActionBar(toolbar);
+        // init Gui Elements
         assert getSupportActionBar() != null;
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().setTitle(getResources().getString(R.string.search));
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-        shouldDisplayHomeUp();
 
-
-        // Create  for ContentLayout
-        supportFragmentManager = getSupportFragmentManager();
-        mainSearchFragment = MainSearchFragment.newInstance();
-        supportFragmentManager.beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
-
-        // init Gui Elements
         initDrawer(savedInstanceState);
+
+        if (savedInstanceState == null) {
+
+            // Create  for ContentLayout
+
+            mainSearchFragment = MainSearchFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+
+
+        } else {
+            mainSearchFragment = (MainSearchFragment) getSupportFragmentManager().findFragmentByTag("main");
+        }
+
+
 
 
     }
@@ -79,10 +85,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
                 // Open Search Fragment
                 searchSubstanceFragment = SearchSubstanceFragment.newInstance();
-                if (selectedSubstances != null) {
-                    searchSubstanceFragment.setSubstances(selectedSubstances);
-                }
-                supportFragmentManager.beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment).addToBackStack(null).commit();
+                searchSubstanceFragment.setSubstances(selectedSubstances);
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment, "search").addToBackStack(null).commitAllowingStateLoss();
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(getString(R.string.add_substances));
                 return;
@@ -92,9 +96,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
     private void initDrawer(Bundle savedInstance) {
-        AccountHeader.Result headerResult = new AccountHeader()
+        headerResult = new AccountHeader()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
+                .withSavedInstance(savedInstance)
                 .build();
 
 
@@ -154,14 +159,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 // Open Result Fragment
                 checkedEnzymes = mainSearchFragment.getCheckedItems();
                 resultListFragment = ResultListFragment.newInstance();
-                supportFragmentManager.beginTransaction().replace(R.id.contentLayout, resultListFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultListFragment).addToBackStack(null).commit();
                 getSupportActionBar().setTitle(R.string.results);
                 return true;
             case R.id.action_commit_selection:
                 // Come back from Search Fragment
+                searchSubstanceFragment = (SearchSubstanceFragment) getSupportFragmentManager().findFragmentByTag("search");
+                mainSearchFragment = (MainSearchFragment) getSupportFragmentManager().findFragmentByTag("main");
                 selectedSubstances = searchSubstanceFragment.getSubstances();
                 mainSearchFragment.setSubstances(selectedSubstances);
-                supportFragmentManager.popBackStack();
+                getSupportFragmentManager().popBackStack();
 
 
                 return true;
@@ -177,7 +184,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState = result.saveInstanceState(outState);
+        outState = headerResult.saveInstanceState(outState);
         super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+
     }
 
 
@@ -213,4 +223,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        bus.unregister(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bus = BusProvider.getInstance();
+        bus.register(this);
+    }
 }

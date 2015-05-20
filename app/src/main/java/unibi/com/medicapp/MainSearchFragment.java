@@ -26,12 +26,15 @@ import java.util.LinkedList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.Icicle;
 
 
 public class MainSearchFragment extends Fragment {
 
     Bus mBus;
     SimpleCursorAdapter adapter;
+    @Icicle
     ArrayList<Integer> selectedEnzymeIDs;
     @InjectView(R.id.enzymeListView)
     ListView enzymeListView;
@@ -42,8 +45,9 @@ public class MainSearchFragment extends Fragment {
 
     Cursor enzymeCursor;
     SparseBooleanArray selectedItemsInList;
+    @Icicle
+    LinkedList<Substance> selectedSubstances;
     private QueryDatabase db;
-    private LinkedList<Substance> selectedSubstances;
     private SubstanceListAdapter substanceadapter;
 
 
@@ -83,8 +87,11 @@ public class MainSearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         setHasOptionsMenu(true);
-        selectedSubstances = new LinkedList<>();
+        if (selectedSubstances == null) {
+            selectedSubstances = new LinkedList<>();
+        }
     }
 
     @Override
@@ -123,8 +130,10 @@ public class MainSearchFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        mBus = BusProvider.getInstance();
-        db = QueryDatabase.getInstance(getActivity());
+        if (activity != null) {
+            mBus = BusProvider.getInstance();
+            db = QueryDatabase.getInstance(getActivity());
+        }
 
     }
 
@@ -179,9 +188,16 @@ public class MainSearchFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem searchbutton = menu.findItem(R.id.action_search);
         searchbutton.setIcon(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_search).sizeDp(24).color(getResources().getColor(R.color.icons)));
         searchbutton.setTitle(getResources().getString(R.string.search));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 }
