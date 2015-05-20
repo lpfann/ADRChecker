@@ -1,11 +1,13 @@
 package unibi.com.medicapp;
 
+import java.io.Serializable;
+
 /**
  * @author Lukas Pfannschmidt
  *         Date: 16.05.2015
  *         Time: 13:46
  */
-public class Substance {
+public class Substance implements Serializable{
     private long id;
     private String name;
 
