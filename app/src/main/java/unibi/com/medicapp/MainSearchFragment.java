@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -36,6 +37,9 @@ public class MainSearchFragment extends Fragment {
     ListView enzymeListView;
     @InjectView(R.id.selectedSubstanceList)
     android.support.v7.widget.RecyclerView substanceListView;
+    @InjectView(R.id.empty_view)
+    TextView emptyView;
+
     Cursor enzymeCursor;
     SparseBooleanArray selectedItemsInList;
     private QueryDatabase db;
@@ -103,6 +107,13 @@ public class MainSearchFragment extends Fragment {
 //        substanceListView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
         substanceadapter = new SubstanceListAdapter(selectedSubstances);
         substanceListView.setAdapter(substanceadapter);
+        if (selectedSubstances.size() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            substanceListView.setVisibility(View.GONE);
+        } else {
+            substanceListView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
 
 
     }

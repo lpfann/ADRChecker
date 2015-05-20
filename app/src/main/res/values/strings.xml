@@ -18,4 +18,7 @@
     <string name="drugdruginteractions">Drug-Drug-Interactions</string>
     <string name="results">Results</string>
     <string name="add_substances">Add substances</string>
+    <string name="menu_cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="no_substance_added">No substances added</string>
 </resources>

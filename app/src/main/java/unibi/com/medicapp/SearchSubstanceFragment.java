@@ -54,7 +54,7 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBus = BusProvider.getInstance();
+
         setHasOptionsMenu(true);
 
     }
@@ -137,6 +137,7 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         db = QueryDatabase.getInstance(activity);
+        mBus = BusProvider.getInstance();
 
     }
 
@@ -160,4 +161,5 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     public void setSubstances(LinkedList<Substance> substances) {
         this.mSubstances = (LinkedList<Substance>) substances.clone();
     }
+
 }

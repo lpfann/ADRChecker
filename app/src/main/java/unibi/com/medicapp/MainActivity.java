@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,14 +34,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     Toolbar toolbar;
     @InjectView(R.id.contentLayout)
     FrameLayout contentFrame;
-    FragmentManager supportFragmentManager;
-    MainSearchFragment mainSearchFragment;
-    SearchSubstanceFragment searchSubstanceFragment;
-    ArrayList<Integer> checkedEnzymes;
+
+    private FragmentManager supportFragmentManager;
+    private MainSearchFragment mainSearchFragment;
+    private SearchSubstanceFragment searchSubstanceFragment;
+    private ArrayList<Integer> checkedEnzymes;
     private Drawer.Result result = null;
     private LinkedList<Substance> selectedSubstances;
     private Bus bus;
     private ResultListFragment resultListFragment;
+    private boolean custom_menu_enabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 selectedSubstances = searchSubstanceFragment.getSubstances();
                 mainSearchFragment.setSubstances(selectedSubstances);
                 supportFragmentManager.popBackStack();
-                getSupportActionBar().setTitle(R.string.search);
+
 
                 return true;
 
@@ -191,11 +192,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             } else {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+                getSupportActionBar().setTitle(R.string.search);
             }
 
         }
-
-        Log.e("BACKSTACK", String.valueOf(canback));
     }
 
     @Override

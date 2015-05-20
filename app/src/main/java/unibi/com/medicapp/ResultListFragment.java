@@ -122,7 +122,7 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_substance_search, menu);
+        //inflater.inflate(R.menu.menu_substance_search, menu);
         //menu.findItem(R.id.action_search).setVisible(false);
         //menu.findItem(R.id.action_commit_selection).setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_save).sizeDp(24).color(getResources().getColor(R.color.icons)));
 

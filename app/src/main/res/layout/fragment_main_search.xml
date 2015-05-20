@@ -4,35 +4,15 @@
     android:layout_height="match_parent"
     tools:context="unibi.com.medicapp.MainSearchFragment">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/selectedSubstanceList"
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textView2"
-            android:layout_margin="5dp" />
-
-        <Button
-            android:id="@+id/add_substanceButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/selectedSubstanceList"
-            android:background="@color/primary"
-            android:text="ENTER SUBSTANCES"
-            android:textColor="@color/icons" />
 
         <TextView
             android:id="@+id/textView2"
@@ -45,6 +25,37 @@
             android:fontFamily="sans-serif-light"
             android:text="@string/substances"
             android:textAppearance="?android:attr/textAppearanceLarge" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/selectedSubstanceList"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView2"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@+id/textView2"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:text="@string/no_substance_added"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/add_substanceButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/selectedSubstanceList"
+            android:background="@color/primary"
+            android:text="ENTER SUBSTANCES"
+            android:textColor="@color/icons" />
+
+
 
         <View
             android:id="@+id/view"
@@ -70,7 +81,7 @@
 
         <ListView
             android:id="@+id/enzymeListView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
@@ -79,6 +90,6 @@
             android:layout_below="@+id/textView3"
             android:layout_marginTop="10dp"
             android:choiceMode="multipleChoice" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </FrameLayout>
