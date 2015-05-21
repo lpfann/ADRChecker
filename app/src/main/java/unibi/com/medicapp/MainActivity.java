@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     LinkedList<Substance> selectedSubstances = new LinkedList<>();
     Drawer.Result result = null;
     AccountHeader.Result headerResult;
-    private ResultListFragment resultListFragment;
+    private ResultOverviewFragment resultOverviewFragment;
     private Bus bus;
 
     @Override
@@ -89,6 +89,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment, "search").addToBackStack(null).commitAllowingStateLoss();
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(getString(R.string.add_substances));
+                return;
+            case ButtonClickedEvent.DRUG_CARD_CLICKED:
+                return;
+            case ButtonClickedEvent.ENZYME_CARD_CLICKED:
+//                // Open Search Fragment
+//                resultListFragment = ResultListFragment.newInstance();
+//                searchSubstanceFragment.setSubstances(selectedSubstances);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment, "search").addToBackStack(null).commitAllowingStateLoss();
+//                assert getSupportActionBar() != null;
+//                getSupportActionBar().setTitle(getString(R.string.add_substances));
                 return;
             default:
         }
@@ -158,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             case R.id.action_search:
                 // Open Result Fragment
                 checkedEnzymes = mainSearchFragment.getCheckedItems();
-                resultListFragment = ResultListFragment.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultListFragment).addToBackStack(null).commit();
+                resultOverviewFragment = ResultOverviewFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultOverviewFragment).addToBackStack(null).commit();
                 getSupportActionBar().setTitle(R.string.results);
                 return true;
             case R.id.action_commit_selection:
@@ -169,8 +179,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 selectedSubstances = searchSubstanceFragment.getSubstances();
                 mainSearchFragment.setSubstances(selectedSubstances);
                 getSupportFragmentManager().popBackStack();
-
-
                 return true;
 
             default:

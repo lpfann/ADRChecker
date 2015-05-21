@@ -2,115 +2,107 @@ package unibi.com.medicapp;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.app.ListFragment;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.Toast;
-
-import com.squareup.otto.Bus;
-
-import java.util.LinkedList;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 
-public class ResultListFragment extends android.support.v4.app.Fragment {
+import unibi.com.medicapp.dummy.DummyContent;
 
-    @InjectView(R.id.enzymecard)
-    FrameLayout enzymecardView;
-    @InjectView(R.id.drugcard)
-    FrameLayout drugcardView;
-    private LinkedList<Substance> mSubstances;
-    private QueryDatabase db;
-    private SubstanceListAdapter mAdapter;
-    private Bus mBus;
-    public ResultListFragment() {
-        // Required empty public constructor
-    }
+/**
+ * A fragment representing a list of Items.
+ * <p>
+ * <p>
+ * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
+ * interface.
+ */
+public class ResultListFragment extends ListFragment {
 
-    public static ResultListFragment newInstance() {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    private OnFragmentInteractionListener mListener;
+
+    // TODO: Rename and change types of parameters
+    public static ResultListFragment newInstance(String param1, String param2) {
         ResultListFragment fragment = new ResultListFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
-    @OnClick(R.id.enzymecard)
-    void showEnzymeResults() {
-        Toast.makeText(getActivity(), "Results", Toast.LENGTH_SHORT).show();
-    }
-
-    @OnClick(R.id.drugcard)
-    void showDrugResults() {
-
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public ResultListFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBus = BusProvider.getInstance();
-        setHasOptionsMenu(true);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
 
+        // TODO: Change Adapter to display your content
+        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
     }
 
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.result_list_layout, container, false);
-        ButterKnife.inject(this, v);
-
-        return v;
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //inflater.inflate(R.menu.menu_substance_search, menu);
-        //menu.findItem(R.id.action_search).setVisible(false);
-        //menu.findItem(R.id.action_commit_selection).setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_save).sizeDp(24).color(getResources().getColor(R.color.icons)));
-
-    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        db = QueryDatabase.getInstance(activity);
-
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_commit_selection) {
-            mBus.post(new ButtonClickedEvent(ButtonClickedEvent.GET_DATA_SEARCH_SUBSTANCE_FRAGMENT));
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        if (null != mListener) {
+            // Notify the active callbacks interface (the activity, if the
+            // fragment is attached to one) that an item has been selected.
+            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
-        return super.onOptionsItemSelected(item);
     }
 
-    public LinkedList<Substance> getSubstances() {
-        return (LinkedList<Substance>) mSubstances.clone();
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        public void onFragmentInteraction(String id);
     }
 
-    public void setSubstances(LinkedList<Substance> substances) {
-        this.mSubstances = (LinkedList<Substance>) substances.clone();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 }
