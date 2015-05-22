@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.FontAwesome;
 
@@ -16,16 +17,16 @@ import java.util.LinkedList;
  *         Date: 16.05.2015
  *         Time: 15:16
  */
-public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdapter.ViewHolder> {
-    private LinkedList<Substance> mData;
+public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.ViewHolder> {
+    private LinkedList<Agent> mData;
     private RecyclerView mRecyclerView;
 
-    public SubstanceListAdapter(LinkedList<Substance> data) {
+    public AgentsListAdapter(LinkedList<Agent> data) {
         mData = data;
     }
 
     @Override
-    public SubstanceListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public AgentsListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         // create a new view
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.substancelisteditable, viewGroup, false);

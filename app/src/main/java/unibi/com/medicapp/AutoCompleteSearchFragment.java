@@ -28,7 +28,7 @@ import icepick.Icepick;
 import icepick.Icicle;
 
 
-public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
+public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment {
 
     @InjectView(R.id.wirkstoffAutoComplete1)
     AutoCompleteTextView autocompleteWirkstoffView;
@@ -36,18 +36,18 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     android.support.v7.widget.RecyclerView wirkstoffListeView;
 
     @Icicle
-    LinkedList<Substance> mSubstances;
+    LinkedList<Agent> mAgents;
     private QueryDatabase db;
-    private SubstanceListAdapter mAdapter;
+    private AgentsListAdapter mAdapter;
     private Bus mBus;
 
 
-    public SearchSubstanceFragment() {
+    public AutoCompleteSearchFragment() {
         // Required empty public constructor
     }
 
-    public static SearchSubstanceFragment newInstance() {
-        SearchSubstanceFragment fragment = new SearchSubstanceFragment();
+    public static AutoCompleteSearchFragment newInstance() {
+        AutoCompleteSearchFragment fragment = new AutoCompleteSearchFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -61,15 +61,15 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     }
 
     private void initList(View v) {
-        if (mSubstances == null) {
-            mSubstances = new LinkedList<>();
+        if (mAgents == null) {
+            mAgents = new LinkedList<>();
         }
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
         wirkstoffListeView.setLayoutManager(mLayoutManager);
         wirkstoffListeView.setHasFixedSize(true);
         // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
 //        wirkstoffListeView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
-        mAdapter = new SubstanceListAdapter(mSubstances);
+        mAdapter = new AgentsListAdapter(mAgents);
         wirkstoffListeView.setAdapter(mAdapter);
     }
 
@@ -105,9 +105,9 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow("name"));
-                Substance selSubstance = new Substance(id, name);
-                mSubstances.add(selSubstance);
-                mAdapter.notifyItemInserted(mSubstances.size() - 1);
+                Agent selAgent = new Agent(id, name);
+                mAgents.add(selAgent);
+                mAdapter.notifyItemInserted(mAgents.size() - 1);
                 autocompleteWirkstoffView.setText("");
             }
         });
@@ -118,7 +118,7 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_search_substance, container, false);
+        View v = inflater.inflate(R.layout.fragment_autocomplete_search, container, false);
         ButterKnife.inject(this, v);
         initList(v);
         initializeAutoComplete(getActivity());
@@ -155,12 +155,12 @@ public class SearchSubstanceFragment extends android.support.v4.app.Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public LinkedList<Substance> getSubstances() {
-        return (LinkedList<Substance>) mSubstances.clone();
+    public LinkedList<Agent> getAgents() {
+        return (LinkedList<Agent>) mAgents.clone();
     }
 
-    public void setSubstances(LinkedList<Substance> substances) {
-        this.mSubstances = (LinkedList<Substance>) substances.clone();
+    public void setAgents(LinkedList<Agent> agents) {
+        this.mAgents = (LinkedList<Agent>) agents.clone();
     }
 
     @Override

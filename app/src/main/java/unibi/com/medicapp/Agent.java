@@ -7,11 +7,11 @@ import java.io.Serializable;
  *         Date: 16.05.2015
  *         Time: 13:46
  */
-public class Substance implements Serializable{
+public class Agent implements Serializable{
     private long id;
     private String name;
 
-    public Substance(long id, String name) {
+    public Agent(long id, String name) {
         this.id = id;
         this.name = name;
     }

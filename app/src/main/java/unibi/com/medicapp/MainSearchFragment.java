@@ -38,7 +38,7 @@ public class MainSearchFragment extends Fragment {
     ArrayList<Integer> selectedEnzymeIDs;
     @InjectView(R.id.enzymeListView)
     ListView enzymeListView;
-    @InjectView(R.id.selectedSubstanceList)
+    @InjectView(R.id.selectedAgentsList)
     android.support.v7.widget.RecyclerView substanceListView;
     @InjectView(R.id.empty_view)
     TextView emptyView;
@@ -46,9 +46,9 @@ public class MainSearchFragment extends Fragment {
     Cursor enzymeCursor;
     SparseBooleanArray selectedItemsInList;
     @Icicle
-    LinkedList<Substance> selectedSubstances;
+    LinkedList<Agent> mSelectedAgents;
     private QueryDatabase db;
-    private SubstanceListAdapter substanceadapter;
+    private AgentsListAdapter substanceadapter;
 
 
     public MainSearchFragment() {
@@ -75,8 +75,8 @@ public class MainSearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
         setHasOptionsMenu(true);
-        if (selectedSubstances == null) {
-            selectedSubstances = new LinkedList<>();
+        if (mSelectedAgents == null) {
+            mSelectedAgents = new LinkedList<>();
         }
     }
 
@@ -98,9 +98,9 @@ public class MainSearchFragment extends Fragment {
         substanceListView.setHasFixedSize(true);
         // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
 //        substanceListView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
-        substanceadapter = new SubstanceListAdapter(selectedSubstances);
+        substanceadapter = new AgentsListAdapter(mSelectedAgents);
         substanceListView.setAdapter(substanceadapter);
-        if (selectedSubstances.size() == 0) {
+        if (mSelectedAgents.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
             substanceListView.setVisibility(View.GONE);
         } else {
@@ -160,8 +160,8 @@ public class MainSearchFragment extends Fragment {
 
     }
 
-    public void setSubstances(LinkedList<Substance> substances) {
-        selectedSubstances = substances;
+    public void setSubstances(LinkedList<Agent> agents) {
+        mSelectedAgents = agents;
 
     }
 

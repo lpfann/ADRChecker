@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="20dp"
-    tools:context="unibi.com.medicapp.SearchSubstanceFragment">
+                tools:context="unibi.com.medicapp.AutoCompleteSearchFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/wirkstoffListe"
@@ -30,7 +30,7 @@
         android:elegantTextHeight="false"
 
         android:focusable="true"
-        android:hint="@string/substance"
+        android:hint="@string/agent"
         android:inputType="textAutoComplete"
 
         />

@@ -23,10 +23,10 @@
             android:layout_alignParentTop="true"
             android:focusableInTouchMode="false"
             android:fontFamily="sans-serif-light"
-            android:text="@string/substances"
+            android:text="@string/agents"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/selectedSubstanceList"
+            android:id="@+id/selectedAgentsList"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:layout_alignParentLeft="true"
@@ -41,7 +41,7 @@
             android:layout_below="@+id/textView2"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:text="@string/no_substance_added"
+            android:text="@string/no_agents_added"
             android:visibility="gone" />
 
         <Button
@@ -50,9 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/selectedSubstanceList"
+            android:layout_below="@+id/selectedAgentsList"
             android:background="@color/primary"
-            android:text="ENTER SUBSTANCES"
+            android:text="@string/enter_agents"
             android:textColor="@color/icons" />
 
 

@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     Toolbar toolbar;
 
     MainSearchFragment mainSearchFragment;
-    SearchSubstanceFragment searchSubstanceFragment;
+    AutoCompleteSearchFragment mAutoCompleteSearchFragment;
     @Icicle
     ArrayList<Integer> checkedEnzymes;
     @Icicle
-    LinkedList<Substance> selectedSubstances = new LinkedList<>();
+    LinkedList<Agent> mSelectedAgents = new LinkedList<>();
     @Icicle
     ArrayList<Integer> checkedItems;
 
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     AccountHeader.Result headerResult;
     private ResultOverviewFragment resultOverviewFragment;
     private Bus bus;
+    private ResultListFragment mResultListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,31 +83,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     }
 
-    @Subscribe
-    public void addSubstanceButtonClicked(ButtonClickedEvent event) {
-        switch (event.eventtype) {
-            case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
-                // Open Search Fragment
-                searchSubstanceFragment = SearchSubstanceFragment.newInstance();
-                searchSubstanceFragment.setSubstances(selectedSubstances);
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment, "search").addToBackStack(null).commitAllowingStateLoss();
-                assert getSupportActionBar() != null;
-                getSupportActionBar().setTitle(getString(R.string.add_substances));
-                return;
-            case ButtonClickedEvent.DRUG_CARD_CLICKED:
-                return;
-            case ButtonClickedEvent.ENZYME_CARD_CLICKED:
-//                // Open Search Fragment
-//                resultListFragment = ResultListFragment.newInstance();
-//                searchSubstanceFragment.setSubstances(selectedSubstances);
-//                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, searchSubstanceFragment, "search").addToBackStack(null).commitAllowingStateLoss();
-//                assert getSupportActionBar() != null;
-//                getSupportActionBar().setTitle(getString(R.string.add_substances));
-                return;
-            default:
-        }
 
-    }
 
     private void initDrawer(Bundle savedInstance) {
         headerResult = new AccountHeader()
@@ -177,11 +154,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 return true;
             case R.id.action_commit_selection:
                 // Come back from Search Fragment
-                searchSubstanceFragment = (SearchSubstanceFragment) getSupportFragmentManager().findFragmentByTag("search");
+                mAutoCompleteSearchFragment = (AutoCompleteSearchFragment) getSupportFragmentManager().findFragmentByTag("search");
                 mainSearchFragment = (MainSearchFragment) getSupportFragmentManager().findFragmentByTag("main");
-                selectedSubstances = searchSubstanceFragment.getSubstances();
+                mSelectedAgents = mAutoCompleteSearchFragment.getAgents();
                 //mainSearchFragment.setSelectedEnzymeIDs(checkedEnzymes);
-                mainSearchFragment.setSubstances(selectedSubstances);
+                mainSearchFragment.setSubstances(mSelectedAgents);
                 getSupportFragmentManager().popBackStack();
 
 
@@ -192,7 +169,30 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         }
     }
 
+    @Subscribe
+    public void onBusEvent(ButtonClickedEvent event) {
+        switch (event.eventtype) {
+            case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
+                // Open Search Fragment
+                mAutoCompleteSearchFragment = AutoCompleteSearchFragment.newInstance();
+                mAutoCompleteSearchFragment.setAgents(mSelectedAgents);
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mAutoCompleteSearchFragment, "search").addToBackStack(null).commitAllowingStateLoss();
+                assert getSupportActionBar() != null;
+                getSupportActionBar().setTitle(getString(R.string.add_agents));
+                return;
+            case ButtonClickedEvent.DRUG_CARD_CLICKED:
+                return;
+            case ButtonClickedEvent.ENZYME_CARD_CLICKED:
+                // Open Search Fragment
+                mResultListFragment = ResultListFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mResultListFragment, "resultlist").addToBackStack(null).commitAllowingStateLoss();
+                assert getSupportActionBar() != null;
+                getSupportActionBar().setTitle(getString(R.string.enzyme_interaction));
+                return;
+            default:
+        }
 
+    }
 
 
     @Override

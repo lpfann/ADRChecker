@@ -8,17 +8,19 @@
     <string name="info">Info</string>
     <string name="enzyme_interaction">Drug-Enzyme-Metabolism</string>
     <string name="substance">Substance</string>
-    <string name="introTextEE">Search for interactions by entering the substances one by one.</string>
+    <string name="introTextEE">Search for interactions by entering the agents one by one.</string>
     <string name="search">Search</string>
 
-    <string name="substances">Substances</string>
     <string name="defectiveEnzymes">Defective Enzymes</string>
     <string name="add_substance">Add Substance</string>
     <string name="complete_selection">Complete Selection</string>
     <string name="drugdruginteractions">Drug-Drug-Interactions</string>
     <string name="results">Results</string>
-    <string name="add_substances">Add substances</string>
+    <string name="add_agents">Add Agents</string>
     <string name="menu_cancel">Cancel</string>
     <string name="save">Save</string>
-    <string name="no_substance_added">No substances added</string>
+    <string name="no_agents_added">No agents added</string>
+    <string name="agents">Agents</string>
+    <string name="agent">Agent</string>
+    <string name="enter_agents">ENTER AGENTS</string>
 </resources>

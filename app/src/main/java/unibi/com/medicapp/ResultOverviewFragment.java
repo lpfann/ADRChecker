@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.squareup.otto.Bus;
 
@@ -26,9 +25,9 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
     FrameLayout enzymecardView;
     @InjectView(R.id.drugcard)
     FrameLayout drugcardView;
-    private LinkedList<Substance> mSubstances;
+    private LinkedList<Agent> mAgents;
     private QueryDatabase db;
-    private SubstanceListAdapter mAdapter;
+    private AgentsListAdapter mAdapter;
     private Bus mBus;
     public ResultOverviewFragment() {
         // Required empty public constructor
@@ -102,12 +101,12 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public LinkedList<Substance> getSubstances() {
-        return (LinkedList<Substance>) mSubstances.clone();
+    public LinkedList<Agent> getAgents() {
+        return (LinkedList<Agent>) mAgents.clone();
     }
 
-    public void setSubstances(LinkedList<Substance> substances) {
-        this.mSubstances = (LinkedList<Substance>) substances.clone();
+    public void setAgents(LinkedList<Agent> agents) {
+        this.mAgents = (LinkedList<Agent>) agents.clone();
     }
 
     @Override
