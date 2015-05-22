@@ -68,21 +68,7 @@ public class MainSearchFragment extends Fragment {
         mBus.post(new ButtonClickedEvent(ButtonClickedEvent.ADD_SUBSTANCE_BUTTON));
     }
 
-    public ArrayList<Integer> getCheckedItems() {
-        SparseBooleanArray checked = enzymeListView.getCheckedItemPositions();
-        selectedEnzymeIDs = new ArrayList<>();
-        for (int i = 0; i < checked.size(); i++) {
-            // Item position in adapter
-            int position = checked.keyAt(i);
-            Cursor c = adapter.getCursor();
-            if (checked.valueAt(i)) {
-                c.moveToPosition(i);
-                selectedEnzymeIDs.add(c.getInt(1));
-            }
-        }
-        return selectedEnzymeIDs;
 
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,23 +111,22 @@ public class MainSearchFragment extends Fragment {
 
     }
 
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        if (activity != null) {
-            mBus = BusProvider.getInstance();
-            db = QueryDatabase.getInstance(getActivity());
+    public ArrayList<Integer> getCheckedItems() {
+        SparseBooleanArray checked = enzymeListView.getCheckedItemPositions();
+        selectedEnzymeIDs = new ArrayList<>();
+        for (int i = 0; i < checked.size(); i++) {
+            // Item position in adapter
+            int position = checked.keyAt(i);
+            Cursor c = adapter.getCursor();
+            if (checked.valueAt(i)) {
+                c.moveToPosition(i);
+                selectedEnzymeIDs.add(c.getInt(1));
+            }
         }
+        return selectedEnzymeIDs;
 
     }
 
-    @Override
-    public void onPause() {
-        selectedItemsInList = enzymeListView.getCheckedItemPositions();
-        super.onPause();
-    }
 
     private void initEnzymeList() {
         if (enzymeCursor == null) {
@@ -163,8 +148,13 @@ public class MainSearchFragment extends Fragment {
                 return cursor.getString(colIndex);
             }
         });
+        if (selectedEnzymeIDs != null) {
+            for (int i : selectedEnzymeIDs) {
+                enzymeListView.setItemChecked(i, true);
 
+            }
 
+        }
         enzymeListView.setAdapter(adapter);
 
 
@@ -173,6 +163,24 @@ public class MainSearchFragment extends Fragment {
     public void setSubstances(LinkedList<Substance> substances) {
         selectedSubstances = substances;
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (activity != null) {
+            mBus = BusProvider.getInstance();
+            db = QueryDatabase.getInstance(getActivity());
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        selectedItemsInList = enzymeListView.getCheckedItemPositions();
+        mBus.post(new ButtonClickedEvent(ButtonClickedEvent.SAVE_SELECTED_ENZYMES));
+        super.onPause();
     }
 
     @Override
@@ -200,4 +208,13 @@ public class MainSearchFragment extends Fragment {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
     }
+
+    public ArrayList<Integer> getSelectedEnzymeIDs() {
+        return (ArrayList<Integer>) selectedEnzymeIDs.clone();
+    }
+
+    public void setSelectedEnzymeIDs(ArrayList<Integer> selectedEnzymeIDs) {
+        this.selectedEnzymeIDs = (ArrayList<Integer>) selectedEnzymeIDs.clone();
+    }
+
 }

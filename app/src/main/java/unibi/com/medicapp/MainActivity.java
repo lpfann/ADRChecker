@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     ArrayList<Integer> checkedEnzymes;
     @Icicle
     LinkedList<Substance> selectedSubstances = new LinkedList<>();
+    @Icicle
+    ArrayList<Integer> checkedItems;
+
     Drawer.Result result = null;
     AccountHeader.Result headerResult;
     private ResultOverviewFragment resultOverviewFragment;
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             // Create  for ContentLayout
 
             mainSearchFragment = MainSearchFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, mainSearchFragment, "main").commit();
 
 
         } else {
@@ -177,8 +180,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 searchSubstanceFragment = (SearchSubstanceFragment) getSupportFragmentManager().findFragmentByTag("search");
                 mainSearchFragment = (MainSearchFragment) getSupportFragmentManager().findFragmentByTag("main");
                 selectedSubstances = searchSubstanceFragment.getSubstances();
+                //mainSearchFragment.setSelectedEnzymeIDs(checkedEnzymes);
                 mainSearchFragment.setSubstances(selectedSubstances);
                 getSupportFragmentManager().popBackStack();
+
+
                 return true;
 
             default:
