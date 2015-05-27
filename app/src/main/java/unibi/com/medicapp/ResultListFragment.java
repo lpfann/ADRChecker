@@ -1,14 +1,13 @@
 package unibi.com.medicapp;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.squareup.otto.Bus;
-
-import unibi.com.medicapp.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
@@ -42,10 +41,10 @@ public class ResultListFragment extends android.support.v4.app.ListFragment {
         super.onCreate(savedInstanceState);
 
 
-
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+        Cursor testCursor = mDb.getSubstanceforAgent("Acebutolol");
+        final int[] to = new int[]{android.R.id.text1};
+        final String[] from = new String[]{"name"};
+        setListAdapter(new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, testCursor, from, to, 0));
     }
 
 
