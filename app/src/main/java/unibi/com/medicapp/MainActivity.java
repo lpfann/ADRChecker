@@ -1,5 +1,6 @@
 package unibi.com.medicapp;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -31,22 +32,22 @@ import icepick.Icicle;
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
 
+    public Cursor enzymeCursor;
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-
     MainSearchFragment mainSearchFragment;
     AutoCompleteSearchFragment mAutoCompleteSearchFragment;
     @Icicle
-    ArrayList<Integer> checkedEnzymes;
+    ArrayList<Enzyme> checkedEnzymes;
     @Icicle
     LinkedList<Agent> mSelectedAgents = new LinkedList<>();
     @Icicle
     ArrayList<Integer> checkedItems;
-
     Drawer.Result result = null;
     AccountHeader.Result headerResult;
     private ResultOverviewFragment resultOverviewFragment;
     private Bus bus;
+    private QueryDatabase mDb;
     private ResultListFragment mResultListFragment;
 
     @Override
@@ -148,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             case R.id.action_search:
                 // Open Result Fragment
                 checkedEnzymes = mainSearchFragment.getCheckedItems();
-                resultOverviewFragment = ResultOverviewFragment.newInstance();
+                enzymeCursor = startQuery();
+                resultOverviewFragment = ResultOverviewFragment.newInstance(enzymeCursor.getCount(), 0);
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultOverviewFragment).addToBackStack(null).commit();
                 getSupportActionBar().setTitle(R.string.results);
                 return true;
@@ -167,6 +169,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private Cursor startQuery() {
+        return mDb.getResultsforDefectiveEnzyme(checkedEnzymes, mSelectedAgents);
     }
 
     @Subscribe
@@ -248,5 +254,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         super.onResume();
         bus = BusProvider.getInstance();
         bus.register(this);
+        mDb = QueryDatabase.getInstance(this);
+    }
+
+    public Cursor getEnzymeCursor() {
+        return enzymeCursor;
     }
 }

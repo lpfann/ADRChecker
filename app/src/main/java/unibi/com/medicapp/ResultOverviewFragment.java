@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.squareup.otto.Bus;
 
@@ -20,11 +21,18 @@ import butterknife.OnClick;
 
 
 public class ResultOverviewFragment extends android.support.v4.app.Fragment {
-
+    public static final String ENZ_RESULT = "ENZ_RESULT";
+    private static final String DRUG_RESULT = "DRUG_RESULT";
     @InjectView(R.id.enzymecard)
     FrameLayout enzymecardView;
     @InjectView(R.id.drugcard)
     FrameLayout drugcardView;
+    @InjectView(R.id.enzymResultNumTextView)
+    TextView enzymeResultView;
+    @InjectView(R.id.drugResultTextView)
+    TextView drugResultView;
+    private int enz_result;
+    private int drug_result;
     private LinkedList<Agent> mAgents;
     private QueryDatabase db;
     private AgentsListAdapter mAdapter;
@@ -33,9 +41,11 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
         // Required empty public constructor
     }
 
-    public static ResultOverviewFragment newInstance() {
+    public static ResultOverviewFragment newInstance(int enz_result, int drug_result) {
         ResultOverviewFragment fragment = new ResultOverviewFragment();
         Bundle args = new Bundle();
+        args.putInt(ENZ_RESULT, enz_result);
+        args.putInt(DRUG_RESULT, drug_result);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,6 +65,10 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Bundle bundle = this.getArguments();
+        enz_result = bundle.getInt(ENZ_RESULT, 0);
+        drug_result = bundle.getInt(DRUG_RESULT, 0);
+
         mBus = BusProvider.getInstance();
         setHasOptionsMenu(true);
 
@@ -68,7 +82,8 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.result_overview_layout, container, false);
         ButterKnife.inject(this, v);
-
+        enzymeResultView.setText(Integer.toOctalString(enz_result));
+        drugResultView.setText(Integer.toOctalString(drug_result));
         return v;
     }
 

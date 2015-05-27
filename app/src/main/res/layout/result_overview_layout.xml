@@ -15,9 +15,10 @@
         android:text="@string/results"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
         android:id="@+id/enzymecard"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginBottom="20dp"
@@ -71,9 +72,10 @@
     </android.support.v7.widget.CardView>
 
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
         android:id="@+id/drugcard"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:elevation="5dp"
@@ -109,7 +111,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/drugResultTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/textView8"

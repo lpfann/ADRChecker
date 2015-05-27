@@ -42,7 +42,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Vi
     public void onBindViewHolder(ViewHolder parent, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        parent.mTextView.setText(mData.get(position).getName());
+        parent.mTextView.setText(mData.get(position).name);
 
     }
 

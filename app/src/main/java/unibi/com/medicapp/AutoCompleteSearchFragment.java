@@ -77,7 +77,7 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
     private void initializeAutoComplete(Context c) {
 
         final int[] to = new int[]{android.R.id.text1};
-        final String[] from = new String[]{"name"};
+        final String[] from = new String[]{"Name"};
         final SimpleCursorAdapter adapter = new SimpleCursorAdapter(c,
                 android.R.layout.simple_dropdown_item_1line,
                 null,
@@ -89,7 +89,7 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             @Override
             public CharSequence convertToString(Cursor cursor) {
-                final int colIndex = cursor.getColumnIndexOrThrow("name");
+                final int colIndex = cursor.getColumnIndexOrThrow("Name");
                 return cursor.getString(colIndex);
             }
         });
@@ -97,14 +97,14 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence name) {
-                return db.getSubstancesLike((String) name);
+                return db.getAgentsLike((String) name);
             }
         });
         autocompleteWirkstoffView.setAdapter(adapter);
         autocompleteWirkstoffView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow("name"));
+                String name = adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow("Name"));
                 Agent selAgent = new Agent(id, name);
                 mAgents.add(selAgent);
                 mAdapter.notifyItemInserted(mAgents.size() - 1);

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -33,7 +34,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         sSubstanceAgentProjection.put(SUBSTANZ_WIRKSTOFF_MAPPING.NAME, SUBSTANZ_WIRKSTOFF_MAPPING.FULL_NAME);
         sSubstanceAgentProjection.put(SUBSTANZEN.NAME, SUBSTANZEN.FULL_NAME);
         sSubstanceAgentProjection.put("substance_name", SUBSTANZEN.FULL_NAME + " AS " + "substance_name");
-        sSubstanceAgentProjection.put("_id", SUBSTANZEN.ID);
+        sSubstanceAgentProjection.put("_id", SUBSTANZEN.FULL_ID + " AS " + "_id");
     }
 
     private SQLiteDatabase db;
@@ -80,13 +81,13 @@ public class QueryDatabase extends SQLiteAssetHelper {
 
     }
 
-    public Cursor getaAgentsLike(String name) {
+    public Cursor getAgentsLike(String name) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        String[] sqlSelect = {"_id", "name"};
+        String[] sqlSelect = {"idxWirkstoffe AS _id", "Name"};
 
         qb.setTables(SUBSTANZ_WIRKSTOFF_MAPPING.TABLENAME);
-        Cursor c = qb.query(db, sqlSelect, "name like '" + name + "%'", null,
+        Cursor c = qb.query(db, sqlSelect, "Name like '" + name + "%'", null,
                 null, null, null);
         c.moveToFirst();
         return c;
@@ -95,7 +96,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
 
     public Cursor getEnzymes() {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        String[] sqlSelect = {"0 _id", "id", "name"};
+        String[] sqlSelect = {"id AS _id", "name"};
 
         qb.setTables(ISOENZYME);
         Cursor c = qb.query(db, sqlSelect, null, null,
@@ -118,7 +119,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
 
     }
 
-    public Cursor getResultsforDefectiveEnzyme(LinkedList<Enzyme> enzymes, LinkedList<Agent> agents) {
+    public Cursor getResultsforDefectiveEnzyme(ArrayList<Enzyme> enzymes, LinkedList<Agent> agents) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {"_id", SUBSTANZEN.NAME};
         qb.setTables(
@@ -135,21 +136,44 @@ public class QueryDatabase extends SQLiteAssetHelper {
                         + " = "
                         + SUBSTANZEN.FULL_ID
         );
-        String enzymeString = "(";
-        String agentString = "(";
-        for (Enzyme enz : enzymes) {
-            enzymeString = enzymeString + "'" + enz.id + "',";
+        String enzymeString;
+        if (enzymes.size() > 0) {
+            enzymeString = "(";
+            for (int i = 0; i < enzymes.size(); i++) {
+                Enzyme enz = enzymes.get(i);
+
+                enzymeString += "'" + enz.id + "'";
+                if (i < enzymes.size() - 1) {
+                    enzymeString += ",";
+                } else {
+                    enzymeString += ")";
+                }
+            }
+        } else {
+            enzymeString = "()";
         }
-        for (Agent ag : agents) {
-            agentString = agentString + "'" + ag.id + "',";
+        String agentString;
+        if (agents.size() > 0) {
+            agentString = "(";
+            for (int i = 0; i < agents.size(); i++) {
+                Agent ag = agents.get(i);
+
+                agentString += "'" + ag.id + "'";
+                if (i < agents.size() - 1) {
+                    agentString += ",";
+                } else {
+                    agentString += ")";
+                }
+            }
+        } else {
+            agentString = "()";
         }
-        enzymeString += ")";
-        agentString += ")";
+
 
         qb.setProjectionMap(sSubstanceAgentProjection);
         Cursor c = qb.query(db, sqlSelect,
-                INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ENZYME_ID + " IN ? AND " + SUBSTANZ_WIRKSTOFF_MAPPING.TABLENAME + "." + SUBSTANZ_WIRKSTOFF_MAPPING.ID_AGENT + " IN ?",
-                new String[]{enzymeString, agentString},
+                INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ENZYME_ID + " IN " + enzymeString + " AND " + SUBSTANZ_WIRKSTOFF_MAPPING.TABLENAME + "." + SUBSTANZ_WIRKSTOFF_MAPPING.ID_AGENT + " IN " + agentString,
+                null,
                 null,
                 null,
                 null);
@@ -159,16 +183,9 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
     }
 
-    public Cursor mainEnzymeQuery(LinkedList<Enzyme> enzymes, LinkedList<Agent> agents) {
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        String[] sqlSelect = {"0 _id", "id", "name"};
-        // Get Substances for the agents
-
-        qb.setTables(ISOENZYME);
-        Cursor c = qb.query(db, sqlSelect, null, null,
-                null, null, null);
-        c.moveToFirst();
-        return c;
+    @Override
+    public synchronized void close() {
+        super.close();
     }
 
     public static final class INTERAKTIONEN {
@@ -192,7 +209,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         public static final String TABLENAME = "p450_substanz_wirkstoff_mapping";
         public static final String ID_PRAEP = "idxPraeparate";
         public static final String ID_SUBSTANCE = "idxSubstanz";
-        public static final String ID_AGENT = "idxWirkstoff";
+        public static final String ID_AGENT = "idxWirkstoffe";
         public static final String NAME = "Name";
         public static final String FULL_NAME = TABLENAME + "." + NAME;
     }

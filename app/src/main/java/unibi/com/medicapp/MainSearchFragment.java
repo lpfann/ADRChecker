@@ -35,7 +35,7 @@ public class MainSearchFragment extends Fragment {
     Bus mBus;
     SimpleCursorAdapter adapter;
     @Icicle
-    ArrayList<Integer> selectedEnzymeIDs;
+    ArrayList<Enzyme> selectedEnzymeIDs;
     @InjectView(R.id.enzymeListView)
     ListView enzymeListView;
     @InjectView(R.id.selectedAgentsList)
@@ -111,7 +111,7 @@ public class MainSearchFragment extends Fragment {
 
     }
 
-    public ArrayList<Integer> getCheckedItems() {
+    public ArrayList<Enzyme> getCheckedItems() {
         SparseBooleanArray checked = enzymeListView.getCheckedItemPositions();
         selectedEnzymeIDs = new ArrayList<>();
         for (int i = 0; i < checked.size(); i++) {
@@ -119,8 +119,9 @@ public class MainSearchFragment extends Fragment {
             int position = checked.keyAt(i);
             Cursor c = adapter.getCursor();
             if (checked.valueAt(i)) {
-                c.moveToPosition(i);
-                selectedEnzymeIDs.add(c.getInt(1));
+                c.moveToPosition(position);
+                Enzyme enz = new Enzyme(c.getString(1), c.getLong(0));
+                selectedEnzymeIDs.add(enz);
             }
         }
         return selectedEnzymeIDs;
@@ -149,8 +150,8 @@ public class MainSearchFragment extends Fragment {
             }
         });
         if (selectedEnzymeIDs != null) {
-            for (int i : selectedEnzymeIDs) {
-                enzymeListView.setItemChecked(i, true);
+            for (Enzyme i : selectedEnzymeIDs) {
+                enzymeListView.setItemChecked(i.id.intValue(), true);
 
             }
 
@@ -209,12 +210,12 @@ public class MainSearchFragment extends Fragment {
         Icepick.saveInstanceState(this, outState);
     }
 
-    public ArrayList<Integer> getSelectedEnzymeIDs() {
-        return (ArrayList<Integer>) selectedEnzymeIDs.clone();
+    public ArrayList<Enzyme> getSelectedEnzymeIDs() {
+        return (ArrayList<Enzyme>) selectedEnzymeIDs.clone();
     }
 
-    public void setSelectedEnzymeIDs(ArrayList<Integer> selectedEnzymeIDs) {
-        this.selectedEnzymeIDs = (ArrayList<Integer>) selectedEnzymeIDs.clone();
+    public void setSelectedEnzymeIDs(ArrayList<Enzyme> selectedEnzymeIDs) {
+        this.selectedEnzymeIDs = (ArrayList<Enzyme>) selectedEnzymeIDs.clone();
     }
 
 }
