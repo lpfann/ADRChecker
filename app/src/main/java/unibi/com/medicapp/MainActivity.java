@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             case ButtonClickedEvent.ENZYME_CARD_CLICKED:
                 // Open Search Fragment
                 mResultListFragment = ResultListFragment.newInstance();
+                mResultListFragment.mResultCursor = enzymeCursor;
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mResultListFragment, "resultlist").addToBackStack(null).commitAllowingStateLoss();
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(getString(R.string.enzyme_interaction));
