@@ -11,6 +11,7 @@ public class ButtonClickedEvent {
     public static final int SAVE_SELECTED_ENZYMES = 4;
     public static final int ENZYME_CARD_CLICKED = 5;
     public static final int DRUG_CARD_CLICKED = 6;
+    public static final int START_SEARCH = 7;
 
     int eventtype;
     public ButtonClickedEvent(int i) {

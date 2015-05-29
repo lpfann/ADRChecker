@@ -146,14 +146,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_search:
-                // Open Result Fragment
-                checkedEnzymes = mainSearchFragment.getCheckedItems();
-                enzymeCursor = startQuery();
-                resultOverviewFragment = ResultOverviewFragment.newInstance(enzymeCursor.getCount(), 0);
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultOverviewFragment).addToBackStack(null).commit();
-                getSupportActionBar().setTitle(R.string.results);
-                return true;
             case R.id.action_commit_selection:
                 // Come back from Search Fragment
                 mAutoCompleteSearchFragment = (AutoCompleteSearchFragment) getSupportFragmentManager().findFragmentByTag("search");
@@ -195,6 +187,14 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mResultListFragment, "resultlist").addToBackStack(null).commitAllowingStateLoss();
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(getString(R.string.enzyme_interaction));
+                return;
+            case ButtonClickedEvent.START_SEARCH:
+                // Open Result Fragment
+                checkedEnzymes = mainSearchFragment.getCheckedItems();
+                enzymeCursor = startQuery();
+                resultOverviewFragment = ResultOverviewFragment.newInstance(enzymeCursor.getCount(), 0);
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultOverviewFragment).addToBackStack(null).commit();
+                getSupportActionBar().setTitle(R.string.results);
                 return;
             default:
         }

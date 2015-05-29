@@ -3,6 +3,7 @@ package unibi.com.medicapp;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,14 +11,11 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.FontAwesome;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
@@ -42,6 +40,8 @@ public class MainSearchFragment extends Fragment {
     android.support.v7.widget.RecyclerView substanceListView;
     @InjectView(R.id.empty_view)
     TextView emptyView;
+    @InjectView(R.id.search_fab)
+    FloatingActionButton search_fab;
 
     Cursor enzymeCursor;
     SparseBooleanArray selectedItemsInList;
@@ -68,6 +68,11 @@ public class MainSearchFragment extends Fragment {
         mBus.post(new ButtonClickedEvent(ButtonClickedEvent.ADD_SUBSTANCE_BUTTON));
     }
 
+    @OnClick(R.id.search_fab)
+    void searchAction() {
+        mBus.post(new ButtonClickedEvent(ButtonClickedEvent.START_SEARCH));
+    }
+
 
 
     @Override
@@ -89,6 +94,7 @@ public class MainSearchFragment extends Fragment {
 
         initEnzymeList();
         initSubstanceList();
+
         return v;
     }
 
@@ -198,10 +204,10 @@ public class MainSearchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_search, menu);
+/*        inflater.inflate(R.menu.menu_search, menu);
         MenuItem searchbutton = menu.findItem(R.id.action_search);
         searchbutton.setIcon(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_search).sizeDp(24).color(getResources().getColor(R.color.icons)));
-        searchbutton.setTitle(getResources().getString(R.string.search));
+        searchbutton.setTitle(getResources().getString(R.string.search));*/
     }
 
     @Override
