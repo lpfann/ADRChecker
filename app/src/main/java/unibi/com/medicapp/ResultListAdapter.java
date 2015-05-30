@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.otto.Bus;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -18,9 +20,11 @@ import butterknife.InjectView;
 public class ResultListAdapter extends RecyclerView.Adapter<ResultListAdapter.ViewHolder> {
     private Cursor mData;
     private RecyclerView mRecyclerView;
+    private Bus mBus;
 
     public ResultListAdapter(Cursor data) {
         mData = data;
+        mBus = BusProvider.getInstance();
     }
 
     @Override
@@ -67,7 +71,8 @@ public class ResultListAdapter extends RecyclerView.Adapter<ResultListAdapter.Vi
 
         @Override
         public void onClick(View v) {
-            // TODO: aktion implementieren wenn ergebnis gedrückt
+            mBus.post(new ItemSelectedEvent(getAdapterPosition()));
+
         }
     }
 

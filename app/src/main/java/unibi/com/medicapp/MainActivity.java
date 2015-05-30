@@ -1,5 +1,6 @@
 package unibi.com.medicapp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ import icepick.Icepick;
 import icepick.Icicle;
 
 
+
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
 
@@ -45,10 +47,12 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     ArrayList<Integer> checkedItems;
     Drawer.Result result = null;
     AccountHeader.Result headerResult;
+    boolean isEnzymeInteraction;
     private ResultOverviewFragment resultOverviewFragment;
     private Bus bus;
     private QueryDatabase mDb;
     private ResultListFragment mResultListFragment;
+    private DetailActivity mDetailActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,8 +183,12 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 getSupportActionBar().setTitle(getString(R.string.add_agents));
                 return;
             case ButtonClickedEvent.DRUG_CARD_CLICKED:
+                // Set Result Mode
+                isEnzymeInteraction = false;
                 return;
             case ButtonClickedEvent.ENZYME_CARD_CLICKED:
+                // Set Result Mode
+                isEnzymeInteraction = true;
                 // Open Search Fragment
                 mResultListFragment = ResultListFragment.newInstance();
                 mResultListFragment.mResultCursor = enzymeCursor;
@@ -196,9 +204,22 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultOverviewFragment).addToBackStack(null).commit();
                 getSupportActionBar().setTitle(R.string.results);
                 return;
+
             default:
         }
 
+    }
+
+    @Subscribe
+    public void onSelectItem(ItemSelectedEvent event) {
+        // Open Result Fragment
+        Intent i = new Intent(this, DetailActivity.class);
+        enzymeCursor.moveToPosition(event.position);
+        int col = enzymeCursor.getColumnIndexOrThrow(QueryDatabase.INTERAKTIONEN.ID);
+        i.putExtra("INTERACTION_ID", enzymeCursor.getLong(col));
+        i.putExtra("MODE", isEnzymeInteraction);
+        i.putExtra("SUBSTANCE", enzymeCursor.getString(enzymeCursor.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME)));
+        startActivity(i);
     }
 
 

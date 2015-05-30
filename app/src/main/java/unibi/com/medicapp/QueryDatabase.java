@@ -19,12 +19,6 @@ import java.util.LinkedList;
 public class QueryDatabase extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "converted.sqlite";
     private static final int DATABASE_VERSION = 2;
-
-    private static final String BEMERKUNGEN = "p450_bemerkungen";
-    private static final String ISOENZYME = "p450_isoenzyme";
-    private static final String LITERATUR = "p450_literaturverzeichnis";
-    private static final String METABOLISMUS = "p450_metabolismus";
-    private static final String THERAPEUTISCHE_KLASSIFIKATION = "p450_therapeutische_klassifikation";
     public static HashMap<String, String> sSubstanceAgentProjection;
     private static QueryDatabase sInstance;
 
@@ -38,6 +32,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
     }
 
     private SQLiteDatabase db;
+
     private QueryDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         setForcedUpgrade();
@@ -94,11 +89,11 @@ public class QueryDatabase extends SQLiteAssetHelper {
 
     }
 
-    public Cursor getEnzymes() {
+    public Cursor getAllEnzymes() {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {"id AS _id", "name"};
 
-        qb.setTables(ISOENZYME);
+        qb.setTables(ISOENZYME.TABLENAME);
         Cursor c = qb.query(db, sqlSelect, null, null,
                 null, null, null);
         c.moveToFirst();
@@ -183,15 +178,114 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
     }
 
-    @Override
-    public synchronized void close() {
-        super.close();
+    public Cursor getMetabolism(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {METABOLISMUS.TABLENAME + "." + METABOLISMUS.ID, METABOLISMUS.TABLENAME + "." + METABOLISMUS.NAME};
+
+        qb.setTables(METABOLISMUS.TABLENAME + " JOIN " + INTERAKTIONEN.TABLENAME + " ON " + METABOLISMUS.TABLENAME + "." + METABOLISMUS.ID + " = " + INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.METABOLISM_ID);
+        Cursor c = qb.query(db, sqlSelect, INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ID + " = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public Cursor getNote(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {BEMERKUNGEN.TABLENAME + "." + BEMERKUNGEN.ID, BEMERKUNGEN.TABLENAME + "." + BEMERKUNGEN.BEMERKUNG};
+
+        qb.setTables(BEMERKUNGEN.TABLENAME + " JOIN " + INTERAKTIONEN.TABLENAME + " ON " + BEMERKUNGEN.TABLENAME + "." + BEMERKUNGEN.ID + " = " + INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.NOTE_ID);
+        Cursor c = qb.query(db, sqlSelect, INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ID + " = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public Cursor getEnzymes(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {ISOENZYME.TABLENAME + "." + ISOENZYME.ID, ISOENZYME.TABLENAME + "." + ISOENZYME.NAME};
+
+        qb.setTables(ISOENZYME.TABLENAME + " JOIN " + INTERAKTIONEN.TABLENAME + " ON " + ISOENZYME.TABLENAME + "." + ISOENZYME.ID + " = " + INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ENZYME_ID);
+        Cursor c = qb.query(db, sqlSelect, INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ID + " = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public Cursor getLiterature(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {LITERATUR.TABLENAME + "." + LITERATUR.ID, LITERATUR.PMID, LITERATUR.YEAR, LITERATUR.SOURCE};
+
+        qb.setTables(LITERATUR.TABLENAME + " JOIN " + INTERAKTIONEN.TABLENAME + " ON " + LITERATUR.TABLENAME + "." + LITERATUR.ID + " = " + INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.LITERATURE_ID);
+        Cursor c = qb.query(db, sqlSelect, INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ID + " = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public Cursor getSubstance(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {SUBSTANZEN.TABLENAME + "." + SUBSTANZEN.ID, SUBSTANZEN.TABLENAME + "." + SUBSTANZEN.NAME};
+
+        qb.setTables(SUBSTANZEN.TABLENAME + " JOIN " + INTERAKTIONEN.TABLENAME + " ON " + SUBSTANZEN.TABLENAME + "." + SUBSTANZEN.ID + " = " + INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.SUBSTANCE_ID);
+        Cursor c = qb.query(db, sqlSelect, INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ID + " = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public Cursor getClassification(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {THERAPEUTISCHE_KLASSIFIKATION.TABLENAME + "." + THERAPEUTISCHE_KLASSIFIKATION.ID, THERAPEUTISCHE_KLASSIFIKATION.TABLENAME + "." + THERAPEUTISCHE_KLASSIFIKATION.NAME};
+
+        qb.setTables(THERAPEUTISCHE_KLASSIFIKATION.TABLENAME + " JOIN " + INTERAKTIONEN.TABLENAME + " ON " + THERAPEUTISCHE_KLASSIFIKATION.TABLENAME + "." + THERAPEUTISCHE_KLASSIFIKATION.ID + " = " + INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.CLASS_ID);
+        Cursor c = qb.query(db, sqlSelect, INTERAKTIONEN.TABLENAME + "." + INTERAKTIONEN.ID + " = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public static final class BEMERKUNGEN {
+        public static final String TABLENAME = "p450_bemerkungen";
+        public static final String ID = "_id";
+        public static final String BEMERKUNG = "bemerkung";
+    }
+
+    public static final class ISOENZYME {
+        public static final String TABLENAME = "p450_isoenzyme";
+        public static final String ID = "id";
+        public static final String NAME = "name";
+
+    }
+
+    public static final class LITERATUR {
+        public static final String TABLENAME = "p450_literaturverzeichnis";
+        public static final String ID = "_lit_id";
+        public static final String PMID = "pmid";
+        public static final String YEAR = "Erscheinungsjahr";
+        public static final String SOURCE = "literatur";
+    }
+
+    public static final class METABOLISMUS {
+        public static final String TABLENAME = "p450_metabolismus";
+        public static final String ID = "_id";
+        public static final String NAME = "name";
+    }
+
+    public static final class THERAPEUTISCHE_KLASSIFIKATION {
+        public static final String TABLENAME = "p450_therapeutische_klassifikation";
+        public static final String ID = "_id";
+        public static final String NAME = "name";
     }
 
     public static final class INTERAKTIONEN {
         public static final String TABLENAME = "p450_interaktionen";
+        public static final String ID = "_id";
         public static final String ENZYME_ID = "isoenzyme_id";
         public static final String SUBSTANCE_ID = "substanz_id";
+        public static final String METABOLISM_ID = "metabolismus_id";
+        public static final String LITERATURE_ID = "literatur_id";
+        public static final String NOTE_ID = "bemerkung";
+        public static final String CLASS_ID = "tk_id";
 
 
     }

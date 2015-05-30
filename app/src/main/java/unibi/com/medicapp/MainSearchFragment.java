@@ -137,7 +137,7 @@ public class MainSearchFragment extends Fragment {
 
     private void initEnzymeList() {
         if (enzymeCursor == null) {
-            enzymeCursor = db.getEnzymes();
+            enzymeCursor = db.getAllEnzymes();
         }
 
         final int[] to = new int[]{android.R.id.text1};
