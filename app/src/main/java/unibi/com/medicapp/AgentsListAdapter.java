@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.FontAwesome;
 
 import java.util.LinkedList;
 
@@ -33,7 +33,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Vi
 
         ViewHolder vh = new ViewHolder(v);
         ImageButton button = (ImageButton) v.findViewById(R.id.removeButton);
-        button.setImageDrawable(new IconicsDrawable(viewGroup.getContext(), FontAwesome.Icon.faw_minus_square).color(R.color.accent).sizeDp(24));
+        button.setImageDrawable(new IconicsDrawable(viewGroup.getContext(), GoogleMaterial.Icon.gmd_clear).color(viewGroup.getResources().getColor(R.color.accent)).sizeDp(24));
         v.findViewById(R.id.removeButton).setOnClickListener(vh);
         return vh;
     }

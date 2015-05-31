@@ -1,5 +1,6 @@
 package unibi.com.medicapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.transition.TransitionInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -163,7 +165,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 //mainSearchFragment.setSelectedEnzymeIDs(checkedEnzymes);
                 mainSearchFragment.setSubstances(mSelectedAgents);
                 getSupportFragmentManager().popBackStack();
-
+                InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 
                 return true;
 

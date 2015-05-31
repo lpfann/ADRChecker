@@ -14,9 +14,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
@@ -43,6 +46,9 @@ public class MainSearchFragment extends Fragment {
     TextView emptyView;
     @InjectView(R.id.search_fab)
     FloatingActionButton search_fab;
+
+    @InjectView(R.id.add_substanceButton)
+    Button add_Button;
 
     Cursor enzymeCursor;
     SparseBooleanArray selectedItemsInList;
@@ -96,7 +102,7 @@ public class MainSearchFragment extends Fragment {
 
         initEnzymeList();
         initSubstanceList();
-
+        search_fab.setImageDrawable(new IconicsDrawable(v.getContext(), GoogleMaterial.Icon.gmd_search).color(v.getContext().getResources().getColor(R.color.icons)).sizeDp(34));
         return v;
     }
 
@@ -111,9 +117,11 @@ public class MainSearchFragment extends Fragment {
         if (mSelectedAgents.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
             substanceListView.setVisibility(View.GONE);
+            add_Button.setText(R.string.add);
         } else {
             substanceListView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
+            add_Button.setText(R.string.edit);
         }
 
 
