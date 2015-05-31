@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,6 +84,7 @@ public class MainSearchFragment extends Fragment {
         if (mSelectedAgents == null) {
             mSelectedAgents = new LinkedList<>();
         }
+
     }
 
     @Override
@@ -224,4 +226,7 @@ public class MainSearchFragment extends Fragment {
         this.selectedEnzymeIDs = (ArrayList<Enzyme>) selectedEnzymeIDs.clone();
     }
 
+    public RecyclerView getSubstanceListView() {
+        return substanceListView;
+    }
 }

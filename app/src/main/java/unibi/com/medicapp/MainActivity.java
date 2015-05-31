@@ -2,10 +2,12 @@ package unibi.com.medicapp;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.TransitionInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,16 +37,19 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
 
     public Cursor enzymeCursor;
+
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     MainSearchFragment mainSearchFragment;
     AutoCompleteSearchFragment mAutoCompleteSearchFragment;
+
     @Icicle
     ArrayList<Enzyme> checkedEnzymes;
     @Icicle
     LinkedList<Agent> mSelectedAgents = new LinkedList<>();
     @Icicle
     ArrayList<Integer> checkedItems;
+
     Drawer.Result result = null;
     AccountHeader.Result headerResult;
     boolean isEnzymeInteraction;
@@ -175,12 +180,38 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     public void onBusEvent(ButtonClickedEvent event) {
         switch (event.eventtype) {
             case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
-                // Open Search Fragment
-                mAutoCompleteSearchFragment = AutoCompleteSearchFragment.newInstance();
-                mAutoCompleteSearchFragment.setAgents(mSelectedAgents);
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mAutoCompleteSearchFragment, "search").addToBackStack(null).commitAllowingStateLoss();
-                assert getSupportActionBar() != null;
-                getSupportActionBar().setTitle(getString(R.string.add_agents));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                    mainSearchFragment.setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
+                    mainSearchFragment.setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.change_agent_list));
+                    mainSearchFragment.setSharedElementReturnTransition(TransitionInflater.from(this).inflateTransition(R.transition.change_agent_list));
+
+                    // Create new fragment to add (Fragment B)
+                    mAutoCompleteSearchFragment = AutoCompleteSearchFragment.newInstance();
+                    mAutoCompleteSearchFragment.setAgents(mSelectedAgents);
+
+                    mAutoCompleteSearchFragment.setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
+                    mAutoCompleteSearchFragment.setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.change_agent_list));
+                    mAutoCompleteSearchFragment.setSharedElementReturnTransition(TransitionInflater.from(this).inflateTransition(R.transition.change_agent_list));
+
+                    // Our shared element (in Fragment A)
+                    View agent_list = mainSearchFragment.getSubstanceListView();
+                    agent_list.setTransitionName("TransitionToSearch");
+
+                    // Add Fragment B
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mAutoCompleteSearchFragment, "search").addToBackStack(null).addSharedElement(agent_list, "TransitionToSearch").commit();
+                    assert getSupportActionBar() != null;
+                    getSupportActionBar().setTitle(getString(R.string.add_agents));
+
+                } else {
+                    // Code to run on older devices
+                    // Open Search Fragment
+                    mAutoCompleteSearchFragment = AutoCompleteSearchFragment.newInstance();
+                    mAutoCompleteSearchFragment.setAgents(mSelectedAgents);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mAutoCompleteSearchFragment, "search").addToBackStack(null).commit();
+                    assert getSupportActionBar() != null;
+                    getSupportActionBar().setTitle(getString(R.string.add_agents));
+                }
                 return;
             case ButtonClickedEvent.DRUG_CARD_CLICKED:
                 // Set Result Mode
@@ -202,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 enzymeCursor = startQuery();
                 resultOverviewFragment = ResultOverviewFragment.newInstance(enzymeCursor.getCount(), 0);
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultOverviewFragment).addToBackStack(null).commit();
+                assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(R.string.results);
                 return;
 
