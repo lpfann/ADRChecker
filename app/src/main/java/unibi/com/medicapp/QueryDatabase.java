@@ -114,6 +114,20 @@ public class QueryDatabase extends SQLiteAssetHelper {
 
     }
 
+    public Cursor getSubstanceforAgent(Agent agent) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {"_id", SUBSTANZEN.NAME};
+        //Cursor c = db.rawQuery("SELECT * FROM p450_substanz JOIN p450_substanz_wirkstoff_mapping ON p450_substanz._id = p450_substanz_wirkstoff_mapping.idxSubstanz",null);
+        qb.setTables(SUBSTANZ_WIRKSTOFF_MAPPING.TABLENAME + " JOIN " + SUBSTANZEN.TABLENAME + " ON " + SUBSTANZ_WIRKSTOFF_MAPPING.TABLENAME + "." + SUBSTANZ_WIRKSTOFF_MAPPING.ID_SUBSTANCE + " = " + SUBSTANZEN.FULL_ID);
+        qb.setProjectionMap(sSubstanceAgentProjection);
+        Cursor c = qb.query(db, sqlSelect, SUBSTANZ_WIRKSTOFF_MAPPING.FULL_NAME + " =?", new String[]{agent.name},
+                null, null, null);
+        //TODO Überprüfen wenn richtige DB
+        c.moveToFirst();
+        return c;
+
+    }
+
     public Cursor getResultsforDefectiveEnzyme(ArrayList<Enzyme> enzymes, LinkedList<Agent> agents) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {"_id", SUBSTANZEN.NAME};
@@ -172,6 +186,50 @@ public class QueryDatabase extends SQLiteAssetHelper {
                 null,
                 null,
                 null);
+        c.moveToFirst();
+
+        //TODO Überprüfen wenn richtige DB
+        return c;
+    }
+
+    public Cursor getResultsForDrugDrugInteraction(LinkedList<Agent> agents) {
+
+        LinkedList<Long> substances = new LinkedList<>();
+        for (int i = 0; i < agents.size(); i++) {
+            Cursor ctemp = getSubstanceforAgent(agents.get(i));
+            for (int j = 0; j < ctemp.getCount(); j++) {
+                substances.add(ctemp.getLong(ctemp.getColumnIndex(SUBSTANZEN.ID)));
+            }
+        }
+        String substanceString;
+        if (substances.size() > 0) {
+            substanceString = "(";
+            for (int i = 0; i < substances.size(); i++) {
+
+
+                substanceString += "'" + substances.get(i) + "'";
+                if (i < substances.size() - 1) {
+                    substanceString += ",";
+                } else {
+                    substanceString += ")";
+                }
+            }
+        } else {
+            substanceString = "()";
+        }
+
+
+        Cursor c = db.rawQuery("SELECT a._id," + "a." + INTERAKTIONEN.SUBSTANCE_ID + ", " + "b." + INTERAKTIONEN.SUBSTANCE_ID + " FROM " +
+                INTERAKTIONEN.TABLENAME + " a"
+                + " JOIN " + INTERAKTIONEN.TABLENAME + "  b"
+                + " ON "
+                + "a." + INTERAKTIONEN.ENZYME_ID
+                + " = "
+                + "b." + INTERAKTIONEN.ENZYME_ID
+                + " WHERE "
+                + "a." + INTERAKTIONEN.SUBSTANCE_ID + " IN " + substanceString + " AND " + "b." + INTERAKTIONEN.SUBSTANCE_ID + " IN " + substanceString + " AND " + "a." + INTERAKTIONEN.ID + " != " + "b." + INTERAKTIONEN.ID
+                , null);
+
         c.moveToFirst();
 
         //TODO Überprüfen wenn richtige DB

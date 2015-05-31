@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     private QueryDatabase mDb;
     private ResultListFragment mResultListFragment;
     private DetailActivity mDetailActivity;
+    private Cursor drugCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,9 +176,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         }
     }
 
-    private Cursor startQuery() {
-        return mDb.getResultsforDefectiveEnzyme(checkedEnzymes, mSelectedAgents);
-    }
+
 
     @Subscribe
     public void onBusEvent(ButtonClickedEvent event) {
@@ -233,8 +232,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             case ButtonClickedEvent.START_SEARCH:
                 // Open Result Fragment
                 checkedEnzymes = mainSearchFragment.getCheckedItems();
-                enzymeCursor = startQuery();
-                resultOverviewFragment = ResultOverviewFragment.newInstance(enzymeCursor.getCount(), 0);
+                enzymeCursor = mDb.getResultsforDefectiveEnzyme(checkedEnzymes, mSelectedAgents);
+                drugCursor = mDb.getResultsForDrugDrugInteraction(mSelectedAgents);
+                resultOverviewFragment = ResultOverviewFragment.newInstance(enzymeCursor.getCount(), drugCursor.getCount());
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultOverviewFragment).addToBackStack(null).commit();
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(R.string.results);
