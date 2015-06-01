@@ -11,45 +11,13 @@
 
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-        <LinearLayout
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-
-            <include
-                android:id="@+id/metabolism_card"
-                layout="@layout/normal_card"/>
-
-            <include
-                android:id="@+id/note_card"
-                layout="@layout/normal_card"/>
-
-
-            <include
-                android:id="@+id/literature_card"
-                layout="@layout/literature_card"/>
-
-            <include
-                android:id="@+id/classification_card"
-                layout="@layout/normal_card"/>
-            <!--TODO FILLER-->
-            <include
-                android:id="@+id/classification_card"
-                layout="@layout/normal_card"/>
-
-            <include
-                android:id="@+id/classification_card"
-                layout="@layout/normal_card"/>
-
-            <include
-                android:id="@+id/classification_card"
-                layout="@layout/normal_card"/>
-
-
-        </LinearLayout>
+        <include layout="@layout/fragment_detail_single" />
 
 
     </android.support.v4.widget.NestedScrollView>
@@ -100,6 +68,10 @@
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </android.support.design.widget.AppBarLayout>
 
 

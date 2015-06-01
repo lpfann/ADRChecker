@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:showIn="@layout/fragment_detail">
+
+
+    <include
+        android:id="@+id/metabolism_card"
+        layout="@layout/normal_card" />
+
+    <include
+        android:id="@+id/note_card"
+        layout="@layout/normal_card" />
+
+
+    <include
+        android:id="@+id/literature_card"
+        layout="@layout/literature_card" />
+
+    <include
+        android:id="@+id/classification_card"
+        layout="@layout/normal_card" />
+    <!--TODO FILLER-->
+    <include
+        android:id="@+id/classification_card"
+        layout="@layout/normal_card" />
+
+    <include
+        android:id="@+id/classification_card"
+        layout="@layout/normal_card" />
+
+    <include
+        android:id="@+id/classification_card"
+        layout="@layout/normal_card" />
+
+
+</LinearLayout>
