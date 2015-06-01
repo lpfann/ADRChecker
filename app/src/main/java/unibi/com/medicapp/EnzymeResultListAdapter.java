@@ -17,21 +17,21 @@ import butterknife.InjectView;
  *         Date: 16.05.2015
  *         Time: 15:16
  */
-public class ResultListAdapter extends RecyclerView.Adapter<ResultListAdapter.ViewHolder> {
+public class EnzymeResultListAdapter extends RecyclerView.Adapter<EnzymeResultListAdapter.ViewHolder> {
     private Cursor mData;
     private RecyclerView mRecyclerView;
     private Bus mBus;
 
-    public ResultListAdapter(Cursor data) {
+    public EnzymeResultListAdapter(Cursor data) {
         mData = data;
         mBus = BusProvider.getInstance();
     }
 
     @Override
-    public ResultListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public EnzymeResultListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         // create a new view
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.result_list_element, viewGroup, false);
+                .inflate(R.layout.enzyme_result_list_element, viewGroup, false);
 
         ViewHolder vh = new ViewHolder(v);
 

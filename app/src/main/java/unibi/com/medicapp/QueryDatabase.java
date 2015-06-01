@@ -219,7 +219,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         }
 
 
-        Cursor c = db.rawQuery("SELECT a._id," + "a." + INTERAKTIONEN.SUBSTANCE_ID + ", " + "b." + INTERAKTIONEN.SUBSTANCE_ID + " FROM " +
+        Cursor c = db.rawQuery("SELECT DISTINCT a._id," + "a." + INTERAKTIONEN.SUBSTANCE_ID + " as substanz_id_a, " + "b." + INTERAKTIONEN.SUBSTANCE_ID + " as substanz_id_b" + " FROM " +
                 INTERAKTIONEN.TABLENAME + " a"
                 + " JOIN " + INTERAKTIONEN.TABLENAME + "  b"
                 + " ON "
@@ -227,7 +227,8 @@ public class QueryDatabase extends SQLiteAssetHelper {
                 + " = "
                 + "b." + INTERAKTIONEN.ENZYME_ID
                 + " WHERE "
-                + "a." + INTERAKTIONEN.SUBSTANCE_ID + " IN " + substanceString + " AND " + "b." + INTERAKTIONEN.SUBSTANCE_ID + " IN " + substanceString + " AND " + "a." + INTERAKTIONEN.ID + " != " + "b." + INTERAKTIONEN.ID
+                + "a." + INTERAKTIONEN.SUBSTANCE_ID + " IN " + substanceString + " AND " + "b." + INTERAKTIONEN.SUBSTANCE_ID + " IN " + substanceString + " AND " + "a." + INTERAKTIONEN.ID + " < " + "b." + INTERAKTIONEN.ID
+                + " GROUP BY " + " a." + INTERAKTIONEN.SUBSTANCE_ID + " , " + "b." + INTERAKTIONEN.SUBSTANCE_ID
                 , null);
 
         c.moveToFirst();

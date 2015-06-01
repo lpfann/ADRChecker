@@ -218,12 +218,18 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             case ButtonClickedEvent.DRUG_CARD_CLICKED:
                 // Set Result Mode
                 isEnzymeInteraction = false;
+                // Open List Fragment
+                mResultListFragment = ResultListFragment.newInstance(isEnzymeInteraction);
+                mResultListFragment.mResultCursor = drugCursor;
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mResultListFragment, "resultlist").addToBackStack(null).commitAllowingStateLoss();
+                assert getSupportActionBar() != null;
+                getSupportActionBar().setTitle(getString(R.string.drugdruginteractions));
                 return;
             case ButtonClickedEvent.ENZYME_CARD_CLICKED:
                 // Set Result Mode
                 isEnzymeInteraction = true;
-                // Open Search Fragment
-                mResultListFragment = ResultListFragment.newInstance();
+                // Open List Fragment
+                mResultListFragment = ResultListFragment.newInstance(isEnzymeInteraction);
                 mResultListFragment.mResultCursor = enzymeCursor;
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mResultListFragment, "resultlist").addToBackStack(null).commitAllowingStateLoss();
                 assert getSupportActionBar() != null;
@@ -249,11 +255,19 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     public void onSelectItem(ItemSelectedEvent event) {
         // Open Result Fragment
         Intent i = new Intent(this, DetailActivity.class);
-        enzymeCursor.moveToPosition(event.position);
-        int col = enzymeCursor.getColumnIndexOrThrow(QueryDatabase.INTERAKTIONEN.ID);
-        i.putExtra("INTERACTION_ID", enzymeCursor.getLong(col));
+        int col;
+        if (isEnzymeInteraction) {
+            enzymeCursor.moveToPosition(event.position);
+            col = enzymeCursor.getColumnIndexOrThrow(QueryDatabase.INTERAKTIONEN.ID);
+            i.putExtra("INTERACTION_ID", enzymeCursor.getLong(col));
+            i.putExtra("SUBSTANCE", enzymeCursor.getString(enzymeCursor.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME)));
+        } else {
+            drugCursor.moveToPosition(event.position);
+            col = drugCursor.getColumnIndexOrThrow(QueryDatabase.INTERAKTIONEN.ID);
+            i.putExtra("INTERACTION_ID", drugCursor.getLong(col));
+            //TODO: parameter übergabe überarbeiten
+        }
         i.putExtra("MODE", isEnzymeInteraction);
-        i.putExtra("SUBSTANCE", enzymeCursor.getString(enzymeCursor.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME)));
         startActivity(i);
     }
 

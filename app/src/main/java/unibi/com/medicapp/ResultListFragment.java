@@ -22,9 +22,10 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
     SimpleCursorAdapter cursorAdapter;
     @InjectView(R.id.mainListView)
     RecyclerView mainListView;
+    private boolean isEnzyme;
     private QueryDatabase mDb;
     private Bus mBus;
-    private ResultListAdapter mAdapter;
+    private EnzymeResultListAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -33,9 +34,10 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
     public ResultListFragment() {
     }
 
-    public static ResultListFragment newInstance() {
+    public static ResultListFragment newInstance(boolean mode) {
         ResultListFragment fragment = new ResultListFragment();
         Bundle args = new Bundle();
+        args.putBoolean("MODE", mode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,7 +45,7 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        isEnzyme = getArguments().getBoolean("MODE");
 
     }
 
@@ -52,8 +54,13 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
         mainListView.setLayoutManager(mLayoutManager);
         mainListView.setHasFixedSize(true);
-        mAdapter = new ResultListAdapter(mResultCursor);
-        mainListView.setAdapter(mAdapter);
+
+        if (isEnzyme) {
+            mainListView.setAdapter(new EnzymeResultListAdapter(mResultCursor));
+        } else {
+            Cursor sub_cursor = mDb.getSubstances();
+            mainListView.setAdapter(new DrugResultListAdapter(mResultCursor, sub_cursor));
+        }
     }
 
     @Override

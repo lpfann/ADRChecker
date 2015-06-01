@@ -36,6 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     private QueryDatabase mDB;
     private boolean isEnzymeInteraction;
     private String mSubstance;
+    private String mSubstance2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,9 @@ public class DetailActivity extends AppCompatActivity {
         if (extras != null) {
             mInteractionID = extras.getLong("INTERACTION_ID");
             isEnzymeInteraction = extras.getBoolean("MODE");
-            mSubstance = extras.getString("SUBSTANCE");
+            if (isEnzymeInteraction) {
+                mSubstance = extras.getString("SUBSTANCE");
+            }
         } else {
             throw new Error("No Data vor DetailView passed!");
         }
@@ -69,9 +72,11 @@ public class DetailActivity extends AppCompatActivity {
             collapsingToolbar.setTitle(mSubstance + "  —  " + s1);
             //part2.setText(c.getString(i));
         } else {
-            // TODO: Substance Substance Header
-        }
+            Cursor sub_cursor = mDB.getSubstances();
 
+            collapsingToolbar.setTitle("placeholder1" + "  —  " + "placeholder2");
+        }
+        // TODO: TAB VIEW einbauen für zwei elemente
         TextView header;
         TextView content;
         int col;
