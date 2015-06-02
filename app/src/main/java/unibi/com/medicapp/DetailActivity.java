@@ -64,22 +64,15 @@ public class DetailActivity extends AppCompatActivity {
             Detail_Fragment_Single enzyme_fragment = Detail_Fragment_Single.newInstance(mInteractionID);
             fm.beginTransaction().add(R.id.fragment_frame, enzyme_fragment).commit();
 
-//            Cursor c = mDB.getEnzymes(mInteractionID);
-//            int i = c.getColumnIndex(QueryDatabase.ISOENZYME.NAME);
-//            String s1 = c.getString(i);
-//            collapsingToolbar.setTitle(mSubstance + "  —  " + s1);
-//            //part2.setText(c.getString(i));
+            Cursor c = mDB.getEnzymes(mInteractionID);
+            int i = c.getColumnIndex(QueryDatabase.ISOENZYME.NAME);
+            String s1 = c.getString(i);
+            collapsingToolbar.setTitle(mSubstance + "  —  " + s1);
         } else {
             setContentView(R.layout.activity_detail);
             ButterKnife.inject(this);
 
 //  Cursor c_sub1 = mDB.getSubstance(mInteractionID);
-//            String name1 = c_sub1.getString(c_sub1.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
-//            mTabLayout.addTab(mTabLayout.newTab().setText(name1));
-//
-//            Cursor c_sub2 = mDB.getSubstance(mInteractionID);
-//            String name2 = c_sub2.getString(c_sub1.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
-//            mTabLayout.addTab(mTabLayout.newTab().setText(name2));
 
             // Substance A
             Cursor c = mDB.getSubstance(mInteractionID);
@@ -96,7 +89,6 @@ public class DetailActivity extends AppCompatActivity {
             // TODO: Farbe funktioniert bisher nicht, bug??
             mTabLayout.setTabTextColors(getResources().getColor(R.color.icons), getResources().getColor(R.color.primary_light));
 
-            //collapsingToolbar.setTitle("placeholder1" + "  —  " + "placeholder2");
         }
 
         assert getSupportActionBar() != null;
