@@ -263,9 +263,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             i.putExtra("SUBSTANCE", enzymeCursor.getString(enzymeCursor.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME)));
         } else {
             drugCursor.moveToPosition(event.position);
-            col = drugCursor.getColumnIndexOrThrow(QueryDatabase.INTERAKTIONEN.ID);
+            col = drugCursor.getColumnIndexOrThrow("ID_A");
             i.putExtra("INTERACTION_ID", drugCursor.getLong(col));
-            //TODO: parameter übergabe überarbeiten
+            col = drugCursor.getColumnIndexOrThrow("ID_B");
+            i.putExtra("INTERACTION_ID2", drugCursor.getLong(col));
         }
         i.putExtra("MODE", isEnzymeInteraction);
         startActivity(i);

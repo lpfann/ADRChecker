@@ -1,42 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:showIn="@layout/fragment_detail">
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/detailsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:showIn="@layout/fragment_detail">
 
 
-    <include
-        android:id="@+id/metabolism_card"
-        layout="@layout/normal_card" />
+            <include
+                android:id="@+id/metabolism_card"
+                layout="@layout/normal_card"/>
 
-    <include
-        android:id="@+id/note_card"
-        layout="@layout/normal_card" />
-
-
-    <include
-        android:id="@+id/literature_card"
-        layout="@layout/literature_card" />
-
-    <include
-        android:id="@+id/classification_card"
-        layout="@layout/normal_card" />
-    <!--TODO FILLER-->
-    <include
-        android:id="@+id/classification_card"
-        layout="@layout/normal_card" />
-
-    <include
-        android:id="@+id/classification_card"
-        layout="@layout/normal_card" />
-
-    <include
-        android:id="@+id/classification_card"
-        layout="@layout/normal_card" />
+            <include
+                android:id="@+id/note_card"
+                layout="@layout/normal_card"/>
 
 
-</LinearLayout>
+            <include
+                android:id="@+id/literature_card"
+                layout="@layout/literature_card"/>
+
+            <include
+                android:id="@+id/classification_card"
+                layout="@layout/normal_card"/>
+            <!--TODO FILLER-->
+            <include
+                android:id="@+id/classification_card"
+                layout="@layout/normal_card"/>
+
+            <include
+                android:id="@+id/classification_card"
+                layout="@layout/normal_card"/>
+
+            <include
+                android:id="@+id/classification_card"
+                layout="@layout/normal_card"/>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</FrameLayout>

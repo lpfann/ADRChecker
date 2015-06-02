@@ -1,0 +1,66 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+    >
+
+    <FrameLayout
+        android:id="@+id/fragment_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:elevation="4dp">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:orientation="vertical"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:singleLine="false"
+                    android:text="Interaction"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/icons"
+                    android:textSize="32sp"
+                    android:typeface="serif"
+                    />
+
+            </LinearLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

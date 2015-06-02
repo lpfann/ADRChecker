@@ -5,22 +5,20 @@
              android:layout_height="match_parent"
     >
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/detailsList"
-        android:layout_width="match_parent"
+    <!--<android.support.v4.widget.NestedScrollView-->
+    <!--android:id="@+id/detailsList"-->
+    <!--android:layout_width="match_parent"-->
 
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <!--android:layout_height="match_parent"-->
+    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <include layout="@layout/fragment_detail_single" />
 
-
-    </android.support.v4.widget.NestedScrollView>
+    <!--</android.support.v4.widget.NestedScrollView>-->
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -36,42 +34,47 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
+                android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-
-                app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingRight="20dp"
-                android:paddingTop="20dp">
+                >
+
 
                 <TextView
                     android:id="@+id/textView9"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
+                    android:gravity="right"
+                    android:paddingRight="20dp"
+                    android:paddingTop="20dp"
                     android:singleLine="false"
                     android:text="Interaction"
+                    android:textAlignment="textEnd"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/icons"
                     android:textSize="32sp"
                     android:typeface="serif"
                     />
 
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_collapseMode="pin"/>
             </LinearLayout>
 
+
         </android.support.design.widget.CollapsingToolbarLayout>
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+
+
     </android.support.design.widget.AppBarLayout>
 
 

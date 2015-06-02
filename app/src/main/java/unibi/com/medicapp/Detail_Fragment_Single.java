@@ -4,7 +4,6 @@ package unibi.com.medicapp;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +15,15 @@ import com.squareup.otto.Bus;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class Detail_Fragment_Single extends Fragment {
+public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
 
     String[] presentedData = {QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME,
             QueryDatabase.METABOLISMUS.TABLENAME, QueryDatabase.LITERATUR.TABLENAME,
             QueryDatabase.BEMERKUNGEN.TABLENAME};
     private final int length = presentedData.length;
+
     Cursor[] dataCursor = new Cursor[length];
+
     @InjectView(R.id.classification_card)
     FrameLayout class_card;
     @InjectView(R.id.literature_card)
@@ -31,23 +32,31 @@ public class Detail_Fragment_Single extends Fragment {
     FrameLayout metabolism_card;
     @InjectView(R.id.note_card)
     FrameLayout note_card;
+
     private QueryDatabase mDB;
     private Bus mBus;
-
-    public static Detail_Fragment_Single newInstance() {
-        Detail_Fragment_Single fragment = new Detail_Fragment_Single();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private long mInteractionID;
 
     public Detail_Fragment_Single() {
         // Required empty public constructor
     }
 
+    public static Detail_Fragment_Single newInstance(long interactionID) {
+        Detail_Fragment_Single fragment = new Detail_Fragment_Single();
+        Bundle args = new Bundle();
+        args.putLong("INTERACTION_ID",interactionID);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+           mInteractionID = getArguments().getLong("INTERACTION_ID");
+        } else {
+            throw new NullPointerException("No InteractionID for Detail Fragment");
+        }
     }
 
     @Override

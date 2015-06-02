@@ -59,7 +59,7 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
             mainListView.setAdapter(new EnzymeResultListAdapter(mResultCursor));
         } else {
             Cursor sub_cursor = mDb.getSubstances();
-            mainListView.setAdapter(new DrugResultListAdapter(mResultCursor, sub_cursor));
+            mainListView.setAdapter(new DrugResultListAdapter(mResultCursor, getActivity()));
         }
     }
 

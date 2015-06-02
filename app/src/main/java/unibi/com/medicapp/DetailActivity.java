@@ -4,10 +4,13 @@ package unibi.com.medicapp;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,8 +26,12 @@ public class DetailActivity extends AppCompatActivity {
     @InjectView(R.id.collapsingToolbar)
     CollapsingToolbarLayout collapsingToolbar;
 
-    private DetailsListAdapter mAdapter;
+    ViewPager mViewPager;
+    TabLayout mTabLayout;
+
+    private MyAdapter mAdapter;
     private long mInteractionID;
+    private long mInteractionID2;
     private QueryDatabase mDB;
     private boolean isEnzymeInteraction;
     private String mSubstance;
@@ -34,8 +41,6 @@ public class DetailActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.fragment_detail);
-        ButterKnife.inject(this);
 
         mDB = QueryDatabase.getInstance(this);
         Bundle extras = getIntent().getExtras();
@@ -44,12 +49,56 @@ public class DetailActivity extends AppCompatActivity {
             isEnzymeInteraction = extras.getBoolean("MODE");
             if (isEnzymeInteraction) {
                 mSubstance = extras.getString("SUBSTANCE");
+            } else {
+                mInteractionID2 = extras.getLong("INTERACTION_ID2");
             }
         } else {
             throw new Error("No Data vor DetailView passed!");
         }
 
-        // init Gui Elements
+
+        if (isEnzymeInteraction) {
+            setContentView(R.layout.activity_detail_enzyme);
+            ButterKnife.inject(this);
+            FragmentManager fm = getSupportFragmentManager();
+            Detail_Fragment_Single enzyme_fragment = Detail_Fragment_Single.newInstance(mInteractionID);
+            fm.beginTransaction().add(R.id.fragment_frame, enzyme_fragment).commit();
+
+//            Cursor c = mDB.getEnzymes(mInteractionID);
+//            int i = c.getColumnIndex(QueryDatabase.ISOENZYME.NAME);
+//            String s1 = c.getString(i);
+//            collapsingToolbar.setTitle(mSubstance + "  —  " + s1);
+//            //part2.setText(c.getString(i));
+        } else {
+            setContentView(R.layout.activity_detail);
+            ButterKnife.inject(this);
+
+//  Cursor c_sub1 = mDB.getSubstance(mInteractionID);
+//            String name1 = c_sub1.getString(c_sub1.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+//            mTabLayout.addTab(mTabLayout.newTab().setText(name1));
+//
+//            Cursor c_sub2 = mDB.getSubstance(mInteractionID);
+//            String name2 = c_sub2.getString(c_sub1.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+//            mTabLayout.addTab(mTabLayout.newTab().setText(name2));
+
+            // Substance A
+            Cursor c = mDB.getSubstance(mInteractionID);
+            mSubstance = c.getString(c.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+            // Substance B
+            c = mDB.getSubstance(mInteractionID2);
+            mSubstance2 = c.getString(c.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+            mAdapter = new MyAdapter(getSupportFragmentManager(), this, mSubstance, mSubstance2);
+            mViewPager = (ViewPager) findViewById(R.id.viewpager);
+            mViewPager.setAdapter(mAdapter);
+            mTabLayout = (TabLayout) findViewById(R.id.tabs);
+            mTabLayout.setupWithViewPager(mViewPager);
+
+            // TODO: Farbe funktioniert bisher nicht, bug??
+            mTabLayout.setTabTextColors(getResources().getColor(R.color.icons), getResources().getColor(R.color.primary_light));
+
+            //collapsingToolbar.setTitle("placeholder1" + "  —  " + "placeholder2");
+        }
+
         assert getSupportActionBar() != null;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -57,21 +106,51 @@ public class DetailActivity extends AppCompatActivity {
 
         collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.icons));
         collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.icons));
-        if (isEnzymeInteraction) {
-            Cursor c = mDB.getEnzymes(mInteractionID);
-            int i = c.getColumnIndex(QueryDatabase.ISOENZYME.NAME);
-            String s1 = c.getString(i);
-            collapsingToolbar.setTitle(mSubstance + "  —  " + s1);
-            //part2.setText(c.getString(i));
-        } else {
-            Cursor sub_cursor = mDB.getSubstances();
-
-            collapsingToolbar.setTitle("placeholder1" + "  —  " + "placeholder2");
-        }
-        // TODO: TAB VIEW einbauen für zwei elemente
 
 
     }
 
+    public static class MyAdapter extends FragmentPagerAdapter {
+        long interactionID;
+        long interactionID2;
+        private String mSubstance;
+        private String mSubstance2;
 
+        public MyAdapter(FragmentManager fm, DetailActivity detailActivity, String substance, String substance2) {
+            super(fm);
+            mSubstance = substance;
+            mSubstance2 = substance2;
+            interactionID = detailActivity.mInteractionID;
+            interactionID2 = detailActivity.mInteractionID2;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return Detail_Fragment_Single.newInstance(interactionID);
+            } else {
+                return Detail_Fragment_Single.newInstance(interactionID2);
+            }
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return mSubstance;
+                case 1:
+                    return mSubstance2;
+                default:
+                    return null;
+            }
+
+
+        }
+
+    }
 }

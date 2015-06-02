@@ -219,7 +219,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         }
 
 
-        Cursor c = db.rawQuery("SELECT DISTINCT a._id," + "a." + INTERAKTIONEN.SUBSTANCE_ID + " as substanz_id_a, " + "b." + INTERAKTIONEN.SUBSTANCE_ID + " as substanz_id_b" + " FROM " +
+        Cursor c = db.rawQuery("SELECT DISTINCT a._id as ID_A, b._id as ID_B" + " FROM " +
                 INTERAKTIONEN.TABLENAME + " a"
                 + " JOIN " + INTERAKTIONEN.TABLENAME + "  b"
                 + " ON "

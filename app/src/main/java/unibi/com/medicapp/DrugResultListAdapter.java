@@ -1,5 +1,6 @@
 package unibi.com.medicapp;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,15 +22,33 @@ import butterknife.InjectView;
  *         Time: 15:16
  */
 public class DrugResultListAdapter extends RecyclerView.Adapter<DrugResultListAdapter.ViewHolder> {
+    String[][] mSubstanceNames;
     private Cursor mData;
-    private Cursor mSubstanceCursor;
     private RecyclerView mRecyclerView;
     private Bus mBus;
 
-    public DrugResultListAdapter(Cursor data, Cursor s) {
+    public DrugResultListAdapter(Cursor data, Context c) {
         mData = data;
         mBus = BusProvider.getInstance();
-        mSubstanceCursor = s;
+
+        data.moveToFirst();
+        mSubstanceNames = new String[data.getCount()][2];
+        QueryDatabase db = QueryDatabase.getInstance(c);
+        int i = 0;
+        mData.moveToFirst();
+        while (!mData.isAfterLast()) {
+            // Substance A
+            long id = mData.getLong(mData.getColumnIndex("ID_A"));
+            Cursor substance = db.getSubstance(id);
+            mSubstanceNames[i][0] = substance.getString(substance.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+            // Substance B
+            id = mData.getLong(mData.getColumnIndex("ID_B"));
+            substance = db.getSubstance(id);
+            mSubstanceNames[i][1] = substance.getString(substance.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+            i++;
+            mData.moveToNext();
+        }
+
     }
 
     @Override
@@ -48,13 +67,8 @@ public class DrugResultListAdapter extends RecyclerView.Adapter<DrugResultListAd
     public void onBindViewHolder(ViewHolder parent, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        mData.moveToPosition(position);
-        int sub_id = mData.getInt(mData.getColumnIndexOrThrow("substanz_id_a"));
-        mSubstanceCursor.moveToPosition(sub_id);
-        parent.nameView1.setText(mSubstanceCursor.getString(mSubstanceCursor.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME)));
-        sub_id = mData.getInt(mData.getColumnIndexOrThrow("substanz_id_b"));
-        mSubstanceCursor.moveToPosition(sub_id);
-        parent.nameView2.setText(mSubstanceCursor.getString(mSubstanceCursor.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME)));
+        parent.nameView1.setText(mSubstanceNames[position][0]);
+        parent.nameView2.setText(mSubstanceNames[position][1]);
 
     }
 
