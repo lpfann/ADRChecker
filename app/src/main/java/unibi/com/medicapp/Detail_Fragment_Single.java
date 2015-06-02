@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.FontAwesome;
 import com.squareup.otto.Bus;
 
 import butterknife.ButterKnife;
@@ -64,13 +67,14 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_detail_single,container,false);
         ButterKnife.inject(this, v);
-
+        initCards();
         return v;
     }
 
 private void initCards(){
     TextView header;
     TextView content;
+    ImageView image;
     int col;
     for (int i = 0; i < length; i++) {
         String name = presentedData[i];
@@ -81,20 +85,24 @@ private void initCards(){
 
                     header = (TextView) class_card.findViewById(R.id.headerTextView);
                     content = (TextView) class_card.findViewById(R.id.contentTextView);
-                    header.setText("Therapy Classification");
+                    image = (ImageView) class_card.findViewById(R.id.imageView);
+                    header.setText("Therapeutic Classification");
                     col = dataCursor[i].getColumnIndex(QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION.NAME);
                     content.setText(dataCursor[i].getString(col));
+                    image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_database).sizeDp(42).color(getResources().getColor(R.color.accent)));
                 }
                 continue;
             case (QueryDatabase.METABOLISMUS.TABLENAME):
                 dataCursor[i] = mDB.getMetabolism(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
+                    image = (ImageView) metabolism_card.findViewById(R.id.imageView);
                     header = (TextView) metabolism_card.findViewById(R.id.headerTextView);
                     content = (TextView) metabolism_card.findViewById(R.id.contentTextView);
                     header.setText("Metabolism");
                     col = dataCursor[i].getColumnIndex(QueryDatabase.METABOLISMUS.NAME);
                     content.setText(dataCursor[i].getString(col));
+                    image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_refresh).sizeDp(42).color(getResources().getColor(R.color.accent)));
                 }
                 continue;
             case (QueryDatabase.LITERATUR.TABLENAME):
@@ -103,6 +111,7 @@ private void initCards(){
 
                     header = (TextView) literature_card.findViewById(R.id.headerTextView);
                     header.setText("Literature");
+                    image = (ImageView) literature_card.findViewById(R.id.imageView);
                     TextView year = (TextView) literature_card.findViewById(R.id.yearView);
                     TextView pubmed = (TextView) literature_card.findViewById(R.id.pubmedView);
                     TextView title = (TextView) literature_card.findViewById(R.id.titleView);
@@ -112,17 +121,19 @@ private void initCards(){
                     pubmed.setText(dataCursor[i].getString(col));
                     col = dataCursor[i].getColumnIndex(QueryDatabase.LITERATUR.SOURCE);
                     title.setText(dataCursor[i].getString(col));
+                    image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_book).sizeDp(42).color(getResources().getColor(R.color.accent)));
                 }
                 continue;
             case (QueryDatabase.BEMERKUNGEN.TABLENAME):
                 dataCursor[i] = mDB.getNote(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
-
+                    image = (ImageView) note_card.findViewById(R.id.imageView);
                     header = (TextView) note_card.findViewById(R.id.headerTextView);
                     content = (TextView) note_card.findViewById(R.id.contentTextView);
                     header.setText("Notes");
                     col = dataCursor[i].getColumnIndex(QueryDatabase.BEMERKUNGEN.BEMERKUNG);
                     content.setText(dataCursor[i].getString(col));
+                    image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_comment).sizeDp(42).color(getResources().getColor(R.color.accent)));
                 }
                 continue;
             default:

@@ -53,7 +53,7 @@ public class DetailActivity extends AppCompatActivity {
                 mInteractionID2 = extras.getLong("INTERACTION_ID2");
             }
         } else {
-            throw new Error("No Data vor DetailView passed!");
+            throw new Error("No Data for DetailView passed!");
         }
 
 
