@@ -83,35 +83,32 @@ private void initCards(){
                 dataCursor[i] = mDB.getClassification(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
-                    header = (TextView) class_card.findViewById(R.id.headerTextView);
                     content = (TextView) class_card.findViewById(R.id.contentTextView);
-                    image = (ImageView) class_card.findViewById(R.id.imageView);
-                    header.setText("Therapeutic Classification");
                     col = dataCursor[i].getColumnIndex(QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION.NAME);
                     content.setText(dataCursor[i].getString(col));
-                    image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_database).sizeDp(42).color(getResources().getColor(R.color.accent)));
                 }
+                header = (TextView) class_card.findViewById(R.id.headerTextView);
+                header.setText("Therapeutic Classification");
+                image = (ImageView) class_card.findViewById(R.id.imageView);
+                image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_database).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             case (QueryDatabase.METABOLISMUS.TABLENAME):
                 dataCursor[i] = mDB.getMetabolism(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
-                    image = (ImageView) metabolism_card.findViewById(R.id.imageView);
-                    header = (TextView) metabolism_card.findViewById(R.id.headerTextView);
                     content = (TextView) metabolism_card.findViewById(R.id.contentTextView);
-                    header.setText("Metabolism");
                     col = dataCursor[i].getColumnIndex(QueryDatabase.METABOLISMUS.NAME);
                     content.setText(dataCursor[i].getString(col));
-                    image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_refresh).sizeDp(42).color(getResources().getColor(R.color.accent)));
                 }
+                header = (TextView) metabolism_card.findViewById(R.id.headerTextView);
+                header.setText("Metabolism");
+                image = (ImageView) metabolism_card.findViewById(R.id.imageView);
+                image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_refresh).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             case (QueryDatabase.LITERATUR.TABLENAME):
                 dataCursor[i] = mDB.getLiterature(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
-                    header = (TextView) literature_card.findViewById(R.id.headerTextView);
-                    header.setText("Literature");
-                    image = (ImageView) literature_card.findViewById(R.id.imageView);
                     TextView year = (TextView) literature_card.findViewById(R.id.yearView);
                     TextView pubmed = (TextView) literature_card.findViewById(R.id.pubmedView);
                     TextView title = (TextView) literature_card.findViewById(R.id.titleView);
@@ -121,20 +118,23 @@ private void initCards(){
                     pubmed.setText(dataCursor[i].getString(col));
                     col = dataCursor[i].getColumnIndex(QueryDatabase.LITERATUR.SOURCE);
                     title.setText(dataCursor[i].getString(col));
-                    image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_book).sizeDp(42).color(getResources().getColor(R.color.accent)));
                 }
+                header = (TextView) literature_card.findViewById(R.id.headerTextView);
+                header.setText("Literature");
+                image = (ImageView) literature_card.findViewById(R.id.imageView);
+                image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_book).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             case (QueryDatabase.BEMERKUNGEN.TABLENAME):
                 dataCursor[i] = mDB.getNote(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
-                    image = (ImageView) note_card.findViewById(R.id.imageView);
-                    header = (TextView) note_card.findViewById(R.id.headerTextView);
                     content = (TextView) note_card.findViewById(R.id.contentTextView);
-                    header.setText("Notes");
                     col = dataCursor[i].getColumnIndex(QueryDatabase.BEMERKUNGEN.BEMERKUNG);
                     content.setText(dataCursor[i].getString(col));
-                    image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_comment).sizeDp(42).color(getResources().getColor(R.color.accent)));
                 }
+                header = (TextView) note_card.findViewById(R.id.headerTextView);
+                header.setText("Notes");
+                image = (ImageView) note_card.findViewById(R.id.imageView);
+                image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_comment).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             default:
                 continue;

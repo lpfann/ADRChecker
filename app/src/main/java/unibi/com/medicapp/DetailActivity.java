@@ -53,7 +53,11 @@ public class DetailActivity extends AppCompatActivity {
                 mInteractionID2 = extras.getLong("INTERACTION_ID2");
             }
         } else {
-            throw new Error("No Data for DetailView passed!");
+            // DEBUG
+            // TODO: remove debug branch
+            isEnzymeInteraction = true;
+            mInteractionID = 2;
+            //throw new Error("No Data for DetailView passed!");
         }
 
 
