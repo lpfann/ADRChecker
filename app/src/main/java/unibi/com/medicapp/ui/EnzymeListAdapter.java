@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,6 +7,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import butterknife.InjectView;
+import unibi.com.medicapp.R;
 
 /**
  * @author Lukas Pfannschmidt

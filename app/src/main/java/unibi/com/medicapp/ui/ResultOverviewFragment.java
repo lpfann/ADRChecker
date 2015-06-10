@@ -1,7 +1,8 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.squareup.otto.Bus;
 
 import java.util.LinkedList;
@@ -18,6 +21,11 @@ import java.util.LinkedList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.model.Agent;
+import unibi.com.medicapp.model.ButtonClickedEvent;
 
 
 public class ResultOverviewFragment extends android.support.v4.app.Fragment {
@@ -31,7 +39,11 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
     TextView enzymeResultView;
     @InjectView(R.id.drugResultTextView)
     TextView drugResultView;
+    @InjectView(R.id.save_fab)
+    FloatingActionButton save_fab;
+
     private int enz_result;
+
     private int drug_result;
     private LinkedList<Agent> mAgents;
     private QueryDatabase db;
@@ -74,26 +86,27 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
 
     }
 
-
+    @OnClick(R.id.save_fab)
+    void saveFabClicked() {
+        mBus.post(new ButtonClickedEvent(ButtonClickedEvent.SAVE_FAB_CLICKED));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.result_overview_layout, container, false);
         ButterKnife.inject(this, v);
         enzymeResultView.setText(Integer.toOctalString(enz_result));
         drugResultView.setText(Integer.toOctalString(drug_result));
+        save_fab.setImageDrawable(new IconicsDrawable(v.getContext(), GoogleMaterial.Icon.gmd_save).color(v.getContext().getResources().getColor(R.color.icons)).sizeDp(42));
         return v;
     }
 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //TODO Save Query Button einbauen
-        //inflater.inflate(R.menu.menu_substance_search, menu);
-        //menu.findItem(R.id.action_search).setVisible(false);
-        //menu.findItem(R.id.action_commit_selection).setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_save).sizeDp(24).color(getResources().getColor(R.color.icons)));
 
     }
 

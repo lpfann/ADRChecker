@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.model;
 
 import java.io.Serializable;
 
@@ -8,11 +8,15 @@ import java.io.Serializable;
  *         Time: 17:16
  */
 public class Enzyme implements Serializable{
-    String name;
-    Long id;
+    public String name;
+    public Long id;
 
     public Enzyme(String name, Long id) {
         this.name = name;
         this.id = id;
+    }
+
+    public Enzyme() {
+
     }
 }

@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 
 import android.app.Activity;
@@ -17,6 +17,9 @@ import com.squareup.otto.Bus;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.QueryDatabase;
 
 public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
 

@@ -2,6 +2,8 @@ package unibi.com.medicapp;
 
 import android.test.AndroidTestCase;
 
+import unibi.com.medicapp.controller.QueryDatabase;
+
 
 /**
  * @author Lukas Pfannschmidt

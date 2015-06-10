@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -15,6 +15,10 @@ import com.squareup.otto.Bus;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.model.ItemSelectedEvent;
 
 /**
  * @author Lukas Pfannschmidt

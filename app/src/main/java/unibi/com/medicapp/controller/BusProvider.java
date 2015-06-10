@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.controller;
 
 import com.squareup.otto.Bus;
 
@@ -7,11 +7,11 @@ import com.squareup.otto.Bus;
  */
 public class BusProvider {
     private static final Bus BUS = new Bus();
-    public static Bus getInstance() {
-        return BUS;
-    }
-
     private BusProvider() {
         // No instances.
+    }
+
+    public static Bus getInstance() {
+        return BUS;
     }
 }

@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.model;
 
 import android.support.annotation.IntDef;
 
@@ -23,14 +23,15 @@ public class ButtonClickedEvent {
     public static final int DRUG_CARD_CLICKED = 6;
     public static final int START_SEARCH = 7;
     public static final int OPEN_RESULT_DETAILS = 8;
+    public static final int SAVE_FAB_CLICKED = 9;
 
-    int eventtype;
+    public int eventtype;
 
     public ButtonClickedEvent(@FragmentEvent int i) {
         eventtype = i;
     }
 
-    @IntDef({ADD_SUBSTANCE_BUTTON, GET_DATA_SEARCH_SUBSTANCE_FRAGMENT, BACK_TO_HOME, DISABLE_BACK_BUTTON, SAVE_SELECTED_ENZYMES, ENZYME_CARD_CLICKED, DRUG_CARD_CLICKED, START_SEARCH, OPEN_RESULT_DETAILS})
+    @IntDef({ADD_SUBSTANCE_BUTTON, GET_DATA_SEARCH_SUBSTANCE_FRAGMENT, BACK_TO_HOME, DISABLE_BACK_BUTTON, SAVE_SELECTED_ENZYMES, ENZYME_CARD_CLICKED, DRUG_CARD_CLICKED, START_SEARCH, OPEN_RESULT_DETAILS, SAVE_FAB_CLICKED})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FragmentEvent {
     }

@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.model;
 
 import java.io.Serializable;
 
@@ -8,14 +8,16 @@ import java.io.Serializable;
  *         Time: 13:46
  */
 public class Agent implements Serializable{
-    long id;
-    String name;
+    public long id;
+    public String name;
 
     public Agent(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
+    public Agent() {
+    }
 
 
     @Override

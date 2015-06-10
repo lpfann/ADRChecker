@@ -1,5 +1,6 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.controller;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +12,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import unibi.com.medicapp.model.Agent;
+import unibi.com.medicapp.model.Enzyme;
+import unibi.com.medicapp.model.Query;
+
 /**
  * @author Lukas Pfannschmidt
  *         Date: 13.05.2015
@@ -18,7 +23,21 @@ import java.util.LinkedList;
  */
 public class QueryDatabase extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "converted.sqlite";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
+    private static final String QUERY_TABLE = "queries";
+    private static final String QUERY_TABLE_CREATE =
+            "CREATE TABLE " + QUERY_TABLE + " (" +
+                    "queryid INTEGER PRIMARY KEY AUTOINCREMENT)";
+    private static final String QUERY_ENZYME_TABLE = "querie_enzymes";
+    private static final String QUERY_ENZYME_TABLE_CREATE =
+            "CREATE TABLE " + QUERY_ENZYME_TABLE + " (" +
+                    "queryid INTEGER ," +
+                    "enzyme_id" + " INTEGER);";
+    private static final String QUERY_AGENT_TABLE = "querie_agents";
+    private static final String QUERY_AGENT_TABLE_CREATE =
+            "CREATE TABLE " + QUERY_AGENT_TABLE + " (" +
+                    "queryid INTEGER," +
+                    "agent_id" + " INTEGER);";
     public static HashMap<String, String> sSubstanceAgentProjection;
     private static QueryDatabase sInstance;
 
@@ -37,8 +56,11 @@ public class QueryDatabase extends SQLiteAssetHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         setForcedUpgrade();
         db = getReadableDatabase();
-
+        db.execSQL(QUERY_TABLE_CREATE);
+        db.execSQL(QUERY_AGENT_TABLE_CREATE);
+        db.execSQL(QUERY_ENZYME_TABLE_CREATE);
     }
+
 
     public static synchronized QueryDatabase getInstance(Context context) {
 
@@ -49,6 +71,52 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return sInstance;
     }
 
+    public void saveQuery(Query q) {
+        long id = db.insert(QUERY_TABLE, "null", null);
+        for (int i = 0; i < q.agents.size(); i++) {
+            ContentValues agents = new ContentValues();
+            agents.put("queryid", id); // get title
+            agents.put("agent_id", q.agents.get(i).id);
+            db.insert(QUERY_AGENT_TABLE, null, agents);
+        }
+        for (int i = 0; i < q.enzymes.size(); i++) {
+            ContentValues enzymes = new ContentValues();
+            enzymes.put("queryid", id); // get title
+            enzymes.put("enzyme_id", q.enzymes.get(i).id);
+            db.insert(QUERY_ENZYME_TABLE, null, enzymes);
+        }
+    }
+
+    public Query getQuery(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        LinkedList<Agent> agents = new LinkedList<>();
+        LinkedList<Enzyme> enzymes = new LinkedList<>();
+        String[] sqlSelect = {"agent_id", "enzyme_id"};
+
+        qb.setTables("QUERY_TABLE,QUERY_AGENT_TABLE");
+        Cursor c = qb.query(db, sqlSelect, null, null,
+                null, null, null);
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i++) {
+            Agent agent = new Agent();
+            agent.id = c.getInt(c.getColumnIndex("agent_id"));
+            agents.add(agent);
+            c.moveToNext();
+        }
+        qb.setTables("QUERY_TABLE,QUERY_ENZYME_TABLE");
+        c = qb.query(db, sqlSelect, null, null,
+                null, null, null);
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i++) {
+            Enzyme enzyme = new Enzyme();
+            enzyme.id = c.getLong(c.getColumnIndex("enzyme_id"));
+            enzymes.add(enzyme);
+            c.moveToNext();
+        }
+
+        return new Query(agents, enzymes);
+
+    }
     public Cursor getSubstances() {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 

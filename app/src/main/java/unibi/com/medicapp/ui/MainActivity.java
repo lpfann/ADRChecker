@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
@@ -32,7 +33,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
-
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.model.Agent;
+import unibi.com.medicapp.model.ButtonClickedEvent;
+import unibi.com.medicapp.model.Enzyme;
+import unibi.com.medicapp.model.ItemSelectedEvent;
+import unibi.com.medicapp.model.Query;
 
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
@@ -245,7 +253,15 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(R.string.results);
                 return;
-
+            case ButtonClickedEvent.SAVE_FAB_CLICKED:
+                LinkedList<Enzyme> enzymes = new LinkedList<>();
+                for (int i = 0; i < checkedEnzymes.size(); i++) {
+                    enzymes.add(new Enzyme("", checkedEnzymes.get(i).id));
+                }
+                Query q = new Query(mSelectedAgents, enzymes);
+                mDb.saveQuery(q);
+                Toast.makeText(this, "Search saved", Toast.LENGTH_LONG).show();
+                return;
             default:
         }
 

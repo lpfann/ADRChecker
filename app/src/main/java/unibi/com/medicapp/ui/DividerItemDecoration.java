@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;

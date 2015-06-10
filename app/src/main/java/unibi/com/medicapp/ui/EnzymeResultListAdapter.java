@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +11,9 @@ import com.squareup.otto.Bus;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.model.ItemSelectedEvent;
 
 /**
  * @author Lukas Pfannschmidt

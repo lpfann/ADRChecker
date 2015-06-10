@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 
 import android.database.Cursor;
@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.QueryDatabase;
 
 
 public class DetailActivity extends AppCompatActivity {

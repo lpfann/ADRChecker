@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -30,6 +30,12 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.model.Agent;
+import unibi.com.medicapp.model.ButtonClickedEvent;
+import unibi.com.medicapp.model.Enzyme;
 
 
 public class MainSearchFragment extends Fragment {
