@@ -43,11 +43,11 @@ public class DrugResultListAdapter extends RecyclerView.Adapter<DrugResultListAd
         while (!mData.isAfterLast()) {
             // Substance A
             long id = mData.getLong(mData.getColumnIndex("ID_A"));
-            Cursor substance = db.getSubstance(id);
+            Cursor substance = db.getSubstanceForInteractionID(id);
             mSubstanceNames[i][0] = substance.getString(substance.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
             // Substance B
             id = mData.getLong(mData.getColumnIndex("ID_B"));
-            substance = db.getSubstance(id);
+            substance = db.getSubstanceForInteractionID(id);
             mSubstanceNames[i][1] = substance.getString(substance.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
             i++;
             mData.moveToNext();

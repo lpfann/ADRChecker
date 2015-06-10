@@ -22,6 +22,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.mikepenz.materialdrawer.util.KeyboardUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     private ResultListFragment mResultListFragment;
     private DetailActivity mDetailActivity;
     private Cursor drugCursor;
+    private QueryListFragment mQueryFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,14 +125,41 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.drawer_item_home).withIcon(FontAwesome.Icon.faw_home),
                         new PrimaryDrawerItem().withName(getString(R.string.enzyme_interaction)).withIcon(FontAwesome.Icon.faw_exchange),
+                        new PrimaryDrawerItem().withName(getString(R.string.saved_queries)).withIcon(FontAwesome.Icon.faw_save),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
                         new SecondaryDrawerItem().withName(getString(R.string.info)).withIcon(FontAwesome.Icon.faw_info)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l, IDrawerItem iDrawerItem) {
-                        System.out.println();
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l, IDrawerItem drawerItem) {
+                        if (drawerItem != null) {
+                            if (((Nameable) drawerItem).getName() == getString(R.string.saved_queries)) {
+                                {
+                                    mQueryFragment = QueryListFragment.newInstance();
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mQueryFragment, "querylist").commit();
+                                    assert getSupportActionBar() != null;
+                                    getSupportActionBar().setTitle(getString(R.string.saved_queries));
+
+                                }
+                            }
+                            if (((Nameable) drawerItem).getName() == getString(R.string.enzyme_interaction)) {
+                                {
+                                    if (mainSearchFragment != null) {
+                                        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+                                        assert getSupportActionBar() != null;
+                                        getSupportActionBar().setTitle(getString(R.string.search));
+                                    } else {
+                                        mainSearchFragment = MainSearchFragment.newInstance();
+                                        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+                                        assert getSupportActionBar() != null;
+                                        getSupportActionBar().setTitle(getString(R.string.search));
+                                    }
+                                }
+                            }
+
+
+                        }
                     }
 
                 })
@@ -345,7 +374,5 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         mDb = QueryDatabase.getInstance(this);
     }
 
-    public Cursor getEnzymeCursor() {
-        return enzymeCursor;
-    }
+
 }

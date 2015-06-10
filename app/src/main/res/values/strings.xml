@@ -29,4 +29,5 @@
     <string name="title_activity_detail">Interaction</string>
     <string name="add">ADD</string>
     <string name="edit">Edit</string>
+    <string name="saved_queries">Saved Queries</string>
 </resources>

@@ -39,16 +39,16 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
             String name = presentedData[i];
             switch (name) {
                 case (THERAPEUTISCHE_KLASSIFIKATION.TABLENAME):
-                    dataCursor[i] = mDB.getClassification(dataID);
+                    dataCursor[i] = mDB.getClassificationForInteractionID(dataID);
                     continue;
                 case (METABOLISMUS.TABLENAME):
-                    dataCursor[i] = mDB.getMetabolism(dataID);
+                    dataCursor[i] = mDB.getMetabolismgetNoteForInteractionID(dataID);
                     continue;
                 case (LITERATUR.TABLENAME):
-                    dataCursor[i] = mDB.getLiterature(dataID);
+                    dataCursor[i] = mDB.getLiteratureForInteractionID(dataID);
                     continue;
                 case (BEMERKUNGEN.TABLENAME):
-                    dataCursor[i] = mDB.getNote(dataID);
+                    dataCursor[i] = mDB.getNoteForInteractionID(dataID);
                     continue;
                 default:
                     continue;

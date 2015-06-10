@@ -70,7 +70,7 @@ public class DetailActivity extends AppCompatActivity {
             Detail_Fragment_Single enzyme_fragment = Detail_Fragment_Single.newInstance(mInteractionID);
             fm.beginTransaction().add(R.id.fragment_frame, enzyme_fragment).commit();
 
-            Cursor c = mDB.getEnzymes(mInteractionID);
+            Cursor c = mDB.getEnzymesForInteractionID(mInteractionID);
             int i = c.getColumnIndex(QueryDatabase.ISOENZYME.NAME);
             String s1 = c.getString(i);
             collapsingToolbar.setTitle(mSubstance + "  —  " + s1);
@@ -78,13 +78,13 @@ public class DetailActivity extends AppCompatActivity {
             setContentView(R.layout.activity_detail);
             ButterKnife.inject(this);
 
-//  Cursor c_sub1 = mDB.getSubstance(mInteractionID);
+//  Cursor c_sub1 = mDB.getSubstanceForInteractionID(mInteractionID);
 
             // Substance A
-            Cursor c = mDB.getSubstance(mInteractionID);
+            Cursor c = mDB.getSubstanceForInteractionID(mInteractionID);
             mSubstance = c.getString(c.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
             // Substance B
-            c = mDB.getSubstance(mInteractionID2);
+            c = mDB.getSubstanceForInteractionID(mInteractionID2);
             mSubstance2 = c.getString(c.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
             mAdapter = new MyAdapter(getSupportFragmentManager(), this, mSubstance, mSubstance2);
             mViewPager = (ViewPager) findViewById(R.id.viewpager);
