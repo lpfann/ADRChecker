@@ -1,5 +1,6 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.controller;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +12,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import unibi.com.medicapp.model.Agent;
+import unibi.com.medicapp.model.Enzyme;
+import unibi.com.medicapp.model.Query;
+
 /**
  * @author Lukas Pfannschmidt
  *         Date: 13.05.2015
@@ -18,7 +23,22 @@ import java.util.LinkedList;
  */
 public class QueryDatabase extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "converted.sqlite";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
+    private static final String QUERY_TABLE = "queries";
+    private static final String QUERY_TABLE_CREATE =
+            "CREATE TABLE " + QUERY_TABLE + " (" +
+                    "queryid INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "name TEXT)";
+    private static final String QUERY_ENZYME_TABLE = "querie_enzymes";
+    private static final String QUERY_ENZYME_TABLE_CREATE =
+            "CREATE TABLE " + QUERY_ENZYME_TABLE + " (" +
+                    "queryid INTEGER ," +
+                    "enzyme_id" + " INTEGER);";
+    private static final String QUERY_AGENT_TABLE = "querie_agents";
+    private static final String QUERY_AGENT_TABLE_CREATE =
+            "CREATE TABLE " + QUERY_AGENT_TABLE + " (" +
+                    "queryid INTEGER," +
+                    "agent_id" + " INTEGER);";
     public static HashMap<String, String> sSubstanceAgentProjection;
     private static QueryDatabase sInstance;
 
@@ -40,6 +60,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
 
     }
 
+
     public static synchronized QueryDatabase getInstance(Context context) {
 
         if (sInstance == null) {
@@ -47,6 +68,70 @@ public class QueryDatabase extends SQLiteAssetHelper {
 
         }
         return sInstance;
+    }
+
+    public void saveQuery(Query q) {
+        long id = db.insert(QUERY_TABLE, "name", null);
+        for (int i = 0; i < q.agents.size(); i++) {
+            ContentValues agents = new ContentValues();
+            agents.put("queryid", id); // get title
+            agents.put("agent_id", q.agents.get(i).id);
+            db.insert(QUERY_AGENT_TABLE, null, agents);
+        }
+        for (int i = 0; i < q.enzymes.size(); i++) {
+            ContentValues enzymes = new ContentValues();
+            enzymes.put("queryid", id); // get title
+            enzymes.put("enzyme_id", q.enzymes.get(i).id);
+            db.insert(QUERY_ENZYME_TABLE, null, enzymes);
+        }
+    }
+
+    public Query getQuery(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        LinkedList<Agent> agents = new LinkedList<>();
+        LinkedList<Enzyme> enzymes = new LinkedList<>();
+        String[] sqlSelect = {"agent_id"};
+
+        qb.setTables(QUERY_TABLE + " JOIN " + QUERY_AGENT_TABLE + " ON " + QUERY_TABLE + ".queryid = " + QUERY_AGENT_TABLE + ".queryid");
+        Cursor c = qb.query(db, sqlSelect, QUERY_TABLE + ".queryid = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i++) {
+            Agent agent = new Agent();
+            agent.id = c.getInt(c.getColumnIndex("agent_id"));
+            Cursor agCursor = getAgent(agent.id);
+            agent.name = agCursor.getString(agCursor.getColumnIndex(SUBSTANZ_WIRKSTOFF_MAPPING.NAME));
+            agents.add(agent);
+            c.moveToNext();
+        }
+        sqlSelect[0] = "enzyme_id";
+        qb.setTables(QUERY_TABLE + " JOIN " + QUERY_ENZYME_TABLE + " ON " + QUERY_TABLE + ".queryid = " + QUERY_ENZYME_TABLE + ".queryid");
+        c = qb.query(db, sqlSelect, QUERY_TABLE + ".queryid = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i++) {
+            Enzyme enzyme = new Enzyme();
+            enzyme.id = c.getLong(c.getColumnIndex("enzyme_id"));
+            Cursor enzCursor = getEnzyme(enzyme.id);
+            enzyme.name = enzCursor.getString(enzCursor.getColumnIndex(ISOENZYME.NAME));
+            enzymes.add(enzyme);
+            c.moveToNext();
+        }
+
+        return new Query(agents, enzymes);
+    }
+
+    public Cursor getAllQueries() {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
+        String[] sqlSelect = {"queryid",};
+
+        qb.setTables(QUERY_TABLE);
+        Cursor c = qb.query(db, sqlSelect, null, null,
+                null, null, null);
+
+        c.moveToFirst();
+        return c;
     }
 
     public Cursor getSubstances() {
@@ -237,7 +322,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
     }
 
-    public Cursor getMetabolism(long id) {
+    public Cursor getMetabolismgetNoteForInteractionID(long id) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {METABOLISMUS.TABLENAME + "." + METABOLISMUS.ID, METABOLISMUS.TABLENAME + "." + METABOLISMUS.NAME};
 
@@ -248,7 +333,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
     }
 
-    public Cursor getNote(long id) {
+    public Cursor getNoteForInteractionID(long id) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {BEMERKUNGEN.TABLENAME + "." + BEMERKUNGEN.ID, BEMERKUNGEN.TABLENAME + "." + BEMERKUNGEN.BEMERKUNG};
 
@@ -259,7 +344,8 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
     }
 
-    public Cursor getEnzymes(long id) {
+
+    public Cursor getEnzymesForInteractionID(long id) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {ISOENZYME.TABLENAME + "." + ISOENZYME.ID, ISOENZYME.TABLENAME + "." + ISOENZYME.NAME};
 
@@ -270,7 +356,29 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
     }
 
-    public Cursor getLiterature(long id) {
+    public Cursor getEnzyme(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {ISOENZYME.NAME};
+
+        qb.setTables(ISOENZYME.TABLENAME);
+        Cursor c = qb.query(db, sqlSelect, ISOENZYME.TABLENAME + "." + ISOENZYME.ID + " = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public Cursor getAgent(long id) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        String[] sqlSelect = {SUBSTANZ_WIRKSTOFF_MAPPING.NAME};
+
+        qb.setTables(SUBSTANZ_WIRKSTOFF_MAPPING.TABLENAME);
+        Cursor c = qb.query(db, sqlSelect, SUBSTANZ_WIRKSTOFF_MAPPING.TABLENAME + "." + SUBSTANZ_WIRKSTOFF_MAPPING.ID_AGENT + " = " + id, null,
+                null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public Cursor getLiteratureForInteractionID(long id) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {LITERATUR.TABLENAME + "." + LITERATUR.ID, LITERATUR.PMID, LITERATUR.YEAR, LITERATUR.SOURCE};
 
@@ -281,7 +389,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
     }
 
-    public Cursor getSubstance(long id) {
+    public Cursor getSubstanceForInteractionID(long id) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {SUBSTANZEN.TABLENAME + "." + SUBSTANZEN.ID, SUBSTANZEN.TABLENAME + "." + SUBSTANZEN.NAME};
 
@@ -292,7 +400,7 @@ public class QueryDatabase extends SQLiteAssetHelper {
         return c;
     }
 
-    public Cursor getClassification(long id) {
+    public Cursor getClassificationForInteractionID(long id) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {THERAPEUTISCHE_KLASSIFIKATION.TABLENAME + "." + THERAPEUTISCHE_KLASSIFIKATION.ID, THERAPEUTISCHE_KLASSIFIKATION.TABLENAME + "." + THERAPEUTISCHE_KLASSIFIKATION.NAME};
 

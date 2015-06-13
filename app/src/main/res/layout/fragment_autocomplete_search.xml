@@ -4,7 +4,7 @@
                 android:layout_height="match_parent"
               android:orientation="vertical"
               android:padding="20dp"
-                tools:context="unibi.com.medicapp.AutoCompleteSearchFragment">
+    tools:context="unibi.com.medicapp.ui.AutoCompleteSearchFragment">
 
 
 

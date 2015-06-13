@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.model;
 
 /**
  * @author Lukas Pfannschmidt
@@ -6,7 +6,7 @@ package unibi.com.medicapp;
  *         Time: 15:27
  */
 public class ItemSelectedEvent {
-    int position;
+    public int position;
 
     public ItemSelectedEvent(int pos) {
         position = pos;

@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.QueryDatabase;
 
-import static unibi.com.medicapp.QueryDatabase.BEMERKUNGEN;
-import static unibi.com.medicapp.QueryDatabase.LITERATUR;
-import static unibi.com.medicapp.QueryDatabase.METABOLISMUS;
-import static unibi.com.medicapp.QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION;
+import static unibi.com.medicapp.controller.QueryDatabase.BEMERKUNGEN;
+import static unibi.com.medicapp.controller.QueryDatabase.LITERATUR;
+import static unibi.com.medicapp.controller.QueryDatabase.METABOLISMUS;
+import static unibi.com.medicapp.controller.QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION;
 
 /**
  * @author Lukas Pfannschmidt
@@ -37,16 +39,16 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
             String name = presentedData[i];
             switch (name) {
                 case (THERAPEUTISCHE_KLASSIFIKATION.TABLENAME):
-                    dataCursor[i] = mDB.getClassification(dataID);
+                    dataCursor[i] = mDB.getClassificationForInteractionID(dataID);
                     continue;
                 case (METABOLISMUS.TABLENAME):
-                    dataCursor[i] = mDB.getMetabolism(dataID);
+                    dataCursor[i] = mDB.getMetabolismgetNoteForInteractionID(dataID);
                     continue;
                 case (LITERATUR.TABLENAME):
-                    dataCursor[i] = mDB.getLiterature(dataID);
+                    dataCursor[i] = mDB.getLiteratureForInteractionID(dataID);
                     continue;
                 case (BEMERKUNGEN.TABLENAME):
-                    dataCursor[i] = mDB.getNote(dataID);
+                    dataCursor[i] = mDB.getNoteForInteractionID(dataID);
                     continue;
                 default:
                     continue;

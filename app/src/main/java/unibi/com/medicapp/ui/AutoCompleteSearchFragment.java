@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,6 +27,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.model.Agent;
 
 
 public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment {

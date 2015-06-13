@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
@@ -21,6 +22,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.mikepenz.materialdrawer.util.KeyboardUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -32,7 +34,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
-
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.model.Agent;
+import unibi.com.medicapp.model.ButtonClickedEvent;
+import unibi.com.medicapp.model.Enzyme;
+import unibi.com.medicapp.model.ItemSelectedEvent;
+import unibi.com.medicapp.model.Query;
 
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
@@ -61,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     private ResultListFragment mResultListFragment;
     private DetailActivity mDetailActivity;
     private Cursor drugCursor;
+    private QueryListFragment mQueryFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,15 +124,42 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 .withAccountHeader(headerResult)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.drawer_item_home).withIcon(FontAwesome.Icon.faw_home),
-                        new PrimaryDrawerItem().withName(getString(R.string.enzyme_interaction)).withIcon(FontAwesome.Icon.faw_exchange),
+                        new PrimaryDrawerItem().withName(getString(R.string.new_search)).withIcon(FontAwesome.Icon.faw_exchange),
+                        new PrimaryDrawerItem().withName(getString(R.string.saved_queries)).withIcon(FontAwesome.Icon.faw_save),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
                         new SecondaryDrawerItem().withName(getString(R.string.info)).withIcon(FontAwesome.Icon.faw_info)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l, IDrawerItem iDrawerItem) {
-                        System.out.println();
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l, IDrawerItem drawerItem) {
+                        if (drawerItem != null) {
+                            if (((Nameable) drawerItem).getName() == getString(R.string.saved_queries)) {
+                                {
+                                    mQueryFragment = QueryListFragment.newInstance();
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mQueryFragment, "querylist").commit();
+                                    assert getSupportActionBar() != null;
+                                    getSupportActionBar().setTitle(getString(R.string.saved_queries));
+
+                                }
+                            }
+                            if (((Nameable) drawerItem).getName() == getString(R.string.enzyme_interaction)) {
+                                {
+                                    if (mainSearchFragment != null) {
+                                        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+                                        assert getSupportActionBar() != null;
+                                        getSupportActionBar().setTitle(getString(R.string.search));
+                                    } else {
+                                        mainSearchFragment = MainSearchFragment.newInstance();
+                                        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+                                        assert getSupportActionBar() != null;
+                                        getSupportActionBar().setTitle(getString(R.string.search));
+                                    }
+                                }
+                            }
+
+
+                        }
                     }
 
                 })
@@ -245,7 +282,15 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(R.string.results);
                 return;
-
+            case ButtonClickedEvent.SAVE_FAB_CLICKED:
+                LinkedList<Enzyme> enzymes = new LinkedList<>();
+                for (int i = 0; i < checkedEnzymes.size(); i++) {
+                    enzymes.add(new Enzyme("", checkedEnzymes.get(i).id));
+                }
+                Query q = new Query(mSelectedAgents, enzymes);
+                mDb.saveQuery(q);
+                Toast.makeText(this, "Search saved", Toast.LENGTH_LONG).show();
+                return;
             default:
         }
 
@@ -329,7 +374,5 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         mDb = QueryDatabase.getInstance(this);
     }
 
-    public Cursor getEnzymeCursor() {
-        return enzymeCursor;
-    }
+
 }

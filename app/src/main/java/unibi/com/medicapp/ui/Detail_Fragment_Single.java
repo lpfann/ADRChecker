@@ -1,4 +1,4 @@
-package unibi.com.medicapp;
+package unibi.com.medicapp.ui;
 
 
 import android.app.Activity;
@@ -17,6 +17,9 @@ import com.squareup.otto.Bus;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import unibi.com.medicapp.R;
+import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.QueryDatabase;
 
 public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
 
@@ -80,7 +83,7 @@ private void initCards(){
         String name = presentedData[i];
         switch (name) {
             case (QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME):
-                dataCursor[i] = mDB.getClassification(mInteractionID);
+                dataCursor[i] = mDB.getClassificationForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
                     content = (TextView) class_card.findViewById(R.id.contentTextView);
@@ -93,7 +96,7 @@ private void initCards(){
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_database).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             case (QueryDatabase.METABOLISMUS.TABLENAME):
-                dataCursor[i] = mDB.getMetabolism(mInteractionID);
+                dataCursor[i] = mDB.getMetabolismgetNoteForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
                     content = (TextView) metabolism_card.findViewById(R.id.contentTextView);
@@ -106,7 +109,7 @@ private void initCards(){
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_refresh).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             case (QueryDatabase.LITERATUR.TABLENAME):
-                dataCursor[i] = mDB.getLiterature(mInteractionID);
+                dataCursor[i] = mDB.getLiteratureForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
                     TextView year = (TextView) literature_card.findViewById(R.id.yearView);
@@ -125,7 +128,7 @@ private void initCards(){
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_book).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             case (QueryDatabase.BEMERKUNGEN.TABLENAME):
-                dataCursor[i] = mDB.getNote(mInteractionID);
+                dataCursor[i] = mDB.getNoteForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
                     content = (TextView) note_card.findViewById(R.id.contentTextView);
                     col = dataCursor[i].getColumnIndex(QueryDatabase.BEMERKUNGEN.BEMERKUNG);
