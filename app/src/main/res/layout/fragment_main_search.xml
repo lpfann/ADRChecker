@@ -29,7 +29,7 @@
                 android:layout_alignParentTop="true"
                 android:focusableInTouchMode="false"
                 android:fontFamily="sans-serif-light"
-                android:text="@string/agents"
+                android:text="@string/substances"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
 
             <Button

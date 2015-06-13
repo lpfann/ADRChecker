@@ -19,9 +19,9 @@ import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.QueryDatabase;
-import unibi.com.medicapp.model.Agent;
 import unibi.com.medicapp.model.Enzyme;
 import unibi.com.medicapp.model.Query;
+import unibi.com.medicapp.model.Substance;
 
 /**
  * @author Lukas Pfannschmidt
@@ -62,9 +62,9 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         long id = mData.getLong(mData.getColumnIndexOrThrow("queryid"));
         Query query = mDB.getQuery(id);
         parent.idView.setText(Long.toString(id));
-        for (int i = 0; i < query.agents.size(); i++) {
+        for (int i = 0; i < query.substances.size(); i++) {
             TextView child = new TextView(parent.agentList.getContext());
-            child.setText(query.agents.get(i).name);
+            child.setText(query.substances.get(i).name);
             parent.agentList.addView(child);
         }
         for (int i = 0; i < query.enzymes.size(); i++) {
@@ -102,19 +102,19 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
 
         @Override
         public void onClick(View v) {
-            // TODO ONLICK QUERY
+            // TODO Query laden implementieren
         }
     }
 
-    public class AgentsAdapter extends ArrayAdapter<Agent> {
-        public AgentsAdapter(Context context, LinkedList<Agent> agents) {
-            super(context, 0, agents);
+    public class AgentsAdapter extends ArrayAdapter<Substance> {
+        public AgentsAdapter(Context context, LinkedList<Substance> substances) {
+            super(context, 0, substances);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             // Get the data item for this position
-            Agent agent = getItem(position);
+            Substance substance = getItem(position);
             // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
@@ -122,7 +122,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
             // Lookup view for data population
             TextView name = (TextView) convertView.findViewById(android.R.id.text1);
             // Populate the data into the template view using the data object
-            name.setText(agent.name);
+            name.setText(substance.name);
             // Return the completed view to render on screen
             return convertView;
         }

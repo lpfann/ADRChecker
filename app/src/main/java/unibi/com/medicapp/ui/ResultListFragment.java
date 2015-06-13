@@ -57,7 +57,7 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
         mainListView.setLayoutManager(mLayoutManager);
         mainListView.setHasFixedSize(true);
-
+        // TODO: Interface für gleichaussehende Ergebnisse verbessern
         if (isEnzyme) {
             mainListView.setAdapter(new EnzymeResultListAdapter(mResultCursor));
         } else {

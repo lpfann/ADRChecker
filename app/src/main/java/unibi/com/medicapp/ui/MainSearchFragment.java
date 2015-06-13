@@ -33,9 +33,9 @@ import icepick.Icicle;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.QueryDatabase;
-import unibi.com.medicapp.model.Agent;
 import unibi.com.medicapp.model.ButtonClickedEvent;
 import unibi.com.medicapp.model.Enzyme;
+import unibi.com.medicapp.model.Substance;
 
 
 public class MainSearchFragment extends Fragment {
@@ -59,9 +59,9 @@ public class MainSearchFragment extends Fragment {
     Cursor enzymeCursor;
     SparseBooleanArray selectedItemsInList;
     @Icicle
-    LinkedList<Agent> mSelectedAgents;
+    LinkedList<Substance> mSelectedSubstances;
     private QueryDatabase db;
-    private AgentsListAdapter substanceadapter;
+    private SubstanceListAdapter substanceadapter;
 
 
     public MainSearchFragment() {
@@ -93,8 +93,8 @@ public class MainSearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
         setHasOptionsMenu(true);
-        if (mSelectedAgents == null) {
-            mSelectedAgents = new LinkedList<>();
+        if (mSelectedSubstances == null) {
+            mSelectedSubstances = new LinkedList<>();
         }
 
     }
@@ -118,9 +118,9 @@ public class MainSearchFragment extends Fragment {
         substanceListView.setHasFixedSize(true);
         // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
 //        substanceListView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
-        substanceadapter = new AgentsListAdapter(mSelectedAgents);
+        substanceadapter = new SubstanceListAdapter(mSelectedSubstances);
         substanceListView.setAdapter(substanceadapter);
-        if (mSelectedAgents.size() == 0) {
+        if (mSelectedSubstances.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
             substanceListView.setVisibility(View.GONE);
             add_Button.setText(R.string.add);
@@ -183,8 +183,8 @@ public class MainSearchFragment extends Fragment {
 
     }
 
-    public void setSubstances(LinkedList<Agent> agents) {
-        mSelectedAgents = agents;
+    public void setSubstances(LinkedList<Substance> substances) {
+        mSelectedSubstances = substances;
 
     }
 

@@ -56,29 +56,6 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
-                <TableRow>
-
-                    <TextView
-                        android:id="@+id/textView10"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:text="Year:"
-                        android:textSize="14sp"
-                        />
-
-                    <TextView
-                        android:id="@+id/yearView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:text="Medium Text"
-                        android:textSize="14sp"/>
-
-
-                </TableRow>
 
                 <TableRow>
 

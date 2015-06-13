@@ -112,11 +112,8 @@ private void initCards(){
                 dataCursor[i] = mDB.getLiteratureForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
-                    TextView year = (TextView) literature_card.findViewById(R.id.yearView);
                     TextView pubmed = (TextView) literature_card.findViewById(R.id.pubmedView);
                     TextView title = (TextView) literature_card.findViewById(R.id.titleView);
-                    col = dataCursor[i].getColumnIndex(QueryDatabase.LITERATUR.YEAR);
-                    year.setText(dataCursor[i].getString(col));
                     col = dataCursor[i].getColumnIndex(QueryDatabase.LITERATUR.PMID);
                     pubmed.setText(dataCursor[i].getString(col));
                     col = dataCursor[i].getColumnIndex(QueryDatabase.LITERATUR.SOURCE);

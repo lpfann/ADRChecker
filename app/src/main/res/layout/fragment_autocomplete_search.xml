@@ -16,7 +16,7 @@
         android:drawableLeft="@drawable/ic_action_search"
         android:dropDownHeight="200dp"
         android:focusable="true"
-        android:hint="@string/agent"
+        android:hint="@string/substance"
         android:inputType="textAutoComplete"
         />
 

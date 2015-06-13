@@ -8,11 +8,11 @@ import java.util.LinkedList;
  *         Time: 19:12
  */
 public class Query {
-    public LinkedList<Agent> agents;
+    public LinkedList<Substance> substances;
     public LinkedList<Enzyme> enzymes;
 
-    public Query(LinkedList<Agent> agents, LinkedList<Enzyme> enzymes) {
-        this.agents = agents;
+    public Query(LinkedList<Substance> substances, LinkedList<Enzyme> enzymes) {
+        this.substances = substances;
         this.enzymes = enzymes;
     }
 }

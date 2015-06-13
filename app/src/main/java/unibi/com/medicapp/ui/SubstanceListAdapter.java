@@ -13,23 +13,23 @@ import com.mikepenz.iconics.IconicsDrawable;
 import java.util.LinkedList;
 
 import unibi.com.medicapp.R;
-import unibi.com.medicapp.model.Agent;
+import unibi.com.medicapp.model.Substance;
 
 /**
  * @author Lukas Pfannschmidt
  *         Date: 16.05.2015
  *         Time: 15:16
  */
-public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.ViewHolder> {
-    private LinkedList<Agent> mData;
+public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdapter.ViewHolder> {
+    private LinkedList<Substance> mData;
     private RecyclerView mRecyclerView;
 
-    public AgentsListAdapter(LinkedList<Agent> data) {
+    public SubstanceListAdapter(LinkedList<Substance> data) {
         mData = data;
     }
 
     @Override
-    public AgentsListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public SubstanceListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         // create a new view
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.substancelisteditable, viewGroup, false);

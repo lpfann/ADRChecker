@@ -30,7 +30,7 @@ import icepick.Icicle;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.QueryDatabase;
-import unibi.com.medicapp.model.Agent;
+import unibi.com.medicapp.model.Substance;
 
 
 public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment {
@@ -41,9 +41,9 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
     android.support.v7.widget.RecyclerView wirkstoffListeView;
 
     @Icicle
-    LinkedList<Agent> mAgents;
+    LinkedList<Substance> mSubstances;
     private QueryDatabase db;
-    private AgentsListAdapter mAdapter;
+    private SubstanceListAdapter mAdapter;
     private Bus mBus;
 
 
@@ -66,15 +66,15 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
     }
 
     private void initList(View v) {
-        if (mAgents == null) {
-            mAgents = new LinkedList<>();
+        if (mSubstances == null) {
+            mSubstances = new LinkedList<>();
         }
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
         wirkstoffListeView.setLayoutManager(mLayoutManager);
         wirkstoffListeView.setHasFixedSize(true);
         // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
 //        wirkstoffListeView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
-        mAdapter = new AgentsListAdapter(mAgents);
+        mAdapter = new SubstanceListAdapter(mSubstances);
         wirkstoffListeView.setAdapter(mAdapter);
     }
 
@@ -82,7 +82,7 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
     private void initializeAutoComplete(Context c) {
 
         final int[] to = new int[]{android.R.id.text1};
-        final String[] from = new String[]{"Name"};
+        final String[] from = new String[]{"name"};
         final SimpleCursorAdapter adapter = new SimpleCursorAdapter(c,
                 android.R.layout.simple_dropdown_item_1line,
                 null,
@@ -94,7 +94,7 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             @Override
             public CharSequence convertToString(Cursor cursor) {
-                final int colIndex = cursor.getColumnIndexOrThrow("Name");
+                final int colIndex = cursor.getColumnIndexOrThrow("name");
                 return cursor.getString(colIndex);
             }
         });
@@ -102,17 +102,17 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence name) {
-                return db.getAgentsLike((String) name);
+                return db.getSubstancesLike((String) name);
             }
         });
         autocompleteWirkstoffView.setAdapter(adapter);
         autocompleteWirkstoffView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow("Name"));
-                Agent selAgent = new Agent(id, name);
-                mAgents.add(selAgent);
-                mAdapter.notifyItemInserted(mAgents.size() - 1);
+                String name = adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow("name"));
+                Substance selSubstance = new Substance(id, name);
+                mSubstances.add(selSubstance);
+                mAdapter.notifyItemInserted(mSubstances.size() - 1);
                 autocompleteWirkstoffView.setText("");
             }
         });
@@ -163,12 +163,12 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         return super.onOptionsItemSelected(item);
     }
 
-    public LinkedList<Agent> getAgents() {
-        return (LinkedList<Agent>) mAgents.clone();
+    public LinkedList<Substance> getSubstances() {
+        return (LinkedList<Substance>) mSubstances.clone();
     }
 
-    public void setAgents(LinkedList<Agent> agents) {
-        this.mAgents = (LinkedList<Agent>) agents.clone();
+    public void setAgents(LinkedList<Substance> substances) {
+        this.mSubstances = (LinkedList<Substance>) substances.clone();
     }
 
     @Override

@@ -37,11 +37,11 @@ import icepick.Icicle;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.QueryDatabase;
-import unibi.com.medicapp.model.Agent;
 import unibi.com.medicapp.model.ButtonClickedEvent;
 import unibi.com.medicapp.model.Enzyme;
 import unibi.com.medicapp.model.ItemSelectedEvent;
 import unibi.com.medicapp.model.Query;
+import unibi.com.medicapp.model.Substance;
 
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Icicle
     ArrayList<Enzyme> checkedEnzymes;
     @Icicle
-    LinkedList<Agent> mSelectedAgents = new LinkedList<>();
+    LinkedList<Substance> mSelectedSubstances = new LinkedList<>();
     @Icicle
     ArrayList<Integer> checkedItems;
 
@@ -199,9 +199,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 // Come back from Search Fragment
                 mAutoCompleteSearchFragment = (AutoCompleteSearchFragment) getSupportFragmentManager().findFragmentByTag("search");
                 mainSearchFragment = (MainSearchFragment) getSupportFragmentManager().findFragmentByTag("main");
-                mSelectedAgents = mAutoCompleteSearchFragment.getAgents();
+                mSelectedSubstances = mAutoCompleteSearchFragment.getSubstances();
                 //mainSearchFragment.setSelectedEnzymeIDs(checkedEnzymes);
-                mainSearchFragment.setSubstances(mSelectedAgents);
+                mainSearchFragment.setSubstances(mSelectedSubstances);
                 getSupportFragmentManager().popBackStack();
                 InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
                     // Create new fragment to add (Fragment B)
                     mAutoCompleteSearchFragment = AutoCompleteSearchFragment.newInstance();
-                    mAutoCompleteSearchFragment.setAgents(mSelectedAgents);
+                    mAutoCompleteSearchFragment.setAgents(mSelectedSubstances);
 
                     mAutoCompleteSearchFragment.setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
                     mAutoCompleteSearchFragment.setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.change_agent_list));
@@ -240,16 +240,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     // Add Fragment B
                     getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mAutoCompleteSearchFragment, "search").addToBackStack(null).addSharedElement(agent_list, "TransitionToSearch").commit();
                     assert getSupportActionBar() != null;
-                    getSupportActionBar().setTitle(getString(R.string.add_agents));
+                    getSupportActionBar().setTitle(getString(R.string.add_substance));
 
                 } else {
                     // Code to run on older devices
                     // Open Search Fragment
                     mAutoCompleteSearchFragment = AutoCompleteSearchFragment.newInstance();
-                    mAutoCompleteSearchFragment.setAgents(mSelectedAgents);
+                    mAutoCompleteSearchFragment.setAgents(mSelectedSubstances);
                     getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mAutoCompleteSearchFragment, "search").addToBackStack(null).commit();
                     assert getSupportActionBar() != null;
-                    getSupportActionBar().setTitle(getString(R.string.add_agents));
+                    getSupportActionBar().setTitle(getString(R.string.add_substance));
                 }
                 return;
             case ButtonClickedEvent.DRUG_CARD_CLICKED:
@@ -275,8 +275,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             case ButtonClickedEvent.START_SEARCH:
                 // Open Result Fragment
                 checkedEnzymes = mainSearchFragment.getCheckedItems();
-                enzymeCursor = mDb.getResultsforDefectiveEnzyme(checkedEnzymes, mSelectedAgents);
-                drugCursor = mDb.getResultsForDrugDrugInteraction(mSelectedAgents);
+                enzymeCursor = mDb.getResultsforDefectiveEnzyme(checkedEnzymes, mSelectedSubstances);
+                drugCursor = mDb.getResultsForDrugDrugInteraction(mSelectedSubstances);
                 resultOverviewFragment = ResultOverviewFragment.newInstance(enzymeCursor.getCount(), drugCursor.getCount());
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, resultOverviewFragment).addToBackStack(null).commit();
                 assert getSupportActionBar() != null;
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 for (int i = 0; i < checkedEnzymes.size(); i++) {
                     enzymes.add(new Enzyme("", checkedEnzymes.get(i).id));
                 }
-                Query q = new Query(mSelectedAgents, enzymes);
+                Query q = new Query(mSelectedSubstances, enzymes);
                 mDb.saveQuery(q);
                 Toast.makeText(this, "Search saved", Toast.LENGTH_LONG).show();
                 return;

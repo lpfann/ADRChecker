@@ -24,8 +24,8 @@ import butterknife.OnClick;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.QueryDatabase;
-import unibi.com.medicapp.model.Agent;
 import unibi.com.medicapp.model.ButtonClickedEvent;
+import unibi.com.medicapp.model.Substance;
 
 
 public class ResultOverviewFragment extends android.support.v4.app.Fragment {
@@ -45,9 +45,9 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
     private int enz_result;
 
     private int drug_result;
-    private LinkedList<Agent> mAgents;
+    private LinkedList<Substance> mSubstances;
     private QueryDatabase db;
-    private AgentsListAdapter mAdapter;
+    private SubstanceListAdapter mAdapter;
     private Bus mBus;
     public ResultOverviewFragment() {
         // Required empty public constructor
@@ -130,12 +130,12 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public LinkedList<Agent> getAgents() {
-        return (LinkedList<Agent>) mAgents.clone();
+    public LinkedList<Substance> getAgents() {
+        return (LinkedList<Substance>) mSubstances.clone();
     }
 
-    public void setAgents(LinkedList<Agent> agents) {
-        this.mAgents = (LinkedList<Agent>) agents.clone();
+    public void setAgents(LinkedList<Substance> substances) {
+        this.mSubstances = (LinkedList<Substance>) substances.clone();
     }
 
     @Override
