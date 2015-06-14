@@ -32,10 +32,12 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
     private Context c;
     private RecyclerView mRecyclerView;
     private Bus mBus;
+    private QueryListAdapter adapter;
 
     public QueryListAdapter(Cursor data, Context c) {
         mData = data;
         this.c = c;
+        adapter = this;
         mBus = BusProvider.getInstance();
         mDB = DatabaseHelperClass.getInstance(c);
     }
@@ -144,7 +146,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
 
         @Override
         public void onClick(View v) {
-            mBus.post(new QuerySelectedEvent(getAdapterPosition() + 1)); // Rowid from Sqlite starts at 1 so we  need to offset the request from the adapter
+            mBus.post(new QuerySelectedEvent((int) adapter.getItemId(getAdapterPosition())));
         }
 
     }

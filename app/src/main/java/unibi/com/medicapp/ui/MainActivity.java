@@ -208,7 +208,13 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 
                 return true;
-
+            case R.id.action_clear:
+                if (mainSearchFragment != null) {
+                    mainSearchFragment.clearForms();
+                }
+                mSelectedSubstances = new LinkedList<>();
+                checkedEnzymes = new ArrayList<>();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

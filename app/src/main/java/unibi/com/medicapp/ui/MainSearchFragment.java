@@ -12,6 +12,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -186,6 +187,12 @@ public class MainSearchFragment extends Fragment {
 
     }
 
+    public void clearForms() {
+        mSelectedSubstances = new LinkedList<>();
+        selectedEnzymeIDs = new ArrayList<>();
+        initEnzymeList();
+        initSubstanceList();
+    }
     public void setSubstances(LinkedList<Substance> substances) {
         mSelectedSubstances = substances;
 
@@ -223,10 +230,10 @@ public class MainSearchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-/*        inflater.inflate(R.menu.menu_search, menu);
-        MenuItem searchbutton = menu.findItem(R.id.action_search);
-        searchbutton.setIcon(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_search).sizeDp(24).color(getResources().getColor(R.color.icons)));
-        searchbutton.setTitle(getResources().getString(R.string.search));*/
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem clearMenuAction = menu.findItem(R.id.action_clear);
+        clearMenuAction.setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_receipt).sizeDp(24).color(getResources().getColor(R.color.icons)));
+        clearMenuAction.setTitle(getResources().getString(R.string.clear));
     }
 
     @Override

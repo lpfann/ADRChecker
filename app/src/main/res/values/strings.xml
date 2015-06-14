@@ -28,4 +28,5 @@
     <string name="edit">Edit</string>
     <string name="saved_queries">Saved Queries</string>
     <string name="new_search">New Search</string>
+    <string name="clear">Clear</string>
 </resources>
