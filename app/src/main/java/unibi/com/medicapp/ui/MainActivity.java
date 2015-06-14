@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
                                 }
                             }
-                            if (((Nameable) drawerItem).getName() == getString(R.string.enzyme_interaction)) {
+                            if (((Nameable) drawerItem).getName() == getString(R.string.new_search)) {
                                 {
                                     if (mainSearchFragment != null) {
                                         getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
