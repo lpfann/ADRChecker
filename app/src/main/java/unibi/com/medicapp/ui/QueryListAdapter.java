@@ -21,6 +21,7 @@ import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.Enzyme;
 import unibi.com.medicapp.model.Query;
+import unibi.com.medicapp.model.QuerySelectedEvent;
 import unibi.com.medicapp.model.Substance;
 
 /**
@@ -102,7 +103,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
 
         @Override
         public void onClick(View v) {
-            // TODO Query laden implementieren
+            mBus.post(new QuerySelectedEvent(getAdapterPosition() + 1)); // Rowid from Sqlite starts at 1 so we  need to offset the request from the adapter
         }
     }
 

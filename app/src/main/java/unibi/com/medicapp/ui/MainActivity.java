@@ -41,6 +41,7 @@ import unibi.com.medicapp.model.ButtonClickedEvent;
 import unibi.com.medicapp.model.Enzyme;
 import unibi.com.medicapp.model.ItemSelectedEvent;
 import unibi.com.medicapp.model.Query;
+import unibi.com.medicapp.model.QuerySelectedEvent;
 import unibi.com.medicapp.model.Substance;
 
 
@@ -61,8 +62,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Icicle
     ArrayList<Integer> checkedItems;
 
-    Drawer.Result result = null;
-    AccountHeader.Result headerResult;
+    Drawer.Result drawer = null;
+    AccountHeader.Result drawer_header;
     boolean isEnzymeInteraction;
     private ResultOverviewFragment resultOverviewFragment;
     private Bus bus;
@@ -109,19 +110,19 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
 
     private void initDrawer(Bundle savedInstance) {
-        headerResult = new AccountHeader()
+        drawer_header = new AccountHeader()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
                 .withSavedInstance(savedInstance)
                 .build();
 
 
-        result = new Drawer()
+        drawer = new Drawer()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withTranslucentStatusBar(true)
                 .withActionBarDrawerToggle(true)
-                .withAccountHeader(headerResult)
+                .withAccountHeader(drawer_header)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.drawer_item_home).withIcon(FontAwesome.Icon.faw_home),
                         new PrimaryDrawerItem().withName(getString(R.string.new_search)).withIcon(FontAwesome.Icon.faw_exchange),
@@ -317,11 +318,25 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         startActivity(i);
     }
 
+    @Subscribe
+    public void onQueryLoad(QuerySelectedEvent event) {
+        // Load MainFragment and use Query item
+        int queryid = event.position;
+        Query q = mDb.getQuery(queryid);
+        mainSearchFragment = MainSearchFragment.newInstance();
+        mSelectedSubstances = q.substances;
+        mainSearchFragment.setSelectedEnzymeIDs(new ArrayList<Enzyme>(q.enzymes));
+        mainSearchFragment.setSubstances(mSelectedSubstances);
+        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setTitle(R.string.search);
+        drawer.setSelectionByIdentifier(R.string.new_search);
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState = result.saveInstanceState(outState);
-        outState = headerResult.saveInstanceState(outState);
+        outState = drawer.saveInstanceState(outState);
+        outState = drawer_header.saveInstanceState(outState);
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
 
@@ -332,13 +347,13 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         //Enable Up button only  if there are entries in the back stack
         int canback = getSupportFragmentManager().getBackStackEntryCount();
         assert getSupportActionBar() != null;
-        if (result != null) {
+        if (drawer != null) {
             if (canback > 0) {
-                result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+                drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             } else {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+                drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
                 getSupportActionBar().setTitle(R.string.search);
             }
 
@@ -353,8 +368,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Override
     public void onBackPressed() {
         //handle the back press :D close the drawer first and if the drawer is closed close the activity
-        if (result != null && result.isDrawerOpen()) {
-            result.closeDrawer();
+        if (drawer != null && drawer.isDrawerOpen()) {
+            drawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

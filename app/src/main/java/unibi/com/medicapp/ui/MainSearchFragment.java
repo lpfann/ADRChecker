@@ -96,7 +96,9 @@ public class MainSearchFragment extends Fragment {
         if (mSelectedSubstances == null) {
             mSelectedSubstances = new LinkedList<>();
         }
-
+        if (selectedEnzymeIDs == null) {
+            selectedEnzymeIDs = new ArrayList<>();
+        }
     }
 
     @Override
@@ -171,14 +173,15 @@ public class MainSearchFragment extends Fragment {
                 return cursor.getString(colIndex);
             }
         });
-        if (selectedEnzymeIDs != null) {
+        enzymeListView.setAdapter(adapter);
+        enzymeListView.clearChoices();
+        if (selectedEnzymeIDs.size() > 0) {
             for (Enzyme i : selectedEnzymeIDs) {
-                enzymeListView.setItemChecked(i.id.intValue(), true);
+                enzymeListView.setItemChecked(i.id.intValue() - 1, true);      // Offset by 1 because SQlite rowid = Adapter Position in List -1
 
             }
 
         }
-        enzymeListView.setAdapter(adapter);
 
 
     }
