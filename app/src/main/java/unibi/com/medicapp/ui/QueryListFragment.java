@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +56,31 @@ public class QueryListFragment extends android.support.v4.app.Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
         mainListView.setLayoutManager(mLayoutManager);
         mainListView.setHasFixedSize(false);
-        mainListView.setAdapter(new QueryListAdapter(mSavedQueriesCursor, getActivity()));
+        final QueryListAdapter adapter = new QueryListAdapter(mSavedQueriesCursor, getActivity());
+        mainListView.setAdapter(adapter);
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                int adapterPosition = viewHolder.getAdapterPosition();
+                long id = adapter.getItemId(adapterPosition);
+                Log.d("Swipe", "item  " + id);
+                mDb.removeQuery(id);
+                adapter.notifyItemRemoved(adapterPosition);
+                adapter.refreshCursor();
+
+
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mainListView);
     }
 
     @Override

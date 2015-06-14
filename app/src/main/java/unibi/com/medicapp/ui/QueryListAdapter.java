@@ -90,6 +90,10 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
 
     }
 
+    public void refreshCursor() {
+        mData = mDB.getAllQueries();
+    }
+
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
@@ -111,6 +115,14 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
     public int getItemCount() {
         return mData.getCount();
     }
+
+    @Override
+    public long getItemId(int position) {
+        mData.moveToPosition(position);
+        return mData.getLong(mData.getColumnIndex("queryid"));
+    }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @InjectView(R.id.idView)
@@ -134,6 +146,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         public void onClick(View v) {
             mBus.post(new QuerySelectedEvent(getAdapterPosition() + 1)); // Rowid from Sqlite starts at 1 so we  need to offset the request from the adapter
         }
+
     }
 
 
