@@ -2,7 +2,7 @@ package unibi.com.medicapp;
 
 import android.test.AndroidTestCase;
 
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 
 
 /**
@@ -10,12 +10,12 @@ import unibi.com.medicapp.controller.QueryDatabase;
  *         Date: 30.05.2015
  *         Time: 18:28
  */
-public class QueryDatabaseTest extends AndroidTestCase {
-    private QueryDatabase mDB;
+public class DatabaseHelperClassTest extends AndroidTestCase {
+    private DatabaseHelperClass mDB;
 
     public void setUp() throws Exception {
         super.setUp();
-        mDB = QueryDatabase.getInstance(getContext());
+        mDB = DatabaseHelperClass.getInstance(getContext());
         assertNotNull(mDB);
     }
 
@@ -24,7 +24,7 @@ public class QueryDatabaseTest extends AndroidTestCase {
     }
 
     public void testGetInstance() throws Exception {
-        assertNotNull(QueryDatabase.getInstance(getContext()));
+        assertNotNull(DatabaseHelperClass.getInstance(getContext()));
     }
 
     public void testGetSubstances() throws Exception {

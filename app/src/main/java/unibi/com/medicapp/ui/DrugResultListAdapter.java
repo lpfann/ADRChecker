@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ItemSelectedEvent;
 
 /**
@@ -37,18 +37,18 @@ public class DrugResultListAdapter extends RecyclerView.Adapter<DrugResultListAd
 
         data.moveToFirst();
         mSubstanceNames = new String[data.getCount()][2];
-        QueryDatabase db = QueryDatabase.getInstance(c);
+        DatabaseHelperClass db = DatabaseHelperClass.getInstance(c);
         int i = 0;
         mData.moveToFirst();
         while (!mData.isAfterLast()) {
             // Substance A
             long id = mData.getLong(mData.getColumnIndex("ID_A"));
             Cursor substance = db.getSubstanceForInteractionID(id);
-            mSubstanceNames[i][0] = substance.getString(substance.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+            mSubstanceNames[i][0] = substance.getString(substance.getColumnIndex(DatabaseHelperClass.SUBSTANZEN.NAME));
             // Substance B
             id = mData.getLong(mData.getColumnIndex("ID_B"));
             substance = db.getSubstanceForInteractionID(id);
-            mSubstanceNames[i][1] = substance.getString(substance.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+            mSubstanceNames[i][1] = substance.getString(substance.getColumnIndex(DatabaseHelperClass.SUBSTANZEN.NAME));
             i++;
             mData.moveToNext();
         }

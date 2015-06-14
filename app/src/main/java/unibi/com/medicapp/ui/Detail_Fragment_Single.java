@@ -19,13 +19,13 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 
 public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
 
-    String[] presentedData = {QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME,
-            QueryDatabase.METABOLISMUS.TABLENAME, QueryDatabase.LITERATUR.TABLENAME,
-            QueryDatabase.BEMERKUNGEN.TABLENAME};
+    String[] presentedData = {DatabaseHelperClass.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME,
+            DatabaseHelperClass.METABOLISMUS.TABLENAME, DatabaseHelperClass.LITERATUR.TABLENAME,
+            DatabaseHelperClass.BEMERKUNGEN.TABLENAME};
     private final int length = presentedData.length;
 
     Cursor[] dataCursor = new Cursor[length];
@@ -39,7 +39,7 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
     @InjectView(R.id.note_card)
     FrameLayout note_card;
 
-    private QueryDatabase mDB;
+    private DatabaseHelperClass mDB;
     private Bus mBus;
     private long mInteractionID;
 
@@ -82,12 +82,12 @@ private void initCards(){
     for (int i = 0; i < length; i++) {
         String name = presentedData[i];
         switch (name) {
-            case (QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME):
+            case (DatabaseHelperClass.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME):
                 dataCursor[i] = mDB.getClassificationForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
                     content = (TextView) class_card.findViewById(R.id.contentTextView);
-                    col = dataCursor[i].getColumnIndex(QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION.NAME);
+                    col = dataCursor[i].getColumnIndex(DatabaseHelperClass.THERAPEUTISCHE_KLASSIFIKATION.NAME);
                     content.setText(dataCursor[i].getString(col));
                 }
                 header = (TextView) class_card.findViewById(R.id.headerTextView);
@@ -95,12 +95,12 @@ private void initCards(){
                 image = (ImageView) class_card.findViewById(R.id.imageView);
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_database).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
-            case (QueryDatabase.METABOLISMUS.TABLENAME):
+            case (DatabaseHelperClass.METABOLISMUS.TABLENAME):
                 dataCursor[i] = mDB.getMetabolismgetNoteForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
                     content = (TextView) metabolism_card.findViewById(R.id.contentTextView);
-                    col = dataCursor[i].getColumnIndex(QueryDatabase.METABOLISMUS.NAME);
+                    col = dataCursor[i].getColumnIndex(DatabaseHelperClass.METABOLISMUS.NAME);
                     content.setText(dataCursor[i].getString(col));
                 }
                 header = (TextView) metabolism_card.findViewById(R.id.headerTextView);
@@ -108,15 +108,15 @@ private void initCards(){
                 image = (ImageView) metabolism_card.findViewById(R.id.imageView);
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_refresh).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
-            case (QueryDatabase.LITERATUR.TABLENAME):
+            case (DatabaseHelperClass.LITERATUR.TABLENAME):
                 dataCursor[i] = mDB.getLiteratureForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
                     TextView pubmed = (TextView) literature_card.findViewById(R.id.pubmedView);
                     TextView title = (TextView) literature_card.findViewById(R.id.titleView);
-                    col = dataCursor[i].getColumnIndex(QueryDatabase.LITERATUR.PMID);
+                    col = dataCursor[i].getColumnIndex(DatabaseHelperClass.LITERATUR.PMID);
                     pubmed.setText(dataCursor[i].getString(col));
-                    col = dataCursor[i].getColumnIndex(QueryDatabase.LITERATUR.SOURCE);
+                    col = dataCursor[i].getColumnIndex(DatabaseHelperClass.LITERATUR.SOURCE);
                     title.setText(dataCursor[i].getString(col));
                 }
                 header = (TextView) literature_card.findViewById(R.id.headerTextView);
@@ -124,11 +124,11 @@ private void initCards(){
                 image = (ImageView) literature_card.findViewById(R.id.imageView);
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_book).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
-            case (QueryDatabase.BEMERKUNGEN.TABLENAME):
+            case (DatabaseHelperClass.BEMERKUNGEN.TABLENAME):
                 dataCursor[i] = mDB.getNoteForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
                     content = (TextView) note_card.findViewById(R.id.contentTextView);
-                    col = dataCursor[i].getColumnIndex(QueryDatabase.BEMERKUNGEN.BEMERKUNG);
+                    col = dataCursor[i].getColumnIndex(DatabaseHelperClass.BEMERKUNGEN.BEMERKUNG);
                     content.setText(dataCursor[i].getString(col));
                 }
                 header = (TextView) note_card.findViewById(R.id.headerTextView);
@@ -149,7 +149,7 @@ private void initCards(){
 
         if (activity != null) {
             mBus = BusProvider.getInstance();
-            mDB = QueryDatabase.getInstance(getActivity());
+            mDB = DatabaseHelperClass.getInstance(getActivity());
         }
 
     }

@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.Enzyme;
 import unibi.com.medicapp.model.Query;
 import unibi.com.medicapp.model.Substance;
@@ -29,7 +29,7 @@ import unibi.com.medicapp.model.Substance;
  *         Time: 15:16
  */
 public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.ViewHolder> {
-    private final QueryDatabase mDB;
+    private final DatabaseHelperClass mDB;
     private Cursor mData;
     private Context c;
     private RecyclerView mRecyclerView;
@@ -39,7 +39,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         mData = data;
         this.c = c;
         mBus = BusProvider.getInstance();
-        mDB = QueryDatabase.getInstance(c);
+        mDB = DatabaseHelperClass.getInstance(c);
     }
 
     @Override

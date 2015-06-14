@@ -32,7 +32,7 @@ import icepick.Icepick;
 import icepick.Icicle;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ButtonClickedEvent;
 import unibi.com.medicapp.model.Enzyme;
 import unibi.com.medicapp.model.Substance;
@@ -60,7 +60,7 @@ public class MainSearchFragment extends Fragment {
     SparseBooleanArray selectedItemsInList;
     @Icicle
     LinkedList<Substance> mSelectedSubstances;
-    private QueryDatabase db;
+    private DatabaseHelperClass db;
     private SubstanceListAdapter substanceadapter;
 
 
@@ -194,7 +194,7 @@ public class MainSearchFragment extends Fragment {
 
         if (activity != null) {
             mBus = BusProvider.getInstance();
-            db = QueryDatabase.getInstance(getActivity());
+            db = DatabaseHelperClass.getInstance(getActivity());
         }
 
     }

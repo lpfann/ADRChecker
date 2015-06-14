@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 
 public class ResultListFragment extends android.support.v4.app.Fragment {
 
@@ -26,7 +26,7 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
     @InjectView(R.id.mainListView)
     RecyclerView mainListView;
     private boolean isEnzyme;
-    private QueryDatabase mDb;
+    private DatabaseHelperClass mDb;
     private Bus mBus;
     private EnzymeResultListAdapter mAdapter;
 
@@ -82,7 +82,7 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        mDb = QueryDatabase.getInstance(activity);
+        mDb = DatabaseHelperClass.getInstance(activity);
         mBus = BusProvider.getInstance();
 
     }

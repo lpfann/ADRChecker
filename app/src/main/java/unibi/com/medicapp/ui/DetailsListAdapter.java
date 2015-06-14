@@ -12,12 +12,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import unibi.com.medicapp.R;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 
-import static unibi.com.medicapp.controller.QueryDatabase.BEMERKUNGEN;
-import static unibi.com.medicapp.controller.QueryDatabase.LITERATUR;
-import static unibi.com.medicapp.controller.QueryDatabase.METABOLISMUS;
-import static unibi.com.medicapp.controller.QueryDatabase.THERAPEUTISCHE_KLASSIFIKATION;
+import static unibi.com.medicapp.controller.DatabaseHelperClass.BEMERKUNGEN;
+import static unibi.com.medicapp.controller.DatabaseHelperClass.LITERATUR;
+import static unibi.com.medicapp.controller.DatabaseHelperClass.METABOLISMUS;
+import static unibi.com.medicapp.controller.DatabaseHelperClass.THERAPEUTISCHE_KLASSIFIKATION;
 
 /**
  * @author Lukas Pfannschmidt
@@ -30,11 +30,11 @@ public class DetailsListAdapter extends RecyclerView.Adapter<DetailsListAdapter.
     Cursor[] dataCursor = new Cursor[length];
     private RecyclerView mRecyclerView;
     private long dataID;
-    private QueryDatabase mDB;
+    private DatabaseHelperClass mDB;
 
     public DetailsListAdapter(long id, Context c) {
         dataID = id;
-        mDB = QueryDatabase.getInstance(c);
+        mDB = DatabaseHelperClass.getInstance(c);
         for (int i = 0; i < length; i++) {
             String name = presentedData[i];
             switch (name) {

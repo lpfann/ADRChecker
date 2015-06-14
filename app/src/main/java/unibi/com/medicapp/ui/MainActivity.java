@@ -36,7 +36,7 @@ import icepick.Icepick;
 import icepick.Icicle;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ButtonClickedEvent;
 import unibi.com.medicapp.model.Enzyme;
 import unibi.com.medicapp.model.ItemSelectedEvent;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     boolean isEnzymeInteraction;
     private ResultOverviewFragment resultOverviewFragment;
     private Bus bus;
-    private QueryDatabase mDb;
+    private DatabaseHelperClass mDb;
     private ResultListFragment mResultListFragment;
     private DetailActivity mDetailActivity;
     private Cursor drugCursor;
@@ -303,9 +303,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         int col;
         if (isEnzymeInteraction) {
             enzymeCursor.moveToPosition(event.position);
-            col = enzymeCursor.getColumnIndexOrThrow(QueryDatabase.INTERAKTIONEN.ID);
+            col = enzymeCursor.getColumnIndexOrThrow(DatabaseHelperClass.INTERAKTIONEN.ID);
             i.putExtra("INTERACTION_ID", enzymeCursor.getLong(col));
-            i.putExtra("SUBSTANCE", enzymeCursor.getString(enzymeCursor.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME)));
+            i.putExtra("SUBSTANCE", enzymeCursor.getString(enzymeCursor.getColumnIndex(DatabaseHelperClass.SUBSTANZEN.NAME)));
         } else {
             drugCursor.moveToPosition(event.position);
             col = drugCursor.getColumnIndexOrThrow("ID_A");
@@ -371,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         super.onResume();
         bus = BusProvider.getInstance();
         bus.register(this);
-        mDb = QueryDatabase.getInstance(this);
+        mDb = DatabaseHelperClass.getInstance(this);
     }
 
 

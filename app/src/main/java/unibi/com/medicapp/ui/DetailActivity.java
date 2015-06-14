@@ -15,7 +15,7 @@ import android.support.v7.widget.Toolbar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import unibi.com.medicapp.R;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -34,7 +34,7 @@ public class DetailActivity extends AppCompatActivity {
     private MyAdapter mAdapter;
     private long mInteractionID;
     private long mInteractionID2;
-    private QueryDatabase mDB;
+    private DatabaseHelperClass mDB;
     private boolean isEnzymeInteraction;
     private String mSubstance;
     private String mSubstance2;
@@ -44,7 +44,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        mDB = QueryDatabase.getInstance(this);
+        mDB = DatabaseHelperClass.getInstance(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mInteractionID = extras.getLong("INTERACTION_ID");
@@ -71,7 +71,7 @@ public class DetailActivity extends AppCompatActivity {
             fm.beginTransaction().add(R.id.fragment_frame, enzyme_fragment).commit();
 
             Cursor c = mDB.getEnzymesForInteractionID(mInteractionID);
-            int i = c.getColumnIndex(QueryDatabase.ISOENZYME.NAME);
+            int i = c.getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME);
             String s1 = c.getString(i);
             collapsingToolbar.setTitle(mSubstance + "  —  " + s1);
         } else {
@@ -82,10 +82,10 @@ public class DetailActivity extends AppCompatActivity {
 
             // Substance A
             Cursor c = mDB.getSubstanceForInteractionID(mInteractionID);
-            mSubstance = c.getString(c.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+            mSubstance = c.getString(c.getColumnIndex(DatabaseHelperClass.SUBSTANZEN.NAME));
             // Substance B
             c = mDB.getSubstanceForInteractionID(mInteractionID2);
-            mSubstance2 = c.getString(c.getColumnIndex(QueryDatabase.SUBSTANZEN.NAME));
+            mSubstance2 = c.getString(c.getColumnIndex(DatabaseHelperClass.SUBSTANZEN.NAME));
             mAdapter = new MyAdapter(getSupportFragmentManager(), this, mSubstance, mSubstance2);
             mViewPager = (ViewPager) findViewById(R.id.viewpager);
             mViewPager.setAdapter(mAdapter);

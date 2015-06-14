@@ -23,7 +23,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
-import unibi.com.medicapp.controller.QueryDatabase;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ButtonClickedEvent;
 import unibi.com.medicapp.model.Substance;
 
@@ -46,7 +46,7 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
 
     private int drug_result;
     private LinkedList<Substance> mSubstances;
-    private QueryDatabase db;
+    private DatabaseHelperClass db;
     private SubstanceListAdapter mAdapter;
     private Bus mBus;
     public ResultOverviewFragment() {
@@ -113,7 +113,7 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        db = QueryDatabase.getInstance(activity);
+        db = DatabaseHelperClass.getInstance(activity);
 
     }
 
