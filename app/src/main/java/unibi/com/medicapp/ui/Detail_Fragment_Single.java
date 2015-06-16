@@ -25,7 +25,7 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
 
     String[] presentedData = {DatabaseHelperClass.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME,
             DatabaseHelperClass.METABOLISMUS.TABLENAME, DatabaseHelperClass.LITERATUR.TABLENAME,
-            DatabaseHelperClass.BEMERKUNGEN.TABLENAME};
+            DatabaseHelperClass.BEMERKUNGEN.TABLENAME, DatabaseHelperClass.ISOENZYME.TABLENAME};
     private final int length = presentedData.length;
 
     Cursor[] dataCursor = new Cursor[length];
@@ -38,6 +38,9 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
     FrameLayout metabolism_card;
     @InjectView(R.id.note_card)
     FrameLayout note_card;
+    @InjectView(R.id.enzyme_card)
+    FrameLayout enzyme_card;
+
 
     private DatabaseHelperClass mDB;
     private Bus mBus;
@@ -135,6 +138,18 @@ private void initCards(){
                 header.setText("Notes");
                 image = (ImageView) note_card.findViewById(R.id.imageView);
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_comment).sizeDp(32).color(getResources().getColor(R.color.accent)));
+                continue;
+            case (DatabaseHelperClass.ISOENZYME.TABLENAME):
+                dataCursor[i] = mDB.getEnzymesForInteractionID(mInteractionID);
+                if (dataCursor[i].getCount() > 0) {
+                    content = (TextView) enzyme_card.findViewById(R.id.contentTextView);
+                    col = dataCursor[i].getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME);
+                    content.setText(dataCursor[i].getString(col));
+                }
+                header = (TextView) enzyme_card.findViewById(R.id.headerTextView);
+                header.setText("Enzyme");
+                image = (ImageView) enzyme_card.findViewById(R.id.imageView);
+                image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_puzzle_piece).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             default:
                 continue;
