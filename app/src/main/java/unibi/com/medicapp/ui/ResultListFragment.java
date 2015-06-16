@@ -59,7 +59,7 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
         mainListView.setHasFixedSize(true);
         // TODO: Interface für gleichaussehende Ergebnisse verbessern
         if (isEnzyme) {
-            mainListView.setAdapter(new EnzymeResultListAdapter(mResultCursor));
+            mainListView.setAdapter(new EnzymeResultListAdapter(mResultCursor, getActivity()));
         } else {
             Cursor sub_cursor = mDb.getSubstances();
             mainListView.setAdapter(new DrugResultListAdapter(mResultCursor, getActivity()));

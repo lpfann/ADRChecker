@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:singleLine="false"
-                    android:text="Interaction"
+                    android:text="@string/interaction"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/icons"
                     android:textSize="32sp"

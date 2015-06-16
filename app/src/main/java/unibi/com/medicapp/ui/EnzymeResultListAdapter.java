@@ -1,5 +1,6 @@
 package unibi.com.medicapp.ui;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
+import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ItemSelectedEvent;
 
 /**
@@ -21,13 +23,17 @@ import unibi.com.medicapp.model.ItemSelectedEvent;
  *         Time: 15:16
  */
 public class EnzymeResultListAdapter extends RecyclerView.Adapter<EnzymeResultListAdapter.ViewHolder> {
+    private final DatabaseHelperClass mDB;
+    private final Context c;
     private Cursor mData;
     private RecyclerView mRecyclerView;
     private Bus mBus;
 
-    public EnzymeResultListAdapter(Cursor data) {
+    public EnzymeResultListAdapter(Cursor data,Context c) {
         mData = data;
         mBus = BusProvider.getInstance();
+        this.c = c;
+        mDB = DatabaseHelperClass.getInstance(c);
     }
 
     @Override
@@ -47,7 +53,9 @@ public class EnzymeResultListAdapter extends RecyclerView.Adapter<EnzymeResultLi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         mData.moveToPosition(position);
-        parent.nameView.setText(mData.getString(mData.getColumnIndexOrThrow("name")));
+        parent.substanceView.setText(mData.getString(mData.getColumnIndexOrThrow("name")));
+        Cursor c = mDB.getEnzymesForInteractionID(mData.getLong(mData.getColumnIndex(DatabaseHelperClass.INTERAKTIONEN.ID)));
+        parent.enzymeView.setText(c.getString(c.getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME)));
 
     }
 
@@ -63,8 +71,10 @@ public class EnzymeResultListAdapter extends RecyclerView.Adapter<EnzymeResultLi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @InjectView(R.id.nameView)
-        TextView nameView;
+        @InjectView(R.id.substanceViewItem)
+        TextView substanceView;
+        @InjectView(R.id.enzymeViewItem)
+        TextView enzymeView;
 
         public ViewHolder(View itemView) {
             super(itemView);
