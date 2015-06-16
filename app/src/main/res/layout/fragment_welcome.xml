@@ -1,0 +1,83 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/maincontent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="30dp">
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="1"
+        android:text="Welcome"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="?attr/colorButtonNormal"
+        android:textSize="32sp" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="0"
+        android:paddingTop="8dp"
+        android:text="With this app you can make two different searches at the same time:"
+        android:textColor="?attr/colorButtonNormal"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Defective Enzyme"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?attr/colorButtonNormal"
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="If you know about defective Enzymes in the metabolism of a patient you can specify it and search for known Interactions with entered Substances."
+        android:textColor="?attr/colorButtonNormal"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Interactions between Substances"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?attr/colorButtonNormal"
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="If you enter multiple Substances, the app will search for Enzymes which are common in the activity of both substances."
+        android:textColor="?attr/colorButtonNormal"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/startbutton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="24dp"
+        android:padding="16dp"
+        android:text="Start"
+        android:textColor="?attr/colorButtonNormal"
+        android:textSize="24sp" />
+
+</LinearLayout>

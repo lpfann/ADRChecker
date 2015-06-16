@@ -24,6 +24,7 @@ public class ButtonClickedEvent {
     public static final int START_SEARCH = 7;
     public static final int OPEN_RESULT_DETAILS = 8;
     public static final int SAVE_FAB_CLICKED = 9;
+    public static final int START_BUTTON_CLICKED = 10;
 
     public int eventtype;
 
@@ -31,7 +32,7 @@ public class ButtonClickedEvent {
         eventtype = i;
     }
 
-    @IntDef({ADD_SUBSTANCE_BUTTON, GET_DATA_SEARCH_SUBSTANCE_FRAGMENT, BACK_TO_HOME, DISABLE_BACK_BUTTON, SAVE_SELECTED_ENZYMES, ENZYME_CARD_CLICKED, DRUG_CARD_CLICKED, START_SEARCH, OPEN_RESULT_DETAILS, SAVE_FAB_CLICKED})
+    @IntDef({ADD_SUBSTANCE_BUTTON, GET_DATA_SEARCH_SUBSTANCE_FRAGMENT, BACK_TO_HOME, DISABLE_BACK_BUTTON, SAVE_SELECTED_ENZYMES, ENZYME_CARD_CLICKED, DRUG_CARD_CLICKED, START_SEARCH, OPEN_RESULT_DETAILS, SAVE_FAB_CLICKED, START_BUTTON_CLICKED})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FragmentEvent {
     }

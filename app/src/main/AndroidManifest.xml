@@ -21,8 +21,10 @@
         </activity>
         <activity
             android:name=".ui.DetailActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_detail"
-            android:parentActivityName=".ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />

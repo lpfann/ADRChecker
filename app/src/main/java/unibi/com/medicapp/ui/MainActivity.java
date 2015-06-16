@@ -21,9 +21,7 @@ import android.widget.Toast;
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.mikepenz.materialdrawer.util.KeyboardUtil;
@@ -68,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     Drawer.Result drawer = null;
     AccountHeader.Result drawer_header;
     boolean isEnzymeInteraction;
+    WelcomeFragment welcomeFragment;
     private ResultOverviewFragment resultOverviewFragment;
     private Bus bus;
     private DatabaseHelperClass mDb;
@@ -96,10 +95,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         if (savedInstanceState == null) {
 
             // Create  for ContentLayout
-
-            mainSearchFragment = MainSearchFragment.newInstance();
+            welcomeFragment = WelcomeFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, welcomeFragment).commit();
+            /*mainSearchFragment = MainSearchFragment.newInstance();
             getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, mainSearchFragment, "main").commit();
-
+*/
 
         } else {
             mainSearchFragment = (MainSearchFragment) getSupportFragmentManager().findFragmentByTag("main");
@@ -127,12 +127,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 .withActionBarDrawerToggle(true)
                 .withAccountHeader(drawer_header)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_home).withIcon(FontAwesome.Icon.faw_home),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_home)).withIcon(FontAwesome.Icon.faw_home),
                         new PrimaryDrawerItem().withName(getString(R.string.new_search)).withIcon(FontAwesome.Icon.faw_exchange),
-                        new PrimaryDrawerItem().withName(getString(R.string.saved_queries)).withIcon(FontAwesome.Icon.faw_save),
-                        new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
-                        new SecondaryDrawerItem().withName(getString(R.string.info)).withIcon(FontAwesome.Icon.faw_info)
+                        new PrimaryDrawerItem().withName(getString(R.string.saved_queries)).withIcon(FontAwesome.Icon.faw_save)
+
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -159,6 +157,12 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                                         assert getSupportActionBar() != null;
                                         getSupportActionBar().setTitle(getString(R.string.search));
                                     }
+                                }
+                            }
+                            if (((Nameable) drawerItem).getName() == getString(R.string.drawer_item_home)) {
+                                {
+                                    welcomeFragment = WelcomeFragment.newInstance();
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, welcomeFragment).commit();
                                 }
                             }
 
@@ -228,6 +232,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Subscribe
     public void onBusEvent(ButtonClickedEvent event) {
         switch (event.eventtype) {
+            case (ButtonClickedEvent.START_BUTTON_CLICKED):
+                getSupportFragmentManager().beginTransaction().remove(welcomeFragment).commit();
+                if (mainSearchFragment == null) {
+                    mainSearchFragment = MainSearchFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
+
+                } else {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+                }
+                return;
             case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
