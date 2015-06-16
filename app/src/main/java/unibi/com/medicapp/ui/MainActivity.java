@@ -1,11 +1,13 @@
 package unibi.com.medicapp.ui;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.TransitionInflater;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -290,13 +293,28 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 getSupportActionBar().setTitle(R.string.results);
                 return;
             case ButtonClickedEvent.SAVE_FAB_CLICKED:
-                LinkedList<Enzyme> enzymes = new LinkedList<>();
-                for (int i = 0; i < checkedEnzymes.size(); i++) {
-                    enzymes.add(new Enzyme("", checkedEnzymes.get(i).id));
-                }
-                Query q = new Query(mSelectedSubstances, enzymes);
-                mDb.saveQuery(q);
-                Toast.makeText(this, "Search saved", Toast.LENGTH_LONG).show();
+                final EditText input = new EditText(this);
+                new AlertDialog.Builder(this)
+                        .setTitle("Enter Name")
+                        .setMessage("Name for the Query")
+                        .setView(input)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String text = input.getText().toString();
+                                LinkedList<Enzyme> enzymes = new LinkedList<>();
+                                for (int i = 0; i < checkedEnzymes.size(); i++) {
+                                    enzymes.add(new Enzyme("", checkedEnzymes.get(i).id));
+                                }
+                                Query q = new Query(mSelectedSubstances, enzymes, text);
+                                mDb.saveQuery(q);
+                                Toast.makeText(getBaseContext(), "Search saved", Toast.LENGTH_LONG).show();
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing.
+                    }
+                }).show();
+
                 return;
             default:
         }

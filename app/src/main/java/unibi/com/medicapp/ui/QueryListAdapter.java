@@ -62,6 +62,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         long id = mData.getLong(mData.getColumnIndexOrThrow("queryid"));
         Query query = mDB.getQuery(id);
         parent.idView.setText(Long.toString(id));
+        parent.nameView.setText(query.name);
         TextView child;
         for (int i = 0; i < query.substances.size(); i++) {
             if (i < parent.substancesize) {
@@ -133,6 +134,8 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         LinearLayout substanceList;
         @InjectView(R.id.list2)
         LinearLayout enzymeList;
+        @InjectView(R.id.nameView)
+        TextView nameView;
         int substancesize = 0;
         int enzymesize = 0;
         ArrayList<TextView> enzymeViewArray = new ArrayList<>();
