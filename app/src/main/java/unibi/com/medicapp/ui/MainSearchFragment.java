@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
@@ -42,7 +41,7 @@ import unibi.com.medicapp.model.Substance;
 public class MainSearchFragment extends Fragment {
 
     Bus mBus;
-    SimpleCursorAdapter adapter;
+    EnzymeCursorAdapter adapter;
     @Icicle
     ArrayList<Enzyme> selectedEnzymeIDs;
     @InjectView(R.id.enzymeListView)
@@ -137,18 +136,13 @@ public class MainSearchFragment extends Fragment {
     }
 
     public ArrayList<Enzyme> getCheckedItems() {
-        SparseBooleanArray checked = enzymeListView.getCheckedItemPositions();
+        long[] checkedItemIds = enzymeListView.getCheckedItemIds();
         selectedEnzymeIDs = new ArrayList<>();
-        for (int i = 0; i < checked.size(); i++) {
-            // Item position in adapter
-            int position = checked.keyAt(i);
-            Cursor c = adapter.getCursor();
-            if (checked.valueAt(i)) {
-                c.moveToPosition(position);
-                Enzyme enz = new Enzyme(c.getString(1), c.getLong(0));
+        for (int i = 0; i < checkedItemIds.length; i++) {
+            Cursor c = db.getEnzyme(checkedItemIds[i]);
+            Enzyme enz = new Enzyme(c.getString(c.getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME)), checkedItemIds[i]);
                 selectedEnzymeIDs.add(enz);
             }
-        }
         return selectedEnzymeIDs;
 
     }
@@ -161,28 +155,14 @@ public class MainSearchFragment extends Fragment {
 
         final int[] to = new int[]{android.R.id.text1};
         final String[] from = new String[]{"name"};
-        adapter = new SimpleCursorAdapter(getActivity(),
+
+        adapter = new EnzymeCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_multiple_choice,
                 enzymeCursor,
                 from,
                 to,
-                0);
-        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
-            @Override
-            public CharSequence convertToString(Cursor cursor) {
-                final int colIndex = cursor.getColumnIndexOrThrow("name");
-                return cursor.getString(colIndex);
-            }
-        });
+                0, selectedEnzymeIDs);
         enzymeListView.setAdapter(adapter);
-        enzymeListView.clearChoices();
-        if (selectedEnzymeIDs.size() > 0) {
-            for (Enzyme i : selectedEnzymeIDs) {
-                enzymeListView.setItemChecked(i.id.intValue() - 1, true);      // Offset by 1 because SQlite rowid = Adapter Position in List -1
-
-            }
-
-        }
 
 
     }
