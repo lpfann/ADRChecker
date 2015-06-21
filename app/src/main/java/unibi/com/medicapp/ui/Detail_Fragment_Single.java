@@ -21,8 +21,16 @@ import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.DatabaseHelperClass;
 
+/**
+ * Fragment to display Details about a single Interaction requested from the DB.
+ * Is embedded in
+ *
+ * @see DetailActivity
+ */
 public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
 
+    // Items which get displayed
+    // uses Constants in DB Class
     String[] presentedData = {DatabaseHelperClass.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME,
             DatabaseHelperClass.METABOLISMUS.TABLENAME, DatabaseHelperClass.LITERATUR.TABLENAME,
             DatabaseHelperClass.BEMERKUNGEN.TABLENAME, DatabaseHelperClass.ISOENZYME.TABLENAME};
@@ -44,6 +52,9 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
 
     private DatabaseHelperClass mDB;
     private Bus mBus;
+    /**
+     * Interaction ID which gets presented in this Fragment
+     */
     private long mInteractionID;
 
     public Detail_Fragment_Single() {
@@ -61,6 +72,7 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Fragment is useless without an ID
         if (getArguments() != null) {
            mInteractionID = getArguments().getLong("INTERACTION_ID");
         } else {
@@ -77,6 +89,10 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
         return v;
     }
 
+    /**
+     * This method fills Views with Data from Cursor
+     * Could/Should be replaced with dynamic List if used for more data points.
+     */
 private void initCards(){
     TextView header;
     TextView content;
@@ -86,6 +102,7 @@ private void initCards(){
         String name = presentedData[i];
         switch (name) {
             case (DatabaseHelperClass.THERAPEUTISCHE_KLASSIFIKATION.TABLENAME):
+
                 dataCursor[i] = mDB.getClassificationForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
@@ -99,7 +116,7 @@ private void initCards(){
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_database).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             case (DatabaseHelperClass.METABOLISMUS.TABLENAME):
-                dataCursor[i] = mDB.getMetabolismgetNoteForInteractionID(mInteractionID);
+                dataCursor[i] = mDB.getMetabolismForInteractionID(mInteractionID);
                 if (dataCursor[i].getCount() > 0) {
 
                     content = (TextView) metabolism_card.findViewById(R.id.contentTextView);
@@ -152,7 +169,6 @@ private void initCards(){
                 image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_puzzle_piece).sizeDp(32).color(getResources().getColor(R.color.accent)));
                 continue;
             default:
-                continue;
 
         }
     }

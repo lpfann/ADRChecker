@@ -18,21 +18,19 @@ import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ItemSelectedEvent;
 
 /**
+ *  * ListAdapter to handle Enzyme-Interaction results.
  * @author Lukas Pfannschmidt
  *         Date: 16.05.2015
  *         Time: 15:16
  */
 public class EnzymeResultListAdapter extends RecyclerView.Adapter<EnzymeResultListAdapter.ViewHolder> {
     private final DatabaseHelperClass mDB;
-    private final Context c;
     private Cursor mData;
-    private RecyclerView mRecyclerView;
     private Bus mBus;
 
     public EnzymeResultListAdapter(Cursor data,Context c) {
         mData = data;
         mBus = BusProvider.getInstance();
-        this.c = c;
         mDB = DatabaseHelperClass.getInstance(c);
     }
 
@@ -53,17 +51,15 @@ public class EnzymeResultListAdapter extends RecyclerView.Adapter<EnzymeResultLi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         mData.moveToPosition(position);
+        // Set substance name
         parent.substanceView.setText(mData.getString(mData.getColumnIndexOrThrow("name")));
         Cursor c = mDB.getEnzymesForInteractionID(mData.getLong(mData.getColumnIndex(DatabaseHelperClass.INTERAKTIONEN.ID)));
+        // Set enzyme name
         parent.enzymeView.setText(c.getString(c.getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME)));
 
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        mRecyclerView = recyclerView;
-    }
+
 
     @Override
     public int getItemCount() {
@@ -84,6 +80,7 @@ public class EnzymeResultListAdapter extends RecyclerView.Adapter<EnzymeResultLi
 
         @Override
         public void onClick(View v) {
+            // send bus event to main activty to open Detail Activity
             mBus.post(new ItemSelectedEvent(getAdapterPosition()));
 
         }

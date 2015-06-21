@@ -3,6 +3,7 @@ package unibi.com.medicapp.model;
 import java.io.Serializable;
 
 /**
+ * POJO to save Substance Objects with name and id from the DB.
  * @author Lukas Pfannschmidt
  *         Date: 16.05.2015
  *         Time: 13:46

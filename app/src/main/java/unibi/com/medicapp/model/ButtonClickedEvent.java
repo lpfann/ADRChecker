@@ -6,10 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- *
- * @author Lukas Pfannschmidt
- * Date: 5/18/15
- * Time: 15:41
+ * Event Class for the OTTO Bus to notify the MainActivity from everywhere.
+ * All Fragments with buttons and list items pass the event through the bus to communicate with it.
  */
 public class ButtonClickedEvent {
 
@@ -32,6 +30,7 @@ public class ButtonClickedEvent {
         eventtype = i;
     }
 
+    // Annotation enables AndroidStudio Linting
     @IntDef({ADD_SUBSTANCE_BUTTON, GET_DATA_SEARCH_SUBSTANCE_FRAGMENT, BACK_TO_HOME, DISABLE_BACK_BUTTON, SAVE_SELECTED_ENZYMES, ENZYME_CARD_CLICKED, DRUG_CARD_CLICKED, START_SEARCH, OPEN_RESULT_DETAILS, SAVE_FAB_CLICKED, START_BUTTON_CLICKED})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FragmentEvent {

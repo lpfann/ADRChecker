@@ -16,9 +16,7 @@ import unibi.com.medicapp.R;
 import unibi.com.medicapp.model.Substance;
 
 /**
- * @author Lukas Pfannschmidt
- *         Date: 16.05.2015
- *         Time: 15:16
+ * Adapter to display Substances by name and an Button to remove the Item from the List.
  */
 public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdapter.ViewHolder> {
     private LinkedList<Substance> mData;
@@ -35,6 +33,7 @@ public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdap
                 .inflate(R.layout.substancelisteditable, viewGroup, false);
 
         ViewHolder vh = new ViewHolder(v);
+        // Init Remove Button
         ImageButton button = (ImageButton) v.findViewById(R.id.removeButton);
         button.setImageDrawable(new IconicsDrawable(viewGroup.getContext(), GoogleMaterial.Icon.gmd_clear).color(viewGroup.getResources().getColor(R.color.accent)).sizeDp(24));
         v.findViewById(R.id.removeButton).setOnClickListener(vh);
@@ -43,8 +42,7 @@ public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdap
 
     @Override
     public void onBindViewHolder(ViewHolder parent, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
+        // Set Name
         parent.mTextView.setText(mData.get(position).name);
 
     }
@@ -70,7 +68,7 @@ public class SubstanceListAdapter extends RecyclerView.Adapter<SubstanceListAdap
             mButton = (ImageButton) itemView.findViewById(R.id.removeButton);
         }
 
-
+        // Remove Action when Button clicked
         @Override
         public void onClick(View v) {
             mData.remove(getPosition());

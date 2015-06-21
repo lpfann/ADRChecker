@@ -3,6 +3,8 @@ package unibi.com.medicapp.model;
 import java.io.Serializable;
 
 /**
+ * POJO for the Enzyme Object
+ * Stores id and name from the DB:
  * @author Lukas Pfannschmidt
  *         Date: 26.05.2015
  *         Time: 17:16

@@ -17,7 +17,13 @@ import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.DatabaseHelperClass;
 
-
+/**
+ * Activty which displays single Results.
+ * Results can contain one or two Interaction Fragments.
+ * which are displayed in
+ * see @Detail_Fragment_Single
+ * Utilizes ViewPager to display two Interaction Fragments side by side.
+ */
 public class DetailActivity extends AppCompatActivity {
 
 
@@ -46,23 +52,22 @@ public class DetailActivity extends AppCompatActivity {
 
         mDB = DatabaseHelperClass.getInstance(this);
         Bundle extras = getIntent().getExtras();
+        // Activity sseless without IDs
         if (extras != null) {
             mInteractionID = extras.getLong("INTERACTION_ID");
             isEnzymeInteraction = extras.getBoolean("MODE");
+            // Different branches depending on result type.
             if (isEnzymeInteraction) {
                 mSubstance = extras.getString("SUBSTANCE");
             } else {
                 mInteractionID2 = extras.getLong("INTERACTION_ID2");
             }
         } else {
-            // DEBUG
-            // TODO: remove debug branch
-            isEnzymeInteraction = true;
-            mInteractionID = 2;
-            //throw new Error("No Data for DetailView passed!");
+            throw new Error("No Data for DetailView passed!");
         }
 
-
+        // Set different Views depending on result type
+        // ViewPager or Single FrameLayout
         if (isEnzymeInteraction) {
             setContentView(R.layout.activity_detail_enzyme);
             ButterKnife.inject(this);
@@ -70,6 +75,7 @@ public class DetailActivity extends AppCompatActivity {
             Detail_Fragment_Single enzyme_fragment = Detail_Fragment_Single.newInstance(mInteractionID);
             fm.beginTransaction().add(R.id.fragment_frame, enzyme_fragment).commit();
 
+            // Set Title
             Cursor c = mDB.getEnzymesForInteractionID(mInteractionID);
             int i = c.getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME);
             String s1 = c.getString(i);
@@ -77,8 +83,6 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_detail);
             ButterKnife.inject(this);
-
-//  Cursor c_sub1 = mDB.getSubstanceForInteractionID(mInteractionID);
 
             // Substance A
             Cursor c = mDB.getSubstanceForInteractionID(mInteractionID);
@@ -92,22 +96,27 @@ public class DetailActivity extends AppCompatActivity {
             mTabLayout = (TabLayout) findViewById(R.id.tabs);
             mTabLayout.setupWithViewPager(mViewPager);
 
-            // TODO: Farbe funktioniert bisher nicht, bug??
+            // Should change Color to match app theme
+            // Library Bug? is not working atm
             mTabLayout.setTabTextColors(getResources().getColor(R.color.icons), getResources().getColor(R.color.primary_light));
 
         }
-
+        // Change back arrow
         assert getSupportActionBar() != null;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
 
+        // Set titlebar colors
         collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.icons));
         collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.icons));
 
 
     }
 
+    /**
+     * Adapter for the ViewPager to create Fragments to display
+     */
     public static class MyAdapter extends FragmentPagerAdapter {
         long interactionID;
         long interactionID2;

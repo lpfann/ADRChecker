@@ -3,6 +3,8 @@ package unibi.com.medicapp.model;
 import java.util.LinkedList;
 
 /**
+ * POJO to store List for Substances and Enzymes which are used to fill the SearchFragment for the Query.
+ * Also enables to name the Query.
  * @author Lukas Pfannschmidt
  *         Date: 10.06.2015
  *         Time: 19:12

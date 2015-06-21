@@ -21,12 +21,17 @@ import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ItemSelectedEvent;
 
 /**
+ * ListAdapter to handle Drug-Drug Interaction results.
  * @author Lukas Pfannschmidt
  *         Date: 16.05.2015
  *         Time: 15:16
  */
 public class DrugResultListAdapter extends RecyclerView.Adapter<DrugResultListAdapter.ViewHolder> {
+    /**
+     * Array to cache strings from the cursor
+     */
     String[][] mSubstanceNames;
+
     private Cursor mData;
     private RecyclerView mRecyclerView;
     private Bus mBus;
@@ -35,6 +40,7 @@ public class DrugResultListAdapter extends RecyclerView.Adapter<DrugResultListAd
         mData = data;
         mBus = BusProvider.getInstance();
 
+        // cache text to display for the list
         data.moveToFirst();
         mSubstanceNames = new String[data.getCount()][2];
         DatabaseHelperClass db = DatabaseHelperClass.getInstance(c);
@@ -69,8 +75,7 @@ public class DrugResultListAdapter extends RecyclerView.Adapter<DrugResultListAd
 
     @Override
     public void onBindViewHolder(ViewHolder parent, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
+
         parent.nameView1.setText(mSubstanceNames[position][0]);
         parent.nameView2.setText(mSubstanceNames[position][1]);
 
@@ -98,12 +103,14 @@ public class DrugResultListAdapter extends RecyclerView.Adapter<DrugResultListAd
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
+            // Set Icon
             seperatorIcon.setImageDrawable(new IconicsDrawable(itemView.getContext(), GoogleMaterial.Icon.gmd_swap_horiz).color(itemView.getContext().getResources().getColor(R.color.accent)).sizeDp(24));
         }
 
 
         @Override
         public void onClick(View v) {
+            // Send bus event to MainActibity to open DetailActivity
             mBus.post(new ItemSelectedEvent(getAdapterPosition()));
 
         }

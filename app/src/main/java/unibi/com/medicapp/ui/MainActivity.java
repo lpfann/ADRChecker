@@ -45,39 +45,58 @@ import unibi.com.medicapp.model.Query;
 import unibi.com.medicapp.model.QuerySelectedEvent;
 import unibi.com.medicapp.model.Substance;
 
-
+/**
+ * Main Activity which hosts most of the APP
+ * Consists of Navigation Drawer,Toolbar, FrameLayout for most Fragments
+ * and some Controller Stuff, by receiving Bus Events through EventBus
+ */
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
-
-
+    // Data Cursors for Lists
     public Cursor enzymeCursor;
-
+    /**
+     * Top Toolbar (ActionBar)
+     */
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-    MainSearchFragment mainSearchFragment;
-    AutoCompleteSearchFragment mAutoCompleteSearchFragment;
-
+    /**
+     * Field for all checked Enzymes
+     */
     @Icicle
     ArrayList<Enzyme> checkedEnzymes;
+    /**
+     * Field for added Substances by the user
+     */
     @Icicle
     LinkedList<Substance> mSelectedSubstances = new LinkedList<>();
-    @Icicle
-    ArrayList<Integer> checkedItems;
-
-    Drawer.Result drawer = null;
-    AccountHeader.Result drawer_header;
-    boolean isEnzymeInteraction;
-    WelcomeFragment welcomeFragment;
-    private ResultOverviewFragment resultOverviewFragment;
+    /**
+     * Event Bus, receives Data from Fragments
+     */
     private Bus bus;
+    /**
+     * DB instance
+     */
     private DatabaseHelperClass mDb;
-    private ResultListFragment mResultListFragment;
-    private DetailActivity mDetailActivity;
-    private Cursor drugCursor;
+    // Different Fragments which are displayed inside the FrameLayout
+    private WelcomeFragment welcomeFragment;
+    private MainSearchFragment mainSearchFragment;
+    private AutoCompleteSearchFragment mAutoCompleteSearchFragment;
+    private ResultOverviewFragment resultOverviewFragment;
     private QueryListFragment mQueryFragment;
+    private ResultListFragment mResultListFragment;
+    // Navigation Drawer and Header of it
+    private Drawer.Result drawer = null;
+    private AccountHeader.Result drawer_header;
+    private Cursor drugCursor;
+
+    /**
+     * Used to determine ResultListFragment Type
+     */
+    private boolean isEnzymeInteraction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Restore fields with Icepick Library
         Icepick.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.inject(this);
@@ -111,8 +130,14 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
 
-
+    /**
+     * Inits drawer which is used in the app
+     * uses 3rd Party library
+     *
+     * @param savedInstance
+     */
     private void initDrawer(Bundle savedInstance) {
+        // Header which is on top the Drawer
         drawer_header = new AccountHeader()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
@@ -126,12 +151,14 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 .withTranslucentStatusBar(true)
                 .withActionBarDrawerToggle(true)
                 .withAccountHeader(drawer_header)
+                        // Add Drawer Items
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(getString(R.string.drawer_item_home)).withIcon(FontAwesome.Icon.faw_home),
                         new PrimaryDrawerItem().withName(getString(R.string.new_search)).withIcon(FontAwesome.Icon.faw_exchange),
                         new PrimaryDrawerItem().withName(getString(R.string.saved_queries)).withIcon(FontAwesome.Icon.faw_save)
 
                 )
+                        // Add Listener logic, switches Fragments
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l, IDrawerItem drawerItem) {
@@ -171,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     }
 
                 })
+                        // Back Arrow action
                 .withOnDrawerNavigationListener(new Drawer.OnDrawerNavigationListener() {
                     @Override
                     public boolean onNavigationClickListener(View clickedView) {
@@ -179,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                         return true;
                     }
                 })
+                        // Close keyboard when drawer open
                 .withOnDrawerListener(new Drawer.OnDrawerListener() {
                     @Override
                     public void onDrawerOpened(View drawerView) {
@@ -201,8 +230,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        // Handle Menu Item selection
         switch (item.getItemId()) {
+            // Substances where selected and commited inside AutoCompleteSearchFragment
             case R.id.action_commit_selection:
                 // Come back from Search Fragment
                 mAutoCompleteSearchFragment = (AutoCompleteSearchFragment) getSupportFragmentManager().findFragmentByTag("search");
@@ -213,8 +243,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 getSupportFragmentManager().popBackStack();
                 InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
-
                 return true;
+            // MainSearchFragment Clear Button was clicked
             case R.id.action_clear:
                 if (mainSearchFragment != null) {
                     mainSearchFragment.clearForms();
@@ -228,11 +258,18 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
 
-
+    /**
+     * Receiver for Bus Events for ButtonClicks inside fragments and lists
+     *
+     * @param event Button Event
+     */
     @Subscribe
     public void onBusEvent(ButtonClickedEvent event) {
         switch (event.eventtype) {
+            // Start Button inside Welcome Fragment is clicked
+
             case (ButtonClickedEvent.START_BUTTON_CLICKED):
+                // Replace welcome fragment with MainFragment
                 getSupportFragmentManager().beginTransaction().remove(welcomeFragment).commit();
                 if (mainSearchFragment == null) {
                     mainSearchFragment = MainSearchFragment.newInstance();
@@ -242,7 +279,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
                 }
                 return;
+            // Open AutoCompleteSearchFragment when clicking Add Button
             case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
+                // Use fancy Element Transition Animations when using Lollipop
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                     mainSearchFragment.setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
@@ -276,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     getSupportActionBar().setTitle(getString(R.string.add_substance));
                 }
                 return;
+            // Open Drug-Drug INTERACTION Result list
             case ButtonClickedEvent.DRUG_CARD_CLICKED:
                 // Set Result Mode
                 isEnzymeInteraction = false;
@@ -286,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(getString(R.string.drugdruginteractions));
                 return;
+            // Open Enzyme Interaction result list
             case ButtonClickedEvent.ENZYME_CARD_CLICKED:
                 // Set Result Mode
                 isEnzymeInteraction = true;
@@ -296,9 +337,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(getString(R.string.enzyme_interaction));
                 return;
+            // Start search and open overview fragment
             case ButtonClickedEvent.START_SEARCH:
                 // Open Result Fragment
-                checkedEnzymes = mainSearchFragment.getCheckedItems();
+                checkedEnzymes = mainSearchFragment.getCheckedEnzymes();
                 enzymeCursor = mDb.getResultsforDefectiveEnzyme(checkedEnzymes, mSelectedSubstances);
                 drugCursor = mDb.getResultsForDrugDrugInteraction(mSelectedSubstances);
                 resultOverviewFragment = ResultOverviewFragment.newInstance(enzymeCursor.getCount(), drugCursor.getCount());
@@ -306,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 assert getSupportActionBar() != null;
                 getSupportActionBar().setTitle(R.string.results);
                 return;
+            // Save Query
             case ButtonClickedEvent.SAVE_FAB_CLICKED:
                 final EditText input = new EditText(this);
                 new AlertDialog.Builder(this)
@@ -335,11 +378,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     }
 
+    /**
+     * Bus Receiver for List Click Events in Result list
+     * @param event List item Event
+     */
     @Subscribe
     public void onSelectItem(ItemSelectedEvent event) {
-        // Open Result Fragment
+        // Open Result Activity
         Intent i = new Intent(this, DetailActivity.class);
         int col;
+        // Drug-Drug interactions need two IDs
         if (isEnzymeInteraction) {
             enzymeCursor.moveToPosition(event.position);
             col = enzymeCursor.getColumnIndexOrThrow(DatabaseHelperClass.INTERAKTIONEN.ID);
@@ -356,6 +404,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         startActivity(i);
     }
 
+    /**
+     * Receiver for Bus Events for Query Load Events
+     * @param event Query Load Event
+     */
     @Subscribe
     public void onQueryLoad(QuerySelectedEvent event) {
         // Load MainFragment and use Query item
@@ -363,8 +415,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         Query q = mDb.getQuery(queryid);
         mainSearchFragment = MainSearchFragment.newInstance();
         mSelectedSubstances = q.substances;
-        mainSearchFragment.setSelectedEnzymeIDs(new ArrayList<Enzyme>(q.enzymes));
+        // Fill data with fields from query
+        mainSearchFragment.setSelectedEnzymeIDs(new ArrayList<>(q.enzymes));
         mainSearchFragment.setSubstances(mSelectedSubstances);
+        // Open Fragment with saved Items
         getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle(R.string.search);
@@ -373,14 +427,18 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        // Save state for drawer
         outState = drawer.saveInstanceState(outState);
         outState = drawer_header.saveInstanceState(outState);
+
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
 
     }
 
-
+    /**
+     * Determine if back button should be shown are Hamburger Icon
+     */
     public void shouldDisplayHomeUp() {
         //Enable Up button only  if there are entries in the back stack
         int canback = getSupportFragmentManager().getBackStackEntryCount();

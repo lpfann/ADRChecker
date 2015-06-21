@@ -13,37 +13,35 @@ import java.util.HashMap;
 import unibi.com.medicapp.model.Enzyme;
 
 /**
- * Created by mirek on 16.06.15.
+ * Adapter to display Enzymes from the DB.
+ * Enzymes can be selected which is handled here.
  */
 public class EnzymeCursorAdapter extends SimpleCursorAdapter {
     HashMap<Long, Boolean> checked;
     private Cursor c;
-    private ArrayList<Enzyme> checkedArray;
 
     public EnzymeCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags, ArrayList<Enzyme> checkedList) {
         super(context, layout, c, from, to, flags);
         this.c = c;
-        this.checkedArray = checkedList;
+
         checked = new HashMap<>();
+        // Set local field to selected items
         for (Enzyme e : checkedList) {
             checked.put(e.id, true);
         }
+
     }
 
     @Override
     public CharSequence convertToString(Cursor cursor) {
+        // Display enzyme name
         final int colIndex = cursor.getColumnIndexOrThrow("name");
         return cursor.getString(colIndex);
     }
 
-/*
-    @Override
-    public long getItemId(int position) {
-        c.moveToPosition(position);
-        return c.getLong(0);
-    }
-*/
-
+    /**
+     * Ids are rowids in the DB -> stable
+     */
     @Override
     public boolean hasStableIds() {
         return true;

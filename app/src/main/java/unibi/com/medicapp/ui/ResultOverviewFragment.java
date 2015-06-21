@@ -1,15 +1,10 @@
 package unibi.com.medicapp.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -23,32 +18,33 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
-import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ButtonClickedEvent;
 import unibi.com.medicapp.model.Substance;
 
-
+/**
+ * Fragment to display Overview of Number of found Results for each Type.
+ */
 public class ResultOverviewFragment extends android.support.v4.app.Fragment {
     public static final String ENZ_RESULT = "ENZ_RESULT";
     private static final String DRUG_RESULT = "DRUG_RESULT";
-    @InjectView(R.id.enzymecard)
-    FrameLayout enzymecardView;
-    @InjectView(R.id.drugcard)
-    FrameLayout drugcardView;
+
+    // Two textviews to show the number of results
     @InjectView(R.id.enzymResultNumTextView)
     TextView enzymeResultView;
     @InjectView(R.id.drugResultTextView)
     TextView drugResultView;
+    /**
+     * FAB to save a Query in the DB.
+     */
     @InjectView(R.id.save_fab)
     FloatingActionButton save_fab;
 
     private int enz_result;
-
     private int drug_result;
+
     private LinkedList<Substance> mSubstances;
-    private DatabaseHelperClass db;
-    private SubstanceListAdapter mAdapter;
     private Bus mBus;
+
     public ResultOverviewFragment() {
         // Required empty public constructor
     }
@@ -62,11 +58,17 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
         return fragment;
     }
 
+    /**
+     * Notify MainActivity to open Result list for EnzymeInteraction
+     */
     @OnClick(R.id.enzymecard)
     void showEnzymeResults() {
         mBus.post(new ButtonClickedEvent(ButtonClickedEvent.ENZYME_CARD_CLICKED));
     }
 
+    /**
+     * Notify MainActivity to open Result list for DrugDrugInteraction
+     */
     @OnClick(R.id.drugcard)
     void showDrugResults() {
         mBus.post(new ButtonClickedEvent(ButtonClickedEvent.DRUG_CARD_CLICKED));
@@ -78,6 +80,7 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = this.getArguments();
+        // Get Result Numbers
         enz_result = bundle.getInt(ENZ_RESULT, 0);
         drug_result = bundle.getInt(DRUG_RESULT, 0);
 
@@ -98,6 +101,7 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.result_overview_layout, container, false);
         ButterKnife.inject(this, v);
+        // Set Numbers
         enzymeResultView.setText(Integer.toOctalString(enz_result));
         drugResultView.setText(Integer.toOctalString(drug_result));
         save_fab.setImageDrawable(new IconicsDrawable(v.getContext(), GoogleMaterial.Icon.gmd_save).color(v.getContext().getResources().getColor(R.color.icons)).sizeDp(42));
@@ -105,41 +109,4 @@ public class ResultOverviewFragment extends android.support.v4.app.Fragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        db = DatabaseHelperClass.getInstance(activity);
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_commit_selection) {
-            mBus.post(new ButtonClickedEvent(ButtonClickedEvent.GET_DATA_SEARCH_SUBSTANCE_FRAGMENT));
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public LinkedList<Substance> getAgents() {
-        return (LinkedList<Substance>) mSubstances.clone();
-    }
-
-    public void setAgents(LinkedList<Substance> substances) {
-        this.mSubstances = (LinkedList<Substance>) substances.clone();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 }

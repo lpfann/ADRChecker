@@ -22,6 +22,7 @@ import unibi.com.medicapp.model.Query;
 import unibi.com.medicapp.model.QuerySelectedEvent;
 
 /**
+ * ListAdapter to handle saved Search-Querys from the DB.
  * @author Lukas Pfannschmidt
  *         Date: 16.05.2015
  *         Time: 15:16
@@ -29,14 +30,11 @@ import unibi.com.medicapp.model.QuerySelectedEvent;
 public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.ViewHolder> {
     private final DatabaseHelperClass mDB;
     private Cursor mData;
-    private Context c;
-    private RecyclerView mRecyclerView;
     private Bus mBus;
     private QueryListAdapter adapter;
 
     public QueryListAdapter(Cursor data, Context c) {
         mData = data;
-        this.c = c;
         adapter = this;
         mBus = BusProvider.getInstance();
         mDB = DatabaseHelperClass.getInstance(c);
@@ -54,19 +52,26 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         return vh;
     }
 
+    /**
+     * Fills views with content from the cursor.
+     */
     @Override
     public void onBindViewHolder(ViewHolder parent, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
+        // Get data
         mData.moveToPosition(position);
         long id = mData.getLong(mData.getColumnIndexOrThrow("queryid"));
         Query query = mDB.getQuery(id);
+
+        // Set Id and Name
         parent.idView.setText(Long.toString(id));
         parent.nameView.setText(query.name);
+
+        // Create views to form a dynamic list of items (Substances, Enzymes)
         TextView child;
         for (int i = 0; i < query.substances.size(); i++) {
             if (i < parent.substancesize) {
                 child = parent.substanceViewArray.get(i);
+                // reuse existing views when created before in another item
             } else {
                 child = new TextView(parent.substanceList.getContext());
                 parent.substanceList.addView(child);
@@ -80,6 +85,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         for (int i = 0; i < query.enzymes.size(); i++) {
             if (i < parent.enzymesize) {
                 child = parent.enzymeViewArray.get(i);
+                // reuse existing views when created before in another item
             } else {
                 child = new TextView(parent.enzymeList.getContext());
                 parent.enzymeList.addView(child);
@@ -100,6 +106,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
+        // Hide list items when not in view - for recycling created views
         for (TextView tv : holder.enzymeViewArray) {
             tv.setVisibility(View.GONE);
         }
@@ -108,20 +115,19 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         }
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        mRecyclerView = recyclerView;
-    }
 
     @Override
     public int getItemCount() {
         return mData.getCount();
     }
 
+    /**
+     * @return Row id from the cursor
+     */
     @Override
     public long getItemId(int position) {
         mData.moveToPosition(position);
+
         return mData.getLong(mData.getColumnIndex("queryid"));
     }
 
@@ -136,6 +142,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
         LinearLayout enzymeList;
         @InjectView(R.id.nameView)
         TextView nameView;
+        // Size if each list, is used for recycling existing views
         int substancesize = 0;
         int enzymesize = 0;
         ArrayList<TextView> enzymeViewArray = new ArrayList<>();
@@ -149,6 +156,7 @@ public class QueryListAdapter extends RecyclerView.Adapter<QueryListAdapter.View
 
         @Override
         public void onClick(View v) {
+            // Send event to MainActivity to load Query data into MainSearchFragment
             mBus.post(new QuerySelectedEvent((int) adapter.getItemId(getAdapterPosition())));
         }
 

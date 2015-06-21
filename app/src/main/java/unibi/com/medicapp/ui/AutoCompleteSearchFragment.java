@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -33,6 +32,13 @@ import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.Substance;
 
 
+/**
+ * Displays the AutoCompleteSearch Field
+ * Is used to search for Substances and add them to a list which is later used to query the DB.
+ * opened in
+ *
+ * @see MainSearchFragment
+ */
 public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment {
 
     @InjectView(R.id.wirkstoffAutoComplete1)
@@ -40,9 +46,17 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
     @InjectView(R.id.wirkstoffListe)
     android.support.v7.widget.RecyclerView wirkstoffListeView;
 
+    /**
+     * List of substances which are chosen by the user.
+     * Can be notnull if the user edits a former created list.
+     */
     @Icicle
     LinkedList<Substance> mSubstances;
+
     private DatabaseHelperClass db;
+    /**
+     * Adapter for the Recyler view.
+     */
     private SubstanceListAdapter mAdapter;
     private Bus mBus;
 
@@ -65,6 +79,11 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Recycler view gets init.
+     *
+     * @param v Root view the list is added to.
+     */
     private void initList(View v) {
         if (mSubstances == null) {
             mSubstances = new LinkedList<>();
@@ -72,13 +91,14 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
         wirkstoffListeView.setLayoutManager(mLayoutManager);
         wirkstoffListeView.setHasFixedSize(true);
-        // Custom Decorator fuer Trennlinien, funzt momentan nicht im Fragment
-//        wirkstoffListeView.addItemDecoration(new DividerItemDecoration(v.getContext(), 1));
         mAdapter = new SubstanceListAdapter(mSubstances);
         wirkstoffListeView.setAdapter(mAdapter);
     }
 
-
+    /**
+     * Init. of AutoCompleteTextView
+     * @param c
+     */
     private void initializeAutoComplete(Context c) {
 
         final int[] to = new int[]{android.R.id.text1};
@@ -98,7 +118,7 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
                 return cursor.getString(colIndex);
             }
         });
-
+        // Filters the DB for rows which start with the entered characters in the view
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence name) {
@@ -106,6 +126,7 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
             }
         });
         autocompleteWirkstoffView.setAdapter(adapter);
+        // Add selected Substances to the RecyclerView
         autocompleteWirkstoffView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -125,17 +146,21 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_autocomplete_search, container, false);
         ButterKnife.inject(this, v);
+
         initList(v);
         initializeAutoComplete(getActivity());
+        // Request focus and open keyboard
         autocompleteWirkstoffView.requestFocus();
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
         return v;
     }
 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Add Commit Menu Item
         inflater.inflate(R.menu.menu_substance_search, menu);
         menu.findItem(R.id.action_commit_selection).setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_check).sizeDp(24).color(getResources().getColor(R.color.icons)));
 
@@ -155,18 +180,18 @@ public class AutoCompleteSearchFragment extends android.support.v4.app.Fragment 
         super.onDetach();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.action_commit_selection) {
-//            mBus.post(new ButtonClickedEvent(ButtonClickedEvent.GET_DATA_SEARCH_SUBSTANCE_FRAGMENT));
-//        }
-        return super.onOptionsItemSelected(item);
-    }
-
+    /**
+     * Getter for the parent activity to retrieve selected substances.
+     * @return Selected Substances
+     */
     public LinkedList<Substance> getSubstances() {
         return (LinkedList<Substance>) mSubstances.clone();
     }
 
+    /**
+     * Fill list with items user added previously.
+     * @param substances
+     */
     public void setAgents(LinkedList<Substance> substances) {
         this.mSubstances = (LinkedList<Substance>) substances.clone();
     }

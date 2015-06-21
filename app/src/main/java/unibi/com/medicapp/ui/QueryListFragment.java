@@ -19,6 +19,9 @@ import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.DatabaseHelperClass;
 
+/**
+ * Fragment to display all saved SearchQueries in a RecyclerView
+ */
 public class QueryListFragment extends android.support.v4.app.Fragment {
 
 
@@ -29,10 +32,6 @@ public class QueryListFragment extends android.support.v4.app.Fragment {
     private Bus mBus;
     private QueryListAdapter mAdapter;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public QueryListFragment() {
     }
 
@@ -47,10 +46,16 @@ public class QueryListFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get Queries from DB
         mSavedQueriesCursor = mDb.getAllQueries();
 
     }
 
+    /**
+     * Inits. the RecyclerView for the Queries
+     *
+     * @param v rootview
+     */
     private void initList(View v) {
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
@@ -60,12 +65,13 @@ public class QueryListFragment extends android.support.v4.app.Fragment {
         mainListView.setAdapter(adapter);
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
+            // List items not movable
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
 
+            // Swipe to delete function
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int adapterPosition = viewHolder.getAdapterPosition();
@@ -78,9 +84,9 @@ public class QueryListFragment extends android.support.v4.app.Fragment {
 
             }
         };
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mainListView);
+
     }
 
     @Override

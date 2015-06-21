@@ -15,6 +15,9 @@ import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.model.ButtonClickedEvent;
 
+/**
+ * Fragment to display a little welcome Text to introduce the function of the app.
+ */
 public class WelcomeFragment extends android.support.v4.app.Fragment {
     private Bus mBus;
 

@@ -3,7 +3,6 @@ package unibi.com.medicapp.ui;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,22 +17,24 @@ import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.DatabaseHelperClass;
 
+/**
+ * Fragment to display the list of Results in a RecyclerView
+ * Uses two Different adapters to handle different Results
+ *
+ * @see DrugResultListAdapter
+ * @see EnzymeResultListAdapter
+ */
 public class ResultListFragment extends android.support.v4.app.Fragment {
 
 
     public Cursor mResultCursor;
-    SimpleCursorAdapter cursorAdapter;
     @InjectView(R.id.mainListView)
     RecyclerView mainListView;
     private boolean isEnzyme;
+
     private DatabaseHelperClass mDb;
     private Bus mBus;
-    private EnzymeResultListAdapter mAdapter;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public ResultListFragment() {
     }
 
@@ -52,16 +53,22 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
 
     }
 
+    /**
+     * Inits RecyclerView to display Results
+     *
+     * @param v root view
+     */
     private void initList(View v) {
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(v.getContext());
         mainListView.setLayoutManager(mLayoutManager);
         mainListView.setHasFixedSize(true);
-        // TODO: Interface für gleichaussehende Ergebnisse verbessern
+        /**
+         * Branch between different result types.
+         */
         if (isEnzyme) {
             mainListView.setAdapter(new EnzymeResultListAdapter(mResultCursor, getActivity()));
         } else {
-            Cursor sub_cursor = mDb.getSubstances();
             mainListView.setAdapter(new DrugResultListAdapter(mResultCursor, getActivity()));
         }
     }
@@ -71,6 +78,7 @@ public class ResultListFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_result_list, container, false);
         ButterKnife.inject(this, v);
+        // Fragment useless without Results...
         if (mResultCursor == null) {
             throw new Error("missing Result Cursor");
         }
