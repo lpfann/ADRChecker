@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,17 +17,9 @@ import android.transition.TransitionInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.mikepenz.iconics.typeface.FontAwesome;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import com.mikepenz.materialdrawer.util.KeyboardUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -68,6 +63,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
      */
     @Icicle
     LinkedList<Substance> mSelectedSubstances = new LinkedList<>();
+
+    @InjectView(R.id.drawer)
+    NavigationView drawer;
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout drawer_layout;
     /**
      * Event Bus, receives Data from Fragments
      */
@@ -84,8 +84,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     private QueryListFragment mQueryFragment;
     private ResultListFragment mResultListFragment;
     // Navigation Drawer and Header of it
-    private Drawer.Result drawer = null;
-    private AccountHeader.Result drawer_header;
     private Cursor drugCursor;
 
     /**
@@ -106,17 +104,57 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
-        getSupportActionBar().setTitle(getResources().getString(R.string.search));
+        getSupportActionBar().hide();
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
-        initDrawer(savedInstanceState);
+
 
         if (savedInstanceState == null) {
 
             // Create  for ContentLayout
             welcomeFragment = WelcomeFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, welcomeFragment).commit();
-            /*mainSearchFragment = MainSearchFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, welcomeFragment).commit();
+            getSupportActionBar().setTitle("");
+            drawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.welcome_menu:
+                            if (welcomeFragment == null) {
+                                welcomeFragment = WelcomeFragment.newInstance();
+
+                            }
+                            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, welcomeFragment, "welcome").commit();
+                            drawer_layout.closeDrawers();
+                            menuItem.setChecked(true);
+                            return true;
+                        case R.id.search_menu:
+                            if (mainSearchFragment == null) {
+                                mainSearchFragment = MainSearchFragment.newInstance();
+
+                            }
+                            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
+                            drawer_layout.closeDrawers();
+                            menuItem.setChecked(true);
+                            return true;
+                        case R.id.saved_queries_menu:
+                            if (mQueryFragment == null) {
+                                mQueryFragment = QueryListFragment.newInstance();
+
+                            }
+                            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mQueryFragment, "query").commit();
+                            drawer_layout.closeDrawers();
+                            menuItem.setChecked(true);
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+
+        /*mainSearchFragment = MainSearchFragment.newInstance();
             getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, mainSearchFragment, "main").commit();
 */
 
@@ -130,108 +168,14 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
 
-    /**
-     * Inits drawer which is used in the app
-     * uses 3rd Party library
-     *
-     * @param savedInstance
-     */
-    private void initDrawer(Bundle savedInstance) {
-        // Header which is on top the Drawer
-        drawer_header = new AccountHeader()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.header)
-                .withSavedInstance(savedInstance)
-                .build();
-
-
-        drawer = new Drawer()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withTranslucentStatusBar(true)
-                .withActionBarDrawerToggle(true)
-                .withAccountHeader(drawer_header)
-                        // Add Drawer Items
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_home)).withIcon(FontAwesome.Icon.faw_home),
-                        new PrimaryDrawerItem().withName(getString(R.string.new_search)).withIcon(FontAwesome.Icon.faw_exchange),
-                        new PrimaryDrawerItem().withName(getString(R.string.saved_queries)).withIcon(FontAwesome.Icon.faw_save)
-
-                )
-                        // Add Listener logic, switches Fragments
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l, IDrawerItem drawerItem) {
-                        if (drawerItem != null) {
-                            if (((Nameable) drawerItem).getName() == getString(R.string.saved_queries)) {
-                                {
-                                    mQueryFragment = QueryListFragment.newInstance();
-                                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mQueryFragment, "querylist").commit();
-                                    assert getSupportActionBar() != null;
-                                    getSupportActionBar().setTitle(getString(R.string.saved_queries));
-
-                                }
-                            }
-                            if (((Nameable) drawerItem).getName() == getString(R.string.new_search)) {
-                                {
-                                    if (mainSearchFragment != null) {
-                                        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
-                                        assert getSupportActionBar() != null;
-                                        getSupportActionBar().setTitle(getString(R.string.search));
-                                    } else {
-                                        mainSearchFragment = MainSearchFragment.newInstance();
-                                        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
-                                        assert getSupportActionBar() != null;
-                                        getSupportActionBar().setTitle(getString(R.string.search));
-                                    }
-                                }
-                            }
-                            if (((Nameable) drawerItem).getName() == getString(R.string.drawer_item_home)) {
-                                {
-                                    welcomeFragment = WelcomeFragment.newInstance();
-                                    getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, welcomeFragment).commit();
-                                }
-                            }
-
-
-                        }
-                    }
-
-                })
-                        // Back Arrow action
-                .withOnDrawerNavigationListener(new Drawer.OnDrawerNavigationListener() {
-                    @Override
-                    public boolean onNavigationClickListener(View clickedView) {
-                        // Only called when back button is shown - handlers back action inside fragment
-                        getSupportFragmentManager().popBackStack();
-                        return true;
-                    }
-                })
-                        // Close keyboard when drawer open
-                .withOnDrawerListener(new Drawer.OnDrawerListener() {
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        KeyboardUtil.hideKeyboard(MainActivity.this);
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-
-                    }
-
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-
-                    }
-                })
-                .withSavedInstance(savedInstance)
-                .build();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle Menu Item selection
         switch (item.getItemId()) {
+            case android.R.id.home:
+                drawer_layout.openDrawer(GravityCompat.START);
+                return true;
             // Substances where selected and commited inside AutoCompleteSearchFragment
             case R.id.action_commit_selection:
                 // Come back from Search Fragment
@@ -274,6 +218,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 if (mainSearchFragment == null) {
                     mainSearchFragment = MainSearchFragment.newInstance();
                     getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
+                    getSupportActionBar().show();
+                    drawer.setEnabled(true);
 
                 } else {
                     getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
@@ -422,15 +368,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle(R.string.search);
-        drawer.setSelectionByIdentifier(R.string.new_search);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        // Save state for drawer
-        outState = drawer.saveInstanceState(outState);
-        outState = drawer_header.saveInstanceState(outState);
-
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
 
@@ -445,11 +386,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         assert getSupportActionBar() != null;
         if (drawer != null) {
             if (canback > 0) {
-                drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             } else {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
                 getSupportActionBar().setTitle(R.string.search);
             }
 
@@ -461,15 +400,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         shouldDisplayHomeUp();
     }
 
-    @Override
-    public void onBackPressed() {
-        //handle the back press :D close the drawer first and if the drawer is closed close the activity
-        if (drawer != null && drawer.isDrawerOpen()) {
-            drawer.closeDrawer();
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     protected void onPause() {
