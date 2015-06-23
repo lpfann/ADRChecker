@@ -20,6 +20,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -102,12 +104,12 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         // init Gui Elements
         assert getSupportActionBar() != null;
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().hide();
+
+        //Listen for changes in the back stack
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-
-
+        //Handle when activity is recreated like on orientation Change
+        shouldDisplayHomeUp();
 
         if (savedInstanceState == null) {
 
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             drawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    menuItem.setChecked(true);
                     switch (menuItem.getItemId()) {
                         case R.id.welcome_menu:
                             if (welcomeFragment == null) {
@@ -126,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                             }
                             getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, welcomeFragment, "welcome").commit();
                             drawer_layout.closeDrawers();
-                            menuItem.setChecked(true);
+                            getSupportActionBar().hide();
+
                             return true;
                         case R.id.search_menu:
                             if (mainSearchFragment == null) {
@@ -135,24 +139,20 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                             }
                             getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
                             drawer_layout.closeDrawers();
-                            menuItem.setChecked(true);
+                            getSupportActionBar().show();
                             return true;
                         case R.id.saved_queries_menu:
-                            if (mQueryFragment == null) {
-                                mQueryFragment = QueryListFragment.newInstance();
-
-                            }
-                            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mQueryFragment, "query").commit();
+                            mQueryFragment = QueryListFragment.newInstance();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mQueryFragment).commit();
                             drawer_layout.closeDrawers();
-                            menuItem.setChecked(true);
+                            getSupportActionBar().show();
                             return true;
                         default:
                             return false;
                     }
                 }
             });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+            toolbar.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_menu).color(this.getResources().getColor(R.color.icons)).sizeDp(24));
 
         /*mainSearchFragment = MainSearchFragment.newInstance();
             getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, mainSearchFragment, "main").commit();
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             mainSearchFragment = (MainSearchFragment) getSupportFragmentManager().findFragmentByTag("main");
         }
 
-
+        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
 
     }
@@ -174,13 +174,20 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         // Handle Menu Item selection
         switch (item.getItemId()) {
             case android.R.id.home:
-                drawer_layout.openDrawer(GravityCompat.START);
+                if (getSupportFragmentManager().getBackStackEntryCount() < 1) {
+                    drawer_layout.openDrawer(GravityCompat.START);
+                } else {
+                    getSupportFragmentManager().popBackStack();
+                }
                 return true;
             // Substances where selected and commited inside AutoCompleteSearchFragment
             case R.id.action_commit_selection:
                 // Come back from Search Fragment
                 mAutoCompleteSearchFragment = (AutoCompleteSearchFragment) getSupportFragmentManager().findFragmentByTag("search");
                 mainSearchFragment = (MainSearchFragment) getSupportFragmentManager().findFragmentByTag("main");
+                if (mainSearchFragment == null) {
+                    mainSearchFragment = MainSearchFragment.newInstance();
+                }
                 mSelectedSubstances = mAutoCompleteSearchFragment.getSubstances();
                 //mainSearchFragment.setSelectedEnzymeIDs(checkedEnzymes);
                 mainSearchFragment.setSubstances(mSelectedSubstances);
@@ -217,13 +224,17 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 getSupportFragmentManager().beginTransaction().remove(welcomeFragment).commit();
                 if (mainSearchFragment == null) {
                     mainSearchFragment = MainSearchFragment.newInstance();
-                    getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, mainSearchFragment).commit();
-                    getSupportActionBar().show();
-                    drawer.setEnabled(true);
+                    getSupportFragmentManager().beginTransaction().add(R.id.contentLayout, mainSearchFragment, "main").commit();
+
 
                 } else {
                     getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, mainSearchFragment, "main").commit();
                 }
+                getSupportActionBar().show();
+                getSupportActionBar().setTitle(R.string.search);
+                drawer.setEnabled(true);
+                MenuItem search_menu = drawer.getMenu().findItem(R.id.search_menu);
+                search_menu.setChecked(true);
                 return;
             // Open AutoCompleteSearchFragment when clicking Add Button
             case (ButtonClickedEvent.ADD_SUBSTANCE_BUTTON):
@@ -377,28 +388,33 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     }
 
-    /**
-     * Determine if back button should be shown are Hamburger Icon
-     */
-    public void shouldDisplayHomeUp() {
-        //Enable Up button only  if there are entries in the back stack
-        int canback = getSupportFragmentManager().getBackStackEntryCount();
-        assert getSupportActionBar() != null;
-        if (drawer != null) {
-            if (canback > 0) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            } else {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                getSupportActionBar().setTitle(R.string.search);
-            }
-
-        }
-    }
 
     @Override
     public void onBackStackChanged() {
         shouldDisplayHomeUp();
     }
+
+    public void shouldDisplayHomeUp() {
+        //Enable Up button only  if there are entries in the back stack
+        int canback = getSupportFragmentManager().getBackStackEntryCount();
+        if (canback > 0) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } else {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            toolbar.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_menu).color(this.getResources().getColor(R.color.icons)).sizeDp(24));
+            getSupportActionBar().setTitle(R.string.search);
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        //This method is called when the up button is pressed. Just the pop back stack.
+        getSupportFragmentManager().popBackStack();
+        return true;
+    }
+
 
 
     @Override
