@@ -30,6 +30,7 @@ import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.Substance;
+import unibi.com.medicapp.ui.adapter.SubstanceListAdapter;
 
 
 /**

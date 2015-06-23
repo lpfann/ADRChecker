@@ -16,6 +16,8 @@ import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.DatabaseHelperClass;
+import unibi.com.medicapp.ui.adapter.DrugResultListAdapter;
+import unibi.com.medicapp.ui.adapter.EnzymeResultListAdapter;
 
 /**
  * Fragment to display the list of Results in a RecyclerView

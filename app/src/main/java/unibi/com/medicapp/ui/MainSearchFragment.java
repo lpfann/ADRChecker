@@ -36,6 +36,8 @@ import unibi.com.medicapp.controller.DatabaseHelperClass;
 import unibi.com.medicapp.model.ButtonClickedEvent;
 import unibi.com.medicapp.model.Enzyme;
 import unibi.com.medicapp.model.Substance;
+import unibi.com.medicapp.ui.adapter.EnzymeCursorAdapter;
+import unibi.com.medicapp.ui.adapter.SubstanceListAdapter;
 
 /**
  * Most important Fragment!

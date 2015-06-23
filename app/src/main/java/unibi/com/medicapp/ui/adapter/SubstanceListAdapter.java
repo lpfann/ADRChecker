@@ -1,4 +1,4 @@
-package unibi.com.medicapp.ui;
+package unibi.com.medicapp.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package unibi.com.medicapp.ui;
+package unibi.com.medicapp.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;

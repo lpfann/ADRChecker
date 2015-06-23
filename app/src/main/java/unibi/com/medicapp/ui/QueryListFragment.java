@@ -18,6 +18,7 @@ import butterknife.InjectView;
 import unibi.com.medicapp.R;
 import unibi.com.medicapp.controller.BusProvider;
 import unibi.com.medicapp.controller.DatabaseHelperClass;
+import unibi.com.medicapp.ui.adapter.QueryListAdapter;
 
 /**
  * Fragment to display all saved SearchQueries in a RecyclerView
