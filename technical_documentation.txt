@@ -1,0 +1,49 @@
+#Technische Dokumentation:
+
+Die App wurde mit dem Ziel entwickelt, eine kleine Datenbankabfrage nach Medikamentenwechselwirkung einfach und intuitiv möglich zu machen und die Ergebnisse übersichtlich  anzuzeigen.
+
+## Datenbank
+Die Datenbank wird mit der App als SQLite Datei mitgeliefert, erfordert also keine Internetabfrage.
+Die Abfrage an die DB wird über eine zentrale Klasse `DatabaseHelperClass` vermittelt. GUI Elemente die Inhalte aus der DB benötigen rufen Methoden aus der Klasse auf.
+
+Schreibzugriffe auf die DB beschränken sich auf die Suchanfragen mit dem Typ `Query`.
+
+## Model
+Das Model besteht aus POJOs für die anzuzeigenden Datenbankobjekte und Events für den `EventBus`.
+
+## GUI
+Als GUI wird eine Haupt-Activity `MainActivity` mit mehreren Kind-Fragments benutzt, die in einem `FrameLayout` namens `contentLayout` eingebettet werden, wenn sie aufgerufen werden. Die Activity beherbergt dabei den NavigationDrawer sowie die Toolbar (ActionBar). 
+Die Activity fungiert auch als Controller-Element. Durch einen `EventBus` aus der `Otto` Library werden Events aus den App Elementen, innerhalb von Fragmenten, an die Activity weitergereicht. Die Activity ändert dann das derzeit aktive Fragment.
+
+Ein Großteil der Interaktion des Nutzers läuft über das `MainSearchFragment` ab, welches die Substanz und Enzym Listen anzeigt.
+
+Die meisten der Listen in der App werden durch `RecyclerViews` dargestellt, welche jeweils Adapter benötigen, um die Inhalte aus den `Cursorn` zu bekommen.
+
+Falls ein Ergebnis ausgewählt wird, kommt eine neue Activity `DetailActivity` zum Einsatz.  Eingebettet darin ist ein oder mehrere Fragments, in dem Fall gruppiert in einem TabLayout, welche jeweils eine Interaktion anzeigen.
+Jede Interaktion ist dabei mit der `InteractionID` innerhalb der Datenbank identifizierbar.
+
+Als Erleichterung wurde die Bibliothek `Butterknife` eingesetzt.
+Diese ermöglicht ViewInjection durch die  `@InjectView` Annotation, wodurch Views in den Layout Files direkt abgerufen werden können, ohne viel Boilerplate Code ("findViewbyID...").
+
+Zur Speicherung des App-Status wurde die Bilbiothek `icepick` benutzt, welche auch komplexere Datentypen zwischenspeichern kann.
+
+Für die meisten neuen GUI Elemente für MaterialDesign wurde die *Android Support Design* Library benutzt. Dies ermöglicht eine Benutzung der MD-Elemente auch auf alten Versionen.
+
+
+## Logische-Gliederung
+* MainActivity
+    * MainSearchFragment
+        - AutoCompleteSearchFragment
+        - ResultOverviewFragment
+            + ResultListFragment
+                * DetailActivity
+                    - Detail_Fragment_Single
+    * WelcomeFragment
+    * QueryListFragment        
+
+## Kontakt
+Lukas Pfannschmidt
+lpfannschmidt@techfak.uni-bielefeld.de
+
+
+
