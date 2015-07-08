@@ -31,4 +31,15 @@
     <string name="clear">Clear</string>
     <string name="interaction">Interaction</string>
     <string name="welcome">Welcome</string>
+    <string name="welcome_title">Welcome</string>
+    <string name="welcome_intro">With this app you can make two different searches at the same time:</string>
+    <string name="welcome_text_defective_enzyme">If you know about defective Enzymes in the metabolism of a patient you can specify it and search for known Interactions with entered Substances.</string>
+    <string name="interaction_between_substances">Interactions between Substances</string>
+    <string name="welcome_text_drug_drug">If you enter multiple Substances, the app will search for Enzymes which are common in the activity of both substances.</string>
+    <string name="start">Start</string>
+    <string name="pubmedid">PubmedID:</string>
+    <string name="name">Name:</string>
+    <string name="id">ID:</string>
+    <string name="enzymes">Enzymes</string>
+    <string name="found">Found:</string>
 </resources>

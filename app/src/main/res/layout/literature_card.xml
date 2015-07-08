@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:text="PubmedID:"
+                        android:text="@string/pubmedid"
                         android:textSize="14sp"
                         />
 
@@ -75,7 +75,6 @@
                         android:layout_height="wrap_content"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:text="Medium Text"
                         android:textSize="14sp"/>
 
                 </TableRow>
@@ -100,7 +99,6 @@
                 android:paddingLeft="24dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
-                android:text="Small Text"
                 android:textSize="14sp"
                 android:textStyle="italic"/>
         </LinearLayout>

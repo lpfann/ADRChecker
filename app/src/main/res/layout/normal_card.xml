@@ -44,7 +44,6 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:singleLine="true"
-                android:text="Header"
                 android:textSize="24sp"
                 />
 
@@ -61,7 +60,6 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:paddingTop="16dp"
-                    android:text="content"
                     android:textSize="14sp"/>
 
 

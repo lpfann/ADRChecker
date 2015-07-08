@@ -50,7 +50,7 @@
                     android:paddingRight="20dp"
                     android:paddingTop="20dp"
                     android:singleLine="false"
-                    android:text="Interaction"
+                    android:text="@string/interaction"
                     android:textAlignment="textEnd"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/icons"

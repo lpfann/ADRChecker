@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_column="0"
         android:layout_row="1"
-        android:text="Welcome"
+        android:text="@string/welcome_title"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="?attr/colorButtonNormal"
         android:textSize="32sp" />
@@ -26,7 +26,7 @@
         android:layout_column="0"
         android:layout_row="0"
         android:paddingTop="8dp"
-        android:text="With this app you can make two different searches at the same time:"
+        android:text="@string/welcome_intro"
         android:textColor="?attr/colorButtonNormal"
         android:textSize="18sp" />
 
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Defective Enzyme"
+        android:text="@string/defectiveEnzymes"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?attr/colorButtonNormal"
         android:textSize="26sp" />
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="If you know about defective Enzymes in the metabolism of a patient you can specify it and search for known Interactions with entered Substances."
+        android:text="@string/welcome_text_defective_enzyme"
         android:textColor="?attr/colorButtonNormal"
         android:textSize="18sp" />
 
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Interactions between Substances"
+        android:text="@string/interaction_between_substances"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?attr/colorButtonNormal"
         android:textSize="26sp" />
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="If you enter multiple Substances, the app will search for Enzymes which are common in the activity of both substances."
+        android:text="@string/welcome_text_drug_drug"
         android:textColor="?attr/colorButtonNormal"
         android:textSize="18sp" />
 
@@ -76,7 +76,7 @@
         android:layout_gravity="bottom|right"
         android:layout_marginTop="24dp"
         android:padding="16dp"
-        android:text="Start"
+        android:text="@string/start"
         android:textColor="?attr/colorButtonNormal"
         android:textSize="24sp" />
 
