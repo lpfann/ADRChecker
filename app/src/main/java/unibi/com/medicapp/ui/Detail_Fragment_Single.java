@@ -108,7 +108,7 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
                     if (dataCursor[i].getCount() > 0) {
                         col = dataCursor[i].getColumnIndex(DatabaseHelperClass.THERAPEUTISCHE_KLASSIFIKATION.NAME);
                         content.setText(dataCursor[i].getString(col));
-                        header.setText("Therapeutic Classification");
+                        header.setText(R.string.therapeutic_classification);
                         image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_database).sizeDp(32).color(getResources().getColor(R.color.accent)));
                         linearcardLayout.addView(card);
                     }
@@ -118,7 +118,7 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
                     if (dataCursor[i].getCount() > 0) {
                         col = dataCursor[i].getColumnIndex(DatabaseHelperClass.METABOLISMUS.NAME);
                         content.setText(dataCursor[i].getString(col));
-                        header.setText("Metabolism");
+                        header.setText(R.string.metabolism);
                         image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_refresh).sizeDp(32).color(getResources().getColor(R.color.accent)));
                         linearcardLayout.addView(card);
                     }
@@ -129,7 +129,7 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
                     if (dataCursor[i].getCount() > 0) {
                         col = dataCursor[i].getColumnIndex(DatabaseHelperClass.BEMERKUNGEN.BEMERKUNG);
                         content.setText(dataCursor[i].getString(col));
-                        header.setText("Notes");
+                        header.setText(R.string.notes);
                         image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_comment).sizeDp(32).color(getResources().getColor(R.color.accent)));
                         linearcardLayout.addView(card);
                     }
@@ -139,7 +139,7 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
                     if (dataCursor[i].getCount() > 0) {
                         col = dataCursor[i].getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME);
                         content.setText(dataCursor[i].getString(col));
-                        header.setText("Enzyme");
+                        header.setText(R.string.enzyme);
                         image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_puzzle_piece).sizeDp(32).color(getResources().getColor(R.color.accent)));
                         linearcardLayout.addView(card);
                     }
@@ -168,7 +168,7 @@ public class Detail_Fragment_Single extends android.support.v4.app.Fragment {
             }
             col = c.getColumnIndex(DatabaseHelperClass.LITERATUR.SOURCE);
             title.setText(c.getString(col));
-            header.setText("Literature");
+            header.setText(R.string.literature);
             image.setImageDrawable(new IconicsDrawable(getActivity(), FontAwesome.Icon.faw_book).sizeDp(32).color(getResources().getColor(R.color.accent)));
             linearcardLayout.addView(card);
         }

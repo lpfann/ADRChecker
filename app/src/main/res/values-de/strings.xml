@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KALIS-Suche</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="add">Hinzufügen</string>
+    <string name="add_agents">Wirkstoffe hinzufügen</string>
+    <string name="add_substance">Substanzen hinzufügen</string>
+    <string name="clear">Löschen</string>
+    <string name="complete_selection">Auswahl fertigstellen</string>
+    <string name="defectiveEnzymes">Defekte Enzyme</string>
+    <string name="drawer_item_home">Start</string>
+    <string name="drawer_item_settings">Einstellungen</string>
+    <string name="drugdruginteractions">Medikament-Medikament-Wechselwirkungen</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="enter_agents">Wirkstoffe eingeben</string>
+    <string name="enzyme_interaction">Substanz-Enzym-Metabolismus</string>
+    <string name="enzymes">Enzyme</string>
+    <string name="found">Gefunden</string>
+    <string name="id">ID</string>
+    <string name="info">Info</string>
+    <string name="interaction">Wechselwirkung</string>
+    <string name="interaction_between_substances">Substanz-Wechselwirkungen</string>
+    <string name="introTextEE">Suche nach Wechselwirkungen durch Eingabe von einzelnen Substanzen.</string>
+    <string name="menu_cancel">Abbrechen</string>
+    <string name="name">Name:</string>
+    <string name="new_search">Neue Suche</string>
+    <string name="no_agents_added">Keine Substanzen hinzugefügt</string>
+    <string name="pubmedid">PubmedID:</string>
+    <string name="results">Ergebnisse</string>
+    <string name="save">Speichern</string>
+    <string name="saved_queries">Gespeicherte Anfragen</string>
+    <string name="search">Suche</string>
+    <string name="start">Start</string>
+    <string name="substance">Substanz</string>
+    <string name="substances">Substanzen</string>
+    <string name="title_activity_detail">Wechselwirkung</string>
+    <string name="welcome">Willkommen</string>
+    <string name="welcome_intro">Mit dieser App können sie zwei Arten von Anfragen gleichzeitig durchführen:</string>
+    <string name="welcome_text_defective_enzyme">Es können Wechselwirkungen zwischen Substanzen und beim Patienten bekannte defekte Enzyme gefunden werden.</string>
+    <string name="welcome_text_drug_drug">Bei Eingabe mehrerer Substanzen wird auch nach Wechselwirkungen, die zwischen diesen auftreten können, gesucht.</string>
+    <string name="welcome_title">Willkommen</string>
+    <string name="enzyme">Enzym</string>
+    <string name="literature">Literatur</string>
+    <string name="metabolism">Metabolismus</string>
+    <string name="therapeutic_classification">Therapeutische Klassifikation</string>
+    <string name="notes">Bemerkungen</string>
+</resources>
