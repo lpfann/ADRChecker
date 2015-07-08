@@ -6,38 +6,17 @@
         android:id="@+id/detailsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    app:layout_behavior="unibi.com.medicapp.ui.FixedScrollingViewBehavior">
 
         <LinearLayout
+            android:id="@+id/linearcardLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:orientation="vertical"
             tools:showIn="@layout/fragment_detail">
-            <!--android:paddingBottom="100dp"-->
 
-            <include
-                android:id="@+id/enzyme_card"
-                layout="@layout/normal_card" />
-
-            <include
-                android:id="@+id/metabolism_card"
-                layout="@layout/normal_card"/>
-
-            <include
-                android:id="@+id/note_card"
-                layout="@layout/normal_card"/>
-
-
-            <include
-                android:id="@+id/literature_card"
-                layout="@layout/literature_card"/>
-
-            <include
-                android:id="@+id/classification_card"
-                layout="@layout/normal_card"/>
 
 
 
