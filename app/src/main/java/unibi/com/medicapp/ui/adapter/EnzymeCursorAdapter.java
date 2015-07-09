@@ -50,8 +50,22 @@ public class EnzymeCursorAdapter extends SimpleCursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (checked.containsKey(getItemId(position))) {
+
+            if (checked.get(getItemId(position))) {
             ((ListView) parent).setItemChecked(position, true);
+            } else {
+                ((ListView) parent).setItemChecked(position, false);
+
+            }
         }
         return super.getView(position, convertView, parent);
+    }
+
+    public void enzymeClicked(int pos) {
+        if (checked.containsKey(getItemId(pos))) {
+            checked.put(getItemId(pos), !checked.get(getItemId(pos)));
+        } else {
+            checked.put(getItemId(pos), true);
+        }
     }
 }

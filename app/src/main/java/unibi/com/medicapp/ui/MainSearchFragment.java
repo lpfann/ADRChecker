@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -202,6 +203,14 @@ public class MainSearchFragment extends Fragment {
                 to,
                 0, selectedEnzymeIDs);
         enzymeListView.setAdapter(adapter);
+        enzymeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.enzymeClicked(position);
+            }
+
+
+        });
 
 
     }
