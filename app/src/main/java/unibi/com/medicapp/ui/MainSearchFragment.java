@@ -25,6 +25,7 @@ import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -169,16 +170,18 @@ public class MainSearchFragment extends Fragment {
 
     /**
      * Retrieves the selected Enzymes in the list for the main search
-     *
+     *  uses data from enzyme list adapter
      * @return checked Enzyme IDs
      */
     public ArrayList<Enzyme> getCheckedEnzymes() {
-        long[] checkedItemIds = enzymeListView.getCheckedItemIds();
+        Set<Long> ids = adapter.getChecked().keySet();
         selectedEnzymeIDs = new ArrayList<>();
-        for (long checkedItemId : checkedItemIds) {
-            Cursor c = db.getEnzyme(checkedItemId);
-            Enzyme enz = new Enzyme(c.getString(c.getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME)), checkedItemId);
-            selectedEnzymeIDs.add(enz);
+        for (long id : ids) {
+            if (adapter.getChecked().get(id)) {
+                Cursor c = db.getEnzyme(id);
+                Enzyme enz = new Enzyme(c.getString(c.getColumnIndex(DatabaseHelperClass.ISOENZYME.NAME)), id);
+                selectedEnzymeIDs.add(enz);
+            }
         }
         return selectedEnzymeIDs;
 

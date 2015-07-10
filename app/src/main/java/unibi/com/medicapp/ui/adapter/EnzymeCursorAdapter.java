@@ -17,7 +17,7 @@ import unibi.com.medicapp.model.Enzyme;
  * Enzymes can be selected which is handled here.
  */
 public class EnzymeCursorAdapter extends SimpleCursorAdapter {
-    HashMap<Long, Boolean> checked;
+    private HashMap<Long, Boolean> checked;
     private Cursor c;
 
     public EnzymeCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags, ArrayList<Enzyme> checkedList) {
@@ -28,6 +28,7 @@ public class EnzymeCursorAdapter extends SimpleCursorAdapter {
         // Set local field to selected items
         for (Enzyme e : checkedList) {
             checked.put(e.id, true);
+
         }
 
     }
@@ -67,5 +68,14 @@ public class EnzymeCursorAdapter extends SimpleCursorAdapter {
         } else {
             checked.put(getItemId(pos), true);
         }
+    }
+
+    /**
+     * Getting Checked items from adapter
+     *
+     * @return
+     */
+    public HashMap<Long, Boolean> getChecked() {
+        return checked;
     }
 }
